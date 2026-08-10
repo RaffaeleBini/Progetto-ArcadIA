@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { sendError } from "./utils/apiError.js";
+import authRoutes from "./routes/auth.routes.js";
 
 export function createApp() {
   const app = express();
@@ -19,8 +20,15 @@ export function createApp() {
     res.json({ status: "ok" });
   });
 
+  app.use("/api/auth", authRoutes);
+
   app.use((_req, res) => {
     sendError(res, 404, "Risorsa non trovata");
+  });
+
+  app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    console.error(err);
+    sendError(res, 500, "Errore interno del server");
   });
 
   return app;

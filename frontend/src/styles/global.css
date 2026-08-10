@@ -72,3 +72,37 @@ button {
   border-radius: var(--radius);
   padding: var(--space-6);
 }
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  text-align: left;
+  margin-bottom: var(--space-4);
+}
+
+.field label {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+}
+
+.field input {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-body);
+  font-size: 1rem;
+}
+
+.field input:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.formError {
+  color: oklch(0.7 0.19 25);
+  font-size: 0.9rem;
+  margin: 0 0 var(--space-4);
+}

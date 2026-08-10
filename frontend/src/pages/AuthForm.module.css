@@ -1,0 +1,33 @@
+.wrapper {
+  min-height: calc(100% - 65px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+}
+
+.panel {
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+}
+
+.title {
+  font-size: 1.4rem;
+}
+
+.footer {
+  margin-top: var(--space-4);
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.footer a {
+  color: var(--color-accent);
+}
+
+.submit {
+  width: 100%;
+  justify-content: center;
+  margin-top: var(--space-2);
+}

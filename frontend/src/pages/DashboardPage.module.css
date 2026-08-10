@@ -1,0 +1,7 @@
+.dashboard {
+  padding: var(--space-8);
+}
+
+.title {
+  font-size: 1.6rem;
+}

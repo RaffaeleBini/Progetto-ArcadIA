@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
+import ProfilePage from "./pages/ProfilePage";
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
             </Route>
           </Route>
         </Routes>

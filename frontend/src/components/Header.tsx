@@ -23,7 +23,14 @@ export default function Header() {
       <div className={styles.actions}>
         {user ? (
           <>
-            <span className={styles.userName}>{user.name}</span>
+            <Link to="/profile" className={styles.profileLink}>
+              {user.avatarUrl ? (
+                <img className={styles.avatar} src={user.avatarUrl} alt="" />
+              ) : (
+                <span className={styles.avatarPlaceholder} />
+              )}
+              <span className={styles.userName}>{user.name}</span>
+            </Link>
             <button type="button" className="btn" onClick={handleLogout}>
               <LogOut size={16} strokeWidth={1.5} />
               Esci

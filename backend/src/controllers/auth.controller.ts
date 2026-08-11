@@ -5,6 +5,7 @@ import { UserModel } from "../models/User.js";
 import { NotificationModel } from "../models/Notification.js";
 import { sendError } from "../utils/apiError.js";
 import { COOKIE_NAME, getAuthCookieOptions, signToken } from "../utils/jwt.js";
+import { toPublicUser } from "../utils/publicUser.js";
 
 export const registerSchema = z.object({
   name: z.string().trim().min(1, "Il nome è obbligatorio"),
@@ -16,32 +17,6 @@ export const loginSchema = z.object({
   email: z.string().trim().toLowerCase().email("Email non valida"),
   password: z.string().min(1, "Password obbligatoria"),
 });
-
-function toPublicUser(user: {
-  _id: unknown;
-  name: string;
-  email: string;
-  role: string;
-  avatarUrl?: string | null;
-  bio?: string | null;
-  preferredLanguage: string;
-  theme: string;
-  subscriptionPlan: string;
-  subscriptionExpiresAt?: Date | null;
-}) {
-  return {
-    id: String(user._id),
-    name: user.name,
-    email: user.email,
-    role: user.role,
-    avatarUrl: user.avatarUrl ?? null,
-    bio: user.bio ?? null,
-    preferredLanguage: user.preferredLanguage,
-    theme: user.theme,
-    subscriptionPlan: user.subscriptionPlan,
-    subscriptionExpiresAt: user.subscriptionExpiresAt ?? null,
-  };
-}
 
 export async function register(req: Request, res: Response) {
   const { name, email, password } = req.body as z.infer<typeof registerSchema>;

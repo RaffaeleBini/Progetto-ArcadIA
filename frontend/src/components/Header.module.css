@@ -38,6 +38,29 @@
   font-size: 0.9rem;
 }
 
+.profileLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+}
+
+.avatarPlaceholder {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+}
+
 .link {
   color: var(--color-accent);
   text-decoration: none;

@@ -1,11 +1,15 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
+import { usePreferences } from "../context/PreferencesContext";
 import { getApiErrorMessage } from "../api/client";
 import styles from "./AuthForm.module.css";
 
 export default function RegisterPage() {
   const { register, login } = useAuth();
+  const { language, theme } = usePreferences();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -18,11 +22,11 @@ export default function RegisterPage() {
     setError(null);
     setIsSubmitting(true);
     try {
-      await register(name, email, password);
+      await register(name, email, password, language, theme);
       await login(email, password);
       navigate("/dashboard");
     } catch (err) {
-      setError(getApiErrorMessage(err, "Registrazione non riuscita"));
+      setError(getApiErrorMessage(err, t("auth.registerError")));
     } finally {
       setIsSubmitting(false);
     }
@@ -31,22 +35,22 @@ export default function RegisterPage() {
   return (
     <div className={styles.wrapper}>
       <form className={`panel ${styles.panel}`} onSubmit={handleSubmit}>
-        <h1 className={styles.title}>Registrati</h1>
+        <h1 className={styles.title}>{t("auth.registerTitle")}</h1>
 
         {error && <p className="formError">{error}</p>}
 
         <div className="field">
-          <label htmlFor="name">Nome</label>
+          <label htmlFor="name">{t("auth.name")}</label>
           <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} required />
         </div>
 
         <div className="field">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">{t("auth.email")}</label>
           <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </div>
 
         <div className="field">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">{t("auth.password")}</label>
           <input
             id="password"
             type="password"
@@ -58,11 +62,11 @@ export default function RegisterPage() {
         </div>
 
         <button type="submit" className={`btn ${styles.submit}`} disabled={isSubmitting}>
-          {isSubmitting ? "Attendere…" : "Crea account"}
+          {isSubmitting ? t("auth.submitting") : t("auth.createAccount")}
         </button>
 
         <p className={styles.footer}>
-          Hai già un account? <Link to="/login">Accedi</Link>
+          {t("auth.haveAccount")} <Link to="/login">{t("auth.loginLink")}</Link>
         </p>
       </form>
     </div>

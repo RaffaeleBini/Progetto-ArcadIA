@@ -1,17 +1,19 @@
 import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
+import { usePreferences } from "../context/PreferencesContext";
 import { updateProfile, uploadAvatar } from "../api/users";
 import { getApiErrorMessage } from "../api/client";
 import styles from "./ProfilePage.module.css";
 
 export default function ProfilePage() {
   const { user, setUser } = useAuth();
+  const { language, theme, setLanguage, setTheme } = usePreferences();
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState(user?.name ?? "");
   const [bio, setBio] = useState(user?.bio ?? "");
-  const [preferredLanguage, setPreferredLanguage] = useState<"it" | "es">(user?.preferredLanguage ?? "it");
-  const [theme, setTheme] = useState<"light" | "dark">(user?.theme ?? "light");
 
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -29,11 +31,11 @@ export default function ProfilePage() {
     setSuccess(false);
     setIsSubmitting(true);
     try {
-      const updated = await updateProfile({ name, bio, preferredLanguage, theme });
+      const updated = await updateProfile({ name, bio, preferredLanguage: language, theme });
       setUser(updated);
       setSuccess(true);
     } catch (err) {
-      setError(getApiErrorMessage(err, "Aggiornamento profilo non riuscito"));
+      setError(getApiErrorMessage(err, t("profile.updateError")));
     } finally {
       setIsSubmitting(false);
     }
@@ -49,7 +51,7 @@ export default function ProfilePage() {
       const updated = await uploadAvatar(file);
       setUser(updated);
     } catch (err) {
-      setAvatarError(getApiErrorMessage(err, "Upload avatar non riuscito"));
+      setAvatarError(getApiErrorMessage(err, t("profile.avatarError")));
     } finally {
       setIsUploadingAvatar(false);
       event.target.value = "";
@@ -59,7 +61,7 @@ export default function ProfilePage() {
   return (
     <div className={styles.page}>
       <form className={`panel ${styles.panel}`} onSubmit={handleSubmit}>
-        <h1 className={styles.title}>Il mio profilo</h1>
+        <h1 className={styles.title}>{t("profile.title")}</h1>
 
         <div className={styles.avatarRow}>
           {user.avatarUrl ? (
@@ -74,9 +76,9 @@ export default function ProfilePage() {
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploadingAvatar}
             >
-              {isUploadingAvatar ? "Caricamento…" : "Cambia avatar"}
+              {isUploadingAvatar ? t("profile.uploading") : t("profile.changeAvatar")}
             </button>
-            <p className={styles.hint}>PNG, JPEG o WEBP, max 5MB</p>
+            <p className={styles.hint}>{t("profile.avatarHint")}</p>
             {avatarError && <p className="formError">{avatarError}</p>}
           </div>
           <input
@@ -89,24 +91,24 @@ export default function ProfilePage() {
         </div>
 
         {error && <p className="formError">{error}</p>}
-        {success && <p className={styles.formSuccess}>Profilo aggiornato</p>}
+        {success && <p className={styles.formSuccess}>{t("profile.updated")}</p>}
 
         <div className="field">
-          <label htmlFor="name">Nome</label>
+          <label htmlFor="name">{t("profile.name")}</label>
           <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} required />
         </div>
 
         <div className="field">
-          <label htmlFor="bio">Bio</label>
+          <label htmlFor="bio">{t("profile.bio")}</label>
           <textarea id="bio" maxLength={500} value={bio ?? ""} onChange={(e) => setBio(e.target.value)} />
         </div>
 
         <div className="field">
-          <label htmlFor="preferredLanguage">Lingua</label>
+          <label htmlFor="preferredLanguage">{t("profile.language")}</label>
           <select
             id="preferredLanguage"
-            value={preferredLanguage}
-            onChange={(e) => setPreferredLanguage(e.target.value as "it" | "es")}
+            value={language}
+            onChange={(e) => setLanguage(e.target.value as "it" | "es")}
           >
             <option value="it">Italiano</option>
             <option value="es">Español</option>
@@ -114,15 +116,15 @@ export default function ProfilePage() {
         </div>
 
         <div className="field">
-          <label htmlFor="theme">Tema</label>
+          <label htmlFor="theme">{t("profile.theme")}</label>
           <select id="theme" value={theme} onChange={(e) => setTheme(e.target.value as "light" | "dark")}>
-            <option value="dark">Scuro</option>
-            <option value="light">Chiaro</option>
+            <option value="dark">{t("profile.themeDark")}</option>
+            <option value="light">{t("profile.themeLight")}</option>
           </select>
         </div>
 
         <button type="submit" className="btn" disabled={isSubmitting}>
-          {isSubmitting ? "Salvataggio…" : "Salva modifiche"}
+          {isSubmitting ? t("profile.saving") : t("profile.save")}
         </button>
       </form>
     </div>

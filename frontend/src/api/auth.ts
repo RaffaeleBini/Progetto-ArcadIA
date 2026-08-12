@@ -1,8 +1,20 @@
 import { apiClient } from "./client";
 import type { User } from "../types/user";
 
-export async function registerRequest(name: string, email: string, password: string): Promise<User> {
-  const { data } = await apiClient.post<{ user: User }>("/api/auth/register", { name, email, password });
+export async function registerRequest(
+  name: string,
+  email: string,
+  password: string,
+  preferredLanguage: "it" | "es",
+  theme: "light" | "dark"
+): Promise<User> {
+  const { data } = await apiClient.post<{ user: User }>("/api/auth/register", {
+    name,
+    email,
+    password,
+    preferredLanguage,
+    theme,
+  });
   return data.user;
 }
 

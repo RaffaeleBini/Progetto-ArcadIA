@@ -11,6 +11,8 @@ export const registerSchema = z.object({
   name: z.string().trim().min(1, "Il nome è obbligatorio"),
   email: z.string().trim().toLowerCase().email("Email non valida"),
   password: z.string().min(8, "La password deve avere almeno 8 caratteri"),
+  preferredLanguage: z.enum(["it", "es"]).optional(),
+  theme: z.enum(["light", "dark"]).optional(),
 });
 
 export const loginSchema = z.object({
@@ -19,7 +21,7 @@ export const loginSchema = z.object({
 });
 
 export async function register(req: Request, res: Response) {
-  const { name, email, password } = req.body as z.infer<typeof registerSchema>;
+  const { name, email, password, preferredLanguage, theme } = req.body as z.infer<typeof registerSchema>;
 
   const existing = await UserModel.findOne({ email });
   if (existing) {
@@ -28,7 +30,7 @@ export async function register(req: Request, res: Response) {
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
-  const user = await UserModel.create({ name, email, passwordHash });
+  const user = await UserModel.create({ name, email, passwordHash, preferredLanguage, theme });
 
   await NotificationModel.create({
     recipient: user._id,

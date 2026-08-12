@@ -1,0 +1,48 @@
+{
+  "header": {
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "logout": "Salir",
+    "themeToggle": "Cambiar tema"
+  },
+  "home": {
+    "tagline": "Plataforma de formación online sobre Inteligencia Artificial.",
+    "cta": "Empezar"
+  },
+  "auth": {
+    "registerTitle": "Regístrate",
+    "loginTitle": "Iniciar sesión",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "createAccount": "Crear cuenta",
+    "submitting": "Un momento…",
+    "haveAccount": "¿Ya tienes una cuenta?",
+    "noAccount": "¿No tienes una cuenta?",
+    "loginLink": "Inicia sesión",
+    "registerLink": "Regístrate",
+    "registerError": "No se pudo completar el registro",
+    "loginError": "Credenciales no válidas"
+  },
+  "dashboard": {
+    "welcome": "Bienvenido, {{name}}",
+    "underConstruction": "Panel de control en construcción — cursos, progreso y el tablón llegarán en las próximas fases de desarrollo."
+  },
+  "profile": {
+    "title": "Mi perfil",
+    "changeAvatar": "Cambiar avatar",
+    "uploading": "Subiendo…",
+    "avatarHint": "PNG, JPEG o WEBP, máx. 5MB",
+    "updated": "Perfil actualizado",
+    "name": "Nombre",
+    "bio": "Biografía",
+    "language": "Idioma",
+    "theme": "Tema",
+    "themeDark": "Oscuro",
+    "themeLight": "Claro",
+    "save": "Guardar cambios",
+    "saving": "Guardando…",
+    "updateError": "No se pudo actualizar el perfil",
+    "avatarError": "No se pudo subir el avatar"
+  }
+}

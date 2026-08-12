@@ -8,7 +8,7 @@ const userSchema = new Schema({
   avatarUrl: { type: String },
   bio: { type: String },
   preferredLanguage: { type: String, enum: ["it", "es"], default: "it" },
-  theme: { type: String, enum: ["light", "dark"], default: "light" },
+  theme: { type: String, enum: ["light", "dark"], default: "dark" },
   subscriptionPlan: { type: String, enum: ["free", "premium"], default: "free" },
   subscriptionExpiresAt: { type: Date, default: null },
   createdAt: { type: Date, default: Date.now },

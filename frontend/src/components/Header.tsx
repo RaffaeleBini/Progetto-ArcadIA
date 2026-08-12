@@ -1,11 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
-import { LogOut } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { LogOut, Moon, Sun } from "lucide-react";
 import logo from "../assets/rb-logo.png";
 import { useAuth } from "../context/AuthContext";
+import { usePreferences } from "../context/PreferencesContext";
 import styles from "./Header.module.css";
 
 export default function Header() {
   const { user, logout } = useAuth();
+  const { theme, language, setTheme, setLanguage } = usePreferences();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   async function handleLogout() {
@@ -21,6 +25,32 @@ export default function Header() {
       </Link>
 
       <div className={styles.actions}>
+        <div className={styles.languageSwitch} role="group" aria-label="Lingua">
+          <button
+            type="button"
+            className={language === "it" ? styles.langActive : styles.lang}
+            onClick={() => setLanguage("it")}
+          >
+            IT
+          </button>
+          <button
+            type="button"
+            className={language === "es" ? styles.langActive : styles.lang}
+            onClick={() => setLanguage("es")}
+          >
+            ES
+          </button>
+        </div>
+
+        <button
+          type="button"
+          className={styles.themeToggle}
+          aria-label={t("header.themeToggle")}
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        >
+          {theme === "dark" ? <Sun size={18} strokeWidth={1.5} /> : <Moon size={18} strokeWidth={1.5} />}
+        </button>
+
         {user ? (
           <>
             <Link to="/profile" className={styles.profileLink}>
@@ -33,16 +63,16 @@ export default function Header() {
             </Link>
             <button type="button" className="btn" onClick={handleLogout}>
               <LogOut size={16} strokeWidth={1.5} />
-              Esci
+              {t("header.logout")}
             </button>
           </>
         ) : (
           <>
             <Link to="/login" className={styles.link}>
-              Accedi
+              {t("header.login")}
             </Link>
             <Link to="/register" className={styles.link}>
-              Registrati
+              {t("header.register")}
             </Link>
           </>
         )}

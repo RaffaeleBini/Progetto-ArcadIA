@@ -1,0 +1,27 @@
+.page {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-8);
+}
+
+.panel {
+  width: 100%;
+  max-width: 520px;
+}
+
+.title {
+  font-size: 1.4rem;
+  margin-bottom: var(--space-6);
+}
+
+.field textarea {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 80px;
+}

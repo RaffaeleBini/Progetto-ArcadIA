@@ -4,6 +4,8 @@ import cookieParser from "cookie-parser";
 import { sendError } from "./utils/apiError.js";
 import authRoutes from "./routes/auth.routes.js";
 import usersRoutes from "./routes/users.routes.js";
+import coursesRoutes from "./routes/courses.routes.js";
+import adminRoutes from "./routes/admin.routes.js";
 
 export function createApp() {
   const app = express();
@@ -23,6 +25,8 @@ export function createApp() {
 
   app.use("/api/auth", authRoutes);
   app.use("/api/users", usersRoutes);
+  app.use("/api/courses", coursesRoutes);
+  app.use("/api/admin/users", adminRoutes);
 
   app.use((_req, res) => {
     sendError(res, 404, "Risorsa non trovata");

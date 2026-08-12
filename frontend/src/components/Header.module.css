@@ -27,6 +27,24 @@
   letter-spacing: 0.04em;
 }
 
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex: 1;
+  margin-left: var(--space-6);
+}
+
+.navLink {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.navLink:hover {
+  color: var(--color-accent);
+}
+
 .actions {
   display: flex;
   align-items: center;

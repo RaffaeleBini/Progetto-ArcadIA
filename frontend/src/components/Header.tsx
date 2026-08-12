@@ -24,6 +24,14 @@ export default function Header() {
         <span className={styles.brandName}>ArcadIA</span>
       </Link>
 
+      {user && (
+        <nav className={styles.nav}>
+          <Link to="/courses" className={styles.navLink}>
+            {t("header.courses")}
+          </Link>
+        </nav>
+      )}
+
       <div className={styles.actions}>
         <div className={styles.languageSwitch} role="group" aria-label="Lingua">
           <button

@@ -1,7 +1,12 @@
 .dashboard {
   padding: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
 }
 
 .title {
   font-size: 1.6rem;
+  margin: 0;
 }

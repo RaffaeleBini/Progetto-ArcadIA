@@ -3,7 +3,8 @@
     "login": "Iniciar sesión",
     "register": "Registrarse",
     "logout": "Salir",
-    "themeToggle": "Cambiar tema"
+    "themeToggle": "Cambiar tema",
+    "courses": "Cursos"
   },
   "home": {
     "tagline": "Plataforma de formación online sobre Inteligencia Artificial.",
@@ -26,7 +27,8 @@
   },
   "dashboard": {
     "welcome": "Bienvenido, {{name}}",
-    "underConstruction": "Panel de control en construcción — cursos, progreso y el tablón llegarán en las próximas fases de desarrollo."
+    "intro": "Desde aquí puedes acceder a los cursos disponibles en ArcadIA.",
+    "goToCourses": "Ir a los cursos"
   },
   "profile": {
     "title": "Mi perfil",
@@ -44,5 +46,50 @@
     "saving": "Guardando…",
     "updateError": "No se pudo actualizar el perfil",
     "avatarError": "No se pudo subir el avatar"
+  },
+  "courses": {
+    "title": "Cursos",
+    "searchPlaceholder": "Buscar un curso…",
+    "new": "Nuevo curso",
+    "empty": "No se encontraron cursos.",
+    "premiumBadge": "Premium",
+    "backToList": "Volver a los cursos",
+    "backToCourse": "Volver al curso",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "subscriptionRequired": "Contenido reservado a los suscriptores.",
+    "viewPlans": "Ver los planes",
+    "lessons": "Lecciones",
+    "newLesson": "Nueva lección",
+    "confirmDeleteCourse": "¿Eliminar este curso y todas sus lecciones?",
+    "confirmDeleteLesson": "¿Eliminar esta lección?",
+    "openInColab": "Abrir en Colab",
+    "saveError": "No se pudo guardar",
+    "newCourse": "Nuevo curso",
+    "editCourse": "Editar curso",
+    "cover": "Portada",
+    "courseTitle": "Título",
+    "description": "Descripción",
+    "accessLevel": "Nivel de acceso",
+    "free": "Gratuito",
+    "premium": "Premium",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "editLesson": "Editar lección",
+    "lessonTitle": "Título de la lección",
+    "order": "Orden",
+    "videoUrl": "URL del vídeo (YouTube/Vimeo)",
+    "notebookUrl": "URL del notebook en GitHub"
+  },
+  "pricing": {
+    "title": "Planes",
+    "subtitle": "ArcadIA es gratuita: algunos cursos avanzados están reservados a los suscriptores Premium.",
+    "freeName": "Free",
+    "freeFeature1": "Acceso a todos los cursos gratuitos",
+    "freeFeature2": "Tablón y notificaciones incluidos",
+    "premiumName": "Premium",
+    "premiumFeature1": "Todo lo del plan Free",
+    "premiumFeature2": "Acceso a los cursos avanzados reservados",
+    "note": "En el MVP no hay ningún pago real activo: el acceso Premium lo asigna manualmente el administrador."
   }
 }

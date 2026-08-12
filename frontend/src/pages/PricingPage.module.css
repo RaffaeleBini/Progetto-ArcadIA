@@ -1,0 +1,58 @@
+.page {
+  padding: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  font-size: 1.8rem;
+  margin-bottom: var(--space-2);
+}
+
+.subtitle {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-8);
+  text-align: center;
+}
+
+.plans {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-4);
+  max-width: 640px;
+  width: 100%;
+}
+
+.plan {
+  padding: var(--space-6);
+  text-align: center;
+}
+
+.planName {
+  font-size: 1.2rem;
+  margin-bottom: var(--space-2);
+}
+
+.planFeatures {
+  list-style: none;
+  margin: var(--space-4) 0;
+  padding: 0;
+  color: var(--color-text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  text-align: left;
+}
+
+.premiumPlan {
+  border-color: var(--color-accent);
+}
+
+.note {
+  margin-top: var(--space-6);
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  text-align: center;
+  max-width: 480px;
+}

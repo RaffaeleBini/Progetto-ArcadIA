@@ -1,0 +1,48 @@
+.page {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-8);
+}
+
+.panel {
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+}
+
+.icon {
+  color: var(--color-accent);
+  margin-bottom: var(--space-4);
+}
+
+.title {
+  font-size: 1.3rem;
+  margin-bottom: var(--space-6);
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+  text-align: left;
+}
+
+.label {
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+}
+
+.value {
+  font-size: 1.1rem;
+}
+
+.certId {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  word-break: break-all;
+}
+
+.errorIcon {
+  color: var(--color-text-secondary);
+}

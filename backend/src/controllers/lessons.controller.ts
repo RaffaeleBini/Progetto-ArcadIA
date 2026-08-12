@@ -5,6 +5,7 @@ import { LessonModel } from "../models/Lesson.js";
 import { UserModel } from "../models/User.js";
 import { sendError } from "../utils/apiError.js";
 import { hasAccessToCourse } from "../utils/access.js";
+import { ensureProgress } from "../utils/progress.js";
 
 export const lessonSchema = z.object({
   title: z.string().trim().min(1, "Il titolo è obbligatorio"),
@@ -66,6 +67,8 @@ export async function getLesson(req: Request, res: Response) {
     sendError(res, 404, "Lezione non trovata");
     return;
   }
+
+  await ensureProgress(req.userId!, course._id);
 
   res.json({ lesson: toLessonDto(lesson) });
 }

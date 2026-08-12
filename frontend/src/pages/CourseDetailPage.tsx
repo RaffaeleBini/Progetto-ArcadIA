@@ -1,12 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, FileCode, Lock, Pencil, Plus, Trash2, Video } from "lucide-react";
+import { ArrowLeft, Award, Download, FileCode, Lock, Pencil, Plus, Trash2, Video } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { deleteCourse, fetchCourse } from "../api/courses";
 import { deleteLesson, fetchLessons } from "../api/lessons";
+import { fetchProgress, getCertificateUrl } from "../api/progress";
+import ProgressBar from "../components/ProgressBar";
 import type { Course } from "../types/course";
 import type { Lesson } from "../types/lesson";
+import type { Progress } from "../types/progress";
 import styles from "./CourseDetailPage.module.css";
 
 export default function CourseDetailPage() {
@@ -17,6 +20,7 @@ export default function CourseDetailPage() {
 
   const [course, setCourse] = useState<Course | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
+  const [progress, setProgress] = useState<Progress | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const isAdmin = user?.role === "admin";
@@ -28,8 +32,9 @@ export default function CourseDetailPage() {
     const courseData = await fetchCourse(id);
     setCourse(courseData);
     if (!(courseData.accessLevel === "premium" && !courseData.hasAccess)) {
-      const lessonsData = await fetchLessons(id);
+      const [lessonsData, progressData] = await Promise.all([fetchLessons(id), fetchProgress(id)]);
       setLessons(lessonsData);
+      setProgress(progressData);
     }
     setIsLoading(false);
   }, [id]);
@@ -100,6 +105,22 @@ export default function CourseDetailPage() {
         </div>
       ) : (
         <>
+          {progress && (
+            <div className={styles.progressSection}>
+              <div className={styles.progressRow}>
+                <ProgressBar percentage={progress.percentage} />
+                <span className={styles.progressLabel}>{progress.percentage}%</span>
+              </div>
+              {progress.isCompleted && (
+                <a className="btn" href={getCertificateUrl(course.id)}>
+                  <Award size={16} strokeWidth={1.5} />
+                  {t("courses.downloadCertificate")}
+                  <Download size={14} strokeWidth={1.5} />
+                </a>
+              )}
+            </div>
+          )}
+
           <div className={styles.headerRow}>
             <h2 className={styles.sectionTitle}>{t("courses.lessons")}</h2>
             {isAdmin && (
@@ -111,36 +132,40 @@ export default function CourseDetailPage() {
           </div>
 
           <ul className={styles.lessonList}>
-            {lessons.map((lesson) => (
-              <li key={lesson.id} className={`panel ${styles.lessonItem}`}>
-                <Link to={`/courses/${course.id}/lessons/${lesson.id}`} className={styles.lessonLink}>
-                  <span>{lesson.title}</span>
-                  <span className={styles.lessonIcons}>
-                    {lesson.videoUrl && <Video size={15} strokeWidth={1.5} />}
-                    {lesson.notebookGithubUrl && <FileCode size={15} strokeWidth={1.5} />}
-                  </span>
-                </Link>
-                {isAdmin && (
-                  <div className={styles.lessonActions}>
-                    <Link
-                      to={`/courses/${course.id}/lessons/${lesson.id}/edit`}
-                      className={styles.iconBtn}
-                      aria-label={t("courses.edit")}
-                    >
-                      <Pencil size={14} strokeWidth={1.5} />
-                    </Link>
-                    <button
-                      type="button"
-                      className={styles.iconBtn}
-                      aria-label={t("courses.delete")}
-                      onClick={() => handleDeleteLesson(lesson.id)}
-                    >
-                      <Trash2 size={14} strokeWidth={1.5} />
-                    </button>
-                  </div>
-                )}
-              </li>
-            ))}
+            {lessons.map((lesson) => {
+              const isLessonCompleted = progress?.completedLessons.includes(lesson.id) ?? false;
+              return (
+                <li key={lesson.id} className={`panel ${styles.lessonItem}`}>
+                  <Link to={`/courses/${course.id}/lessons/${lesson.id}`} className={styles.lessonLink}>
+                    <span>{lesson.title}</span>
+                    <span className={styles.lessonIcons}>
+                      {isLessonCompleted && <Award size={15} strokeWidth={1.5} className={styles.doneIcon} />}
+                      {lesson.videoUrl && <Video size={15} strokeWidth={1.5} />}
+                      {lesson.notebookGithubUrl && <FileCode size={15} strokeWidth={1.5} />}
+                    </span>
+                  </Link>
+                  {isAdmin && (
+                    <div className={styles.lessonActions}>
+                      <Link
+                        to={`/courses/${course.id}/lessons/${lesson.id}/edit`}
+                        className={styles.iconBtn}
+                        aria-label={t("courses.edit")}
+                      >
+                        <Pencil size={14} strokeWidth={1.5} />
+                      </Link>
+                      <button
+                        type="button"
+                        className={styles.iconBtn}
+                        aria-label={t("courses.delete")}
+                        onClick={() => handleDeleteLesson(lesson.id)}
+                      >
+                        <Trash2 size={14} strokeWidth={1.5} />
+                      </button>
+                    </div>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </>
       )}

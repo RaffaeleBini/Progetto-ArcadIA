@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, ExternalLink, Pencil, Trash2 } from "lucide-react";
+import { ArrowLeft, Check, ExternalLink, Pencil, Trash2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { deleteLesson, fetchLesson } from "../api/lessons";
+import { completeLesson, fetchProgress, uncompleteLesson } from "../api/progress";
 import { getColabUrl, getVideoEmbedUrl } from "../utils/media";
 import type { Lesson } from "../types/lesson";
+import type { Progress } from "../types/progress";
 import styles from "./LessonPage.module.css";
 
 export default function LessonPage() {
@@ -15,15 +17,22 @@ export default function LessonPage() {
   const navigate = useNavigate();
 
   const [lesson, setLesson] = useState<Lesson | null>(null);
+  const [progress, setProgress] = useState<Progress | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isToggling, setIsToggling] = useState(false);
 
   const isAdmin = user?.role === "admin";
+  const isCompleted = lessonId ? (progress?.completedLessons.includes(lessonId) ?? false) : false;
 
   const load = useCallback(async () => {
     if (!courseId || !lessonId) return;
     setIsLoading(true);
-    const data = await fetchLesson(courseId, lessonId);
-    setLesson(data);
+    const [lessonData, progressData] = await Promise.all([
+      fetchLesson(courseId, lessonId),
+      fetchProgress(courseId),
+    ]);
+    setLesson(lessonData);
+    setProgress(progressData);
     setIsLoading(false);
   }, [courseId, lessonId]);
 
@@ -35,6 +44,19 @@ export default function LessonPage() {
     if (!courseId || !lessonId || !window.confirm(t("courses.confirmDeleteLesson"))) return;
     await deleteLesson(courseId, lessonId);
     navigate(`/courses/${courseId}`);
+  }
+
+  async function handleToggleComplete() {
+    if (!courseId || !lessonId) return;
+    setIsToggling(true);
+    try {
+      const updated = isCompleted
+        ? await uncompleteLesson(courseId, lessonId)
+        : await completeLesson(courseId, lessonId);
+      setProgress(updated);
+    } finally {
+      setIsToggling(false);
+    }
   }
 
   if (isLoading || !lesson) {
@@ -93,6 +115,16 @@ export default function LessonPage() {
             {t("courses.openInColab")}
           </a>
         )}
+
+        <button
+          type="button"
+          className={isCompleted ? `btn ${styles.completedBtn}` : "btn"}
+          onClick={handleToggleComplete}
+          disabled={isToggling}
+        >
+          <Check size={16} strokeWidth={1.5} />
+          {isCompleted ? t("courses.completed") : t("courses.markComplete")}
+        </button>
       </div>
     </div>
   );

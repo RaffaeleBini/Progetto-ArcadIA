@@ -5,6 +5,7 @@ import { Lock, Plus, Search } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { fetchCourses } from "../api/courses";
 import type { Course } from "../types/course";
+import ProgressBar from "../components/ProgressBar";
 import styles from "./CoursesPage.module.css";
 
 export default function CoursesPage() {
@@ -66,6 +67,12 @@ export default function CoursesPage() {
             <div className={styles.body}>
               <h2 className={styles.cardTitle}>{course.title}</h2>
               <p className={styles.cardDescription}>{course.description}</p>
+              {course.hasAccess && (
+                <div className={styles.progressRow}>
+                  <ProgressBar percentage={course.percentage} />
+                  <span className={styles.progressLabel}>{course.percentage}%</span>
+                </div>
+              )}
             </div>
           </Link>
         ))}

@@ -7,6 +7,7 @@ import {
   listLessons,
   updateLesson,
 } from "../controllers/lessons.controller.js";
+import { completeLesson, uncompleteLesson } from "../controllers/progress.controller.js";
 import { requireAdmin, requireAuth } from "../middleware/auth.js";
 import { validateBody } from "../middleware/validate.js";
 
@@ -17,5 +18,8 @@ router.get("/:id", requireAuth, getLesson);
 router.post("/", requireAuth, requireAdmin, validateBody(lessonSchema), createLesson);
 router.put("/:id", requireAuth, requireAdmin, validateBody(lessonSchema), updateLesson);
 router.delete("/:id", requireAuth, requireAdmin, deleteLesson);
+
+router.put("/:lessonId/complete", requireAuth, completeLesson);
+router.put("/:lessonId/uncomplete", requireAuth, uncompleteLesson);
 
 export default router;

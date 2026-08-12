@@ -79,7 +79,17 @@
     "lessonTitle": "Titolo lezione",
     "order": "Ordine",
     "videoUrl": "URL video (YouTube/Vimeo)",
-    "notebookUrl": "URL notebook GitHub"
+    "notebookUrl": "URL notebook GitHub",
+    "markComplete": "Segna come completata",
+    "completed": "Completata",
+    "downloadCertificate": "Scarica certificato"
+  },
+  "verify": {
+    "valid": "Certificato valido",
+    "recipient": "Rilasciato a",
+    "course": "Corso",
+    "completedAt": "Data di completamento",
+    "notFound": "Certificato non trovato o non valido"
   },
   "pricing": {
     "title": "Piani",

@@ -4,6 +4,7 @@ import { z } from "zod";
 import { CourseModel } from "../models/Course.js";
 import { LessonModel } from "../models/Lesson.js";
 import { UserModel } from "../models/User.js";
+import { ProgressModel } from "../models/Progress.js";
 import { sendError } from "../utils/apiError.js";
 import { hasAccessToCourse } from "../utils/access.js";
 import { isCloudinaryConfigured, uploadCourseCover } from "../config/cloudinary.js";
@@ -14,7 +15,11 @@ export const courseSchema = z.object({
   accessLevel: z.enum(["free", "premium"]).default("free"),
 });
 
-function toCourseDto(course: InstanceType<typeof CourseModel>, hasAccess: boolean) {
+function toCourseDto(
+  course: InstanceType<typeof CourseModel>,
+  hasAccess: boolean,
+  progressInfo: { percentage: number; isCompleted: boolean } = { percentage: 0, isCompleted: false }
+) {
   return {
     id: String(course._id),
     title: course.title,
@@ -22,6 +27,8 @@ function toCourseDto(course: InstanceType<typeof CourseModel>, hasAccess: boolea
     coverImageUrl: course.coverImageUrl ?? null,
     accessLevel: course.accessLevel,
     hasAccess,
+    percentage: progressInfo.percentage,
+    isCompleted: progressInfo.isCompleted,
     createdAt: course.createdAt,
   };
 }
@@ -47,7 +54,31 @@ export async function listCourses(req: Request, res: Response) {
     return;
   }
 
-  res.json({ courses: courses.map((course) => toCourseDto(course, hasAccessToCourse(user, course))) });
+  const courseIds = courses.map((course) => course._id);
+  const [lessonCounts, progresses] = await Promise.all([
+    LessonModel.aggregate<{ _id: unknown; count: number }>([
+      { $match: { course: { $in: courseIds } } },
+      { $group: { _id: "$course", count: { $sum: 1 } } },
+    ]),
+    ProgressModel.find({ user: req.userId, course: { $in: courseIds } }),
+  ]);
+
+  const lessonCountByCourse = new Map(lessonCounts.map((entry) => [String(entry._id), entry.count]));
+  const progressByCourse = new Map(progresses.map((progress) => [String(progress.course), progress]));
+
+  res.json({
+    courses: courses.map((course) => {
+      const totalLessons = lessonCountByCourse.get(String(course._id)) ?? 0;
+      const progress = progressByCourse.get(String(course._id));
+      const completedCount = progress?.completedLessons.length ?? 0;
+      const percentage = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
+
+      return toCourseDto(course, hasAccessToCourse(user, course), {
+        percentage,
+        isCompleted: progress?.isCompleted ?? false,
+      });
+    }),
+  });
 }
 
 export async function getCourse(req: Request, res: Response) {

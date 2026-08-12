@@ -79,3 +79,8 @@
   display: flex;
   gap: var(--space-3);
 }
+
+.completedBtn {
+  background-color: var(--color-accent-soft);
+  box-shadow: var(--shadow-glow);
+}

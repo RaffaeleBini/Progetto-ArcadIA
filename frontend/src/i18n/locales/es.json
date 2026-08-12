@@ -79,7 +79,17 @@
     "lessonTitle": "Título de la lección",
     "order": "Orden",
     "videoUrl": "URL del vídeo (YouTube/Vimeo)",
-    "notebookUrl": "URL del notebook en GitHub"
+    "notebookUrl": "URL del notebook en GitHub",
+    "markComplete": "Marcar como completada",
+    "completed": "Completada",
+    "downloadCertificate": "Descargar certificado"
+  },
+  "verify": {
+    "valid": "Certificado válido",
+    "recipient": "Emitido a",
+    "course": "Curso",
+    "completedAt": "Fecha de finalización",
+    "notFound": "Certificado no encontrado o no válido"
   },
   "pricing": {
     "title": "Planes",

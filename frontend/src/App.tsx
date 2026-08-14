@@ -16,6 +16,7 @@ import LessonPage from "./pages/LessonPage";
 import LessonFormPage from "./pages/LessonFormPage";
 import PricingPage from "./pages/PricingPage";
 import VerifyCertificatePage from "./pages/VerifyCertificatePage";
+import BoardPage from "./pages/BoardPage";
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
                 <Route path="/courses" element={<CoursesPage />} />
                 <Route path="/courses/:id" element={<CourseDetailPage />} />
                 <Route path="/courses/:id/lessons/:lessonId" element={<LessonPage />} />
+                <Route path="/board" element={<BoardPage />} />
                 <Route element={<AdminRoute />}>
                   <Route path="/courses/new" element={<CourseFormPage />} />
                   <Route path="/courses/:id/edit" element={<CourseFormPage />} />

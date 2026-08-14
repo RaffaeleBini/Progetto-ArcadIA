@@ -10,3 +10,8 @@
   font-size: 1.6rem;
   margin: 0;
 }
+
+.links {
+  display: flex;
+  gap: var(--space-3);
+}

@@ -4,7 +4,8 @@
     "register": "Registrati",
     "logout": "Esci",
     "themeToggle": "Cambia tema",
-    "courses": "Corsi"
+    "courses": "Corsi",
+    "board": "Bacheca"
   },
   "home": {
     "tagline": "Piattaforma di formazione online sull'Intelligenza Artificiale.",
@@ -28,7 +29,8 @@
   "dashboard": {
     "welcome": "Benvenuto, {{name}}",
     "intro": "Da qui puoi accedere ai corsi disponibili su ArcadIA.",
-    "goToCourses": "Vai ai corsi"
+    "goToCourses": "Vai ai corsi",
+    "goToBoard": "Vai alla bacheca"
   },
   "profile": {
     "title": "Il mio profilo",
@@ -83,6 +85,20 @@
     "markComplete": "Segna come completata",
     "completed": "Completata",
     "downloadCertificate": "Scarica certificato"
+  },
+  "board": {
+    "title": "Bacheca",
+    "composerPlaceholder": "Condividi qualcosa con la community…",
+    "publish": "Pubblica",
+    "publishing": "Pubblicazione…",
+    "empty": "Nessun post ancora. Sii il primo a scrivere!",
+    "deletePost": "Elimina post",
+    "deleteComment": "Elimina commento",
+    "confirmDeletePost": "Eliminare questo post e tutti i suoi commenti?",
+    "confirmDeleteComment": "Eliminare questo commento?",
+    "showComments": "Mostra commenti",
+    "hideComments": "Nascondi commenti",
+    "commentPlaceholder": "Scrivi un commento…"
   },
   "verify": {
     "valid": "Certificato valido",

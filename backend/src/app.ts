@@ -7,6 +7,8 @@ import usersRoutes from "./routes/users.routes.js";
 import coursesRoutes from "./routes/courses.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import verifyRoutes from "./routes/verify.routes.js";
+import postsRoutes from "./routes/posts.routes.js";
+import commentsRoutes from "./routes/comments.routes.js";
 
 export function createApp() {
   const app = express();
@@ -29,6 +31,8 @@ export function createApp() {
   app.use("/api/courses", coursesRoutes);
   app.use("/api/admin/users", adminRoutes);
   app.use("/api/verify", verifyRoutes);
+  app.use("/api/posts", postsRoutes);
+  app.use("/api/comments", commentsRoutes);
 
   app.use((_req, res) => {
     sendError(res, 404, "Risorsa non trovata");

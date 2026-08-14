@@ -1,4 +1,9 @@
 {
+  "common": {
+    "retry": "Reintentar",
+    "loadError": "No se pudieron cargar los datos.",
+    "notFound": "Contenido no encontrado."
+  },
   "header": {
     "login": "Iniciar sesión",
     "register": "Registrarse",

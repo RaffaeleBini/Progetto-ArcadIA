@@ -6,7 +6,10 @@ import { useAuth } from "../context/AuthContext";
 import { deleteCourse, fetchCourse } from "../api/courses";
 import { deleteLesson, fetchLessons } from "../api/lessons";
 import { fetchProgress, getCertificateUrl } from "../api/progress";
+import { getApiErrorMessage } from "../api/client";
 import ProgressBar from "../components/ProgressBar";
+import Loading from "../components/Loading";
+import ErrorMessage from "../components/ErrorMessage";
 import type { Course } from "../types/course";
 import type { Lesson } from "../types/lesson";
 import type { Progress } from "../types/progress";
@@ -22,6 +25,7 @@ export default function CourseDetailPage() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [progress, setProgress] = useState<Progress | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const isAdmin = user?.role === "admin";
   const isLocked = course?.accessLevel === "premium" && !course.hasAccess;
@@ -29,15 +33,21 @@ export default function CourseDetailPage() {
   const load = useCallback(async () => {
     if (!id) return;
     setIsLoading(true);
-    const courseData = await fetchCourse(id);
-    setCourse(courseData);
-    if (!(courseData.accessLevel === "premium" && !courseData.hasAccess)) {
-      const [lessonsData, progressData] = await Promise.all([fetchLessons(id), fetchProgress(id)]);
-      setLessons(lessonsData);
-      setProgress(progressData);
+    setError(null);
+    try {
+      const courseData = await fetchCourse(id);
+      setCourse(courseData);
+      if (!(courseData.accessLevel === "premium" && !courseData.hasAccess)) {
+        const [lessonsData, progressData] = await Promise.all([fetchLessons(id), fetchProgress(id)]);
+        setLessons(lessonsData);
+        setProgress(progressData);
+      }
+    } catch (err) {
+      setError(getApiErrorMessage(err, t("common.loadError")));
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
-  }, [id]);
+  }, [id, t]);
 
   useEffect(() => {
     load();
@@ -55,8 +65,12 @@ export default function CourseDetailPage() {
     setLessons((prev) => prev.filter((lesson) => lesson.id !== lessonId));
   }
 
-  if (isLoading || !course) {
-    return null;
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (error || !course) {
+    return <ErrorMessage message={error ?? t("common.notFound")} onRetry={load} />;
   }
 
   return (
@@ -88,7 +102,7 @@ export default function CourseDetailPage() {
       </div>
 
       {course.accessLevel === "premium" && (
-        <span className={styles.badge}>
+        <span className={`badge ${styles.badgeSpacing}`}>
           <Lock size={12} strokeWidth={1.5} />
           {t("courses.premiumBadge")}
         </span>
@@ -97,7 +111,7 @@ export default function CourseDetailPage() {
       <p className={styles.description}>{course.description}</p>
 
       {isLocked ? (
-        <div className={`panel ${styles.previewPanel}`}>
+        <div className={`panel hudCorners ${styles.previewPanel}`}>
           <p className={styles.previewMessage}>{t("courses.subscriptionRequired")}</p>
           <Link to="/pricing" className="btn">
             {t("courses.viewPlans")}

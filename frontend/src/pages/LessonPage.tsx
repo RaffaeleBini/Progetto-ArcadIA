@@ -5,7 +5,10 @@ import { ArrowLeft, Check, ExternalLink, Pencil, Trash2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { deleteLesson, fetchLesson } from "../api/lessons";
 import { completeLesson, fetchProgress, uncompleteLesson } from "../api/progress";
+import { getApiErrorMessage } from "../api/client";
 import { getColabUrl, getVideoEmbedUrl } from "../utils/media";
+import Loading from "../components/Loading";
+import ErrorMessage from "../components/ErrorMessage";
 import type { Lesson } from "../types/lesson";
 import type { Progress } from "../types/progress";
 import styles from "./LessonPage.module.css";
@@ -20,6 +23,7 @@ export default function LessonPage() {
   const [progress, setProgress] = useState<Progress | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isToggling, setIsToggling] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const isAdmin = user?.role === "admin";
   const isCompleted = lessonId ? (progress?.completedLessons.includes(lessonId) ?? false) : false;
@@ -27,14 +31,20 @@ export default function LessonPage() {
   const load = useCallback(async () => {
     if (!courseId || !lessonId) return;
     setIsLoading(true);
-    const [lessonData, progressData] = await Promise.all([
-      fetchLesson(courseId, lessonId),
-      fetchProgress(courseId),
-    ]);
-    setLesson(lessonData);
-    setProgress(progressData);
-    setIsLoading(false);
-  }, [courseId, lessonId]);
+    setError(null);
+    try {
+      const [lessonData, progressData] = await Promise.all([
+        fetchLesson(courseId, lessonId),
+        fetchProgress(courseId),
+      ]);
+      setLesson(lessonData);
+      setProgress(progressData);
+    } catch (err) {
+      setError(getApiErrorMessage(err, t("common.loadError")));
+    } finally {
+      setIsLoading(false);
+    }
+  }, [courseId, lessonId, t]);
 
   useEffect(() => {
     load();
@@ -59,8 +69,12 @@ export default function LessonPage() {
     }
   }
 
-  if (isLoading || !lesson) {
-    return null;
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (error || !lesson) {
+    return <ErrorMessage message={error ?? t("common.notFound")} onRetry={load} />;
   }
 
   const embedUrl = lesson.videoUrl ? getVideoEmbedUrl(lesson.videoUrl) : null;

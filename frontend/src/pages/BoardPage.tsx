@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { MessageCircle, Send, Trash2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
@@ -10,6 +10,9 @@ import {
   fetchComments,
   fetchPosts,
 } from "../api/posts";
+import { getApiErrorMessage } from "../api/client";
+import Loading from "../components/Loading";
+import ErrorMessage from "../components/ErrorMessage";
 import type { Post } from "../types/post";
 import type { Comment } from "../types/comment";
 import type { Author } from "../types/post";
@@ -29,6 +32,7 @@ export default function BoardPage() {
 
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [newPostText, setNewPostText] = useState("");
   const [isSubmittingPost, setIsSubmittingPost] = useState(false);
 
@@ -37,10 +41,18 @@ export default function BoardPage() {
   const [newCommentText, setNewCommentText] = useState("");
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
-  useEffect(() => {
+  const load = useCallback(() => {
+    setIsLoading(true);
+    setError(null);
     fetchPosts()
       .then(setPosts)
+      .catch((err) => setError(getApiErrorMessage(err, t("common.loadError"))))
       .finally(() => setIsLoading(false));
+  }, [t]);
+
+  useEffect(() => {
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function formatDate(value: string) {
@@ -116,7 +128,11 @@ export default function BoardPage() {
         </button>
       </form>
 
-      {!isLoading && posts.length === 0 && <p className={styles.empty}>{t("board.empty")}</p>}
+      {isLoading && <Loading />}
+
+      {error && <ErrorMessage message={error} onRetry={load} />}
+
+      {!isLoading && !error && posts.length === 0 && <p className={styles.empty}>{t("board.empty")}</p>}
 
       <div className={styles.postList}>
         {posts.map((post) => (

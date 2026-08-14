@@ -30,7 +30,7 @@ export default function LoginPage() {
 
   return (
     <div className={styles.wrapper}>
-      <form className={`panel ${styles.panel}`} onSubmit={handleSubmit}>
+      <form className={`panel hudCorners ${styles.panel}`} onSubmit={handleSubmit}>
         <h1 className={styles.title}>{t("auth.loginTitle")}</h1>
 
         {error && <p className="formError">{error}</p>}

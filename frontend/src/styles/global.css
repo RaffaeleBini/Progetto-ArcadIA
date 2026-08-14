@@ -73,6 +73,41 @@ button {
   padding: var(--space-6);
 }
 
+.hudCorners {
+  position: relative;
+  background-image:
+    linear-gradient(to bottom, var(--color-accent) 2px, transparent 2px),
+    linear-gradient(to right, var(--color-accent) 2px, transparent 2px),
+    linear-gradient(to bottom, var(--color-accent) 2px, transparent 2px),
+    linear-gradient(to left, var(--color-accent) 2px, transparent 2px),
+    linear-gradient(to top, var(--color-accent) 2px, transparent 2px),
+    linear-gradient(to left, var(--color-accent) 2px, transparent 2px),
+    linear-gradient(to top, var(--color-accent) 2px, transparent 2px),
+    linear-gradient(to right, var(--color-accent) 2px, transparent 2px);
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+  background-position:
+    top left, top left,
+    top right, top right,
+    bottom right, bottom right,
+    bottom left, bottom left;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius);
+  padding: 2px var(--space-2);
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .field {
   display: flex;
   flex-direction: column;
@@ -83,7 +118,11 @@ button {
 
 .field label {
   color: var(--color-text-secondary);
+  font-family: var(--font-label);
+  font-weight: 600;
   font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .field input {

@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { createCourse, fetchCourse, updateCourse } from "../api/courses";
 import { getApiErrorMessage } from "../api/client";
+import Loading from "../components/Loading";
+import ErrorMessage from "../components/ErrorMessage";
 import styles from "./CourseFormPage.module.css";
 
 export default function CourseFormPage() {
@@ -20,17 +22,28 @@ export default function CourseFormPage() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(isEditMode);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const load = useCallback(async () => {
     if (!id) return;
-    fetchCourse(id).then((course) => {
+    setIsLoading(true);
+    setLoadError(null);
+    try {
+      const course = await fetchCourse(id);
       setTitle(course.title);
       setDescription(course.description);
       setAccessLevel(course.accessLevel);
       setCoverPreview(course.coverImageUrl);
+    } catch (err) {
+      setLoadError(getApiErrorMessage(err, t("common.loadError")));
+    } finally {
       setIsLoading(false);
-    });
-  }, [id]);
+    }
+  }, [id, t]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   function handleCoverChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -55,12 +68,16 @@ export default function CourseFormPage() {
   }
 
   if (isLoading) {
-    return null;
+    return <Loading />;
+  }
+
+  if (loadError) {
+    return <ErrorMessage message={loadError} onRetry={load} />;
   }
 
   return (
     <div className={styles.page}>
-      <form className={`panel ${styles.panel}`} onSubmit={handleSubmit}>
+      <form className={`panel hudCorners ${styles.panel}`} onSubmit={handleSubmit}>
         <h1 className={styles.title}>{isEditMode ? t("courses.editCourse") : t("courses.newCourse")}</h1>
 
         {error && <p className="formError">{error}</p>}

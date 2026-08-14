@@ -66,15 +66,7 @@
   margin-bottom: var(--space-6);
 }
 
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  color: var(--color-accent);
-  border: 1px solid var(--color-accent);
-  border-radius: var(--radius);
-  padding: 2px var(--space-2);
-  font-size: 0.75rem;
+.badgeSpacing {
   margin-bottom: var(--space-4);
 }
 

@@ -8,6 +8,7 @@ const POLL_INTERVAL_MS = 30_000;
 interface NotificationsContextValue {
   notifications: Notification[];
   unreadCount: number;
+  isLoading: boolean;
   markAsRead: (id: string) => Promise<void>;
   markAllAsRead: () => Promise<void>;
 }
@@ -17,17 +18,23 @@ const NotificationsContext = createContext<NotificationsContextValue | undefined
 export function NotificationsProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const refresh = useCallback(() => {
-    fetchNotifications().then(setNotifications);
+    fetchNotifications()
+      .then(setNotifications)
+      .catch((err) => console.error("Impossibile aggiornare le notifiche", err))
+      .finally(() => setIsLoading(false));
   }, []);
 
   useEffect(() => {
     if (!user) {
       setNotifications([]);
+      setIsLoading(false);
       return;
     }
 
+    setIsLoading(true);
     refresh();
     const interval = setInterval(refresh, POLL_INTERVAL_MS);
     window.addEventListener("focus", refresh);
@@ -51,7 +58,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
-    <NotificationsContext.Provider value={{ notifications, unreadCount, markAsRead, markAllAsRead }}>
+    <NotificationsContext.Provider value={{ notifications, unreadCount, isLoading, markAsRead, markAllAsRead }}>
       {children}
     </NotificationsContext.Provider>
   );

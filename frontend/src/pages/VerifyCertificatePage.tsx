@@ -31,7 +31,7 @@ export default function VerifyCertificatePage() {
 
   return (
     <div className={styles.page}>
-      <div className={`panel ${styles.panel}`}>
+      <div className={`panel hudCorners ${styles.panel}`}>
         {result ? (
           <>
             <Award size={40} strokeWidth={1.5} className={styles.icon} />

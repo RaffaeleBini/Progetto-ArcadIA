@@ -60,7 +60,7 @@ export default function ProfilePage() {
 
   return (
     <div className={styles.page}>
-      <form className={`panel ${styles.panel}`} onSubmit={handleSubmit}>
+      <form className={`panel hudCorners ${styles.panel}`} onSubmit={handleSubmit}>
         <h1 className={styles.title}>{t("profile.title")}</h1>
 
         <div className={styles.avatarRow}>

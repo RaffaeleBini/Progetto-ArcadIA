@@ -1,8 +1,10 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { createLesson, fetchLesson, updateLesson } from "../api/lessons";
 import { getApiErrorMessage } from "../api/client";
+import Loading from "../components/Loading";
+import ErrorMessage from "../components/ErrorMessage";
 import styles from "./LessonFormPage.module.css";
 
 export default function LessonFormPage() {
@@ -19,18 +21,29 @@ export default function LessonFormPage() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(isEditMode);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const load = useCallback(async () => {
     if (!courseId || !lessonId) return;
-    fetchLesson(courseId, lessonId).then((lesson) => {
+    setIsLoading(true);
+    setLoadError(null);
+    try {
+      const lesson = await fetchLesson(courseId, lessonId);
       setTitle(lesson.title);
       setOrder(lesson.order);
       setVideoUrl(lesson.videoUrl ?? "");
       setDescription(lesson.description ?? "");
       setNotebookGithubUrl(lesson.notebookGithubUrl ?? "");
+    } catch (err) {
+      setLoadError(getApiErrorMessage(err, t("common.loadError")));
+    } finally {
       setIsLoading(false);
-    });
-  }, [courseId, lessonId]);
+    }
+  }, [courseId, lessonId, t]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -50,12 +63,16 @@ export default function LessonFormPage() {
   }
 
   if (isLoading) {
-    return null;
+    return <Loading />;
+  }
+
+  if (loadError) {
+    return <ErrorMessage message={loadError} onRetry={load} />;
   }
 
   return (
     <div className={styles.page}>
-      <form className={`panel ${styles.panel}`} onSubmit={handleSubmit}>
+      <form className={`panel hudCorners ${styles.panel}`} onSubmit={handleSubmit}>
         <h1 className={styles.title}>{isEditMode ? t("courses.editLesson") : t("courses.newLesson")}</h1>
 
         {error && <p className="formError">{error}</p>}

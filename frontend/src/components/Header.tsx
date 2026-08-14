@@ -82,7 +82,7 @@ export default function Header() {
             </Link>
             <button type="button" className="btn" onClick={handleLogout}>
               <LogOut size={16} strokeWidth={1.5} />
-              {t("header.logout")}
+              <span className={styles.logoutLabel}>{t("header.logout")}</span>
             </button>
           </>
         ) : (

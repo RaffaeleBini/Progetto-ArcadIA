@@ -84,19 +84,11 @@
   height: 100%;
 }
 
-.badge {
+.badgeOverlay {
   position: absolute;
   top: var(--space-2);
   right: var(--space-2);
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
   background-color: var(--color-bg);
-  border: 1px solid var(--color-accent);
-  color: var(--color-accent);
-  border-radius: var(--radius);
-  padding: 2px var(--space-2);
-  font-size: 0.75rem;
 }
 
 .body {

@@ -12,6 +12,7 @@
   /* Tipografia (fallback Google Fonts finché exan-3 / nidus_sansregular non sono disponibili) */
   --font-heading: "Orbitron", sans-serif;
   --font-body: "Work Sans", sans-serif;
+  --font-label: "Rajdhani", sans-serif;
   --font-size-base: 16px;
 
   /* Spaziatura — densità compatta */

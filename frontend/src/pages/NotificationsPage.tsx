@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Award, BookOpen, MessageCircle, Sparkles } from "lucide-react";
 import { useNotifications } from "../context/NotificationsContext";
+import Loading from "../components/Loading";
 import type { Notification, NotificationType } from "../types/notification";
 import styles from "./NotificationsPage.module.css";
 
@@ -25,7 +26,7 @@ function getLink(notification: Notification): string | null {
 }
 
 export default function NotificationsPage() {
-  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+  const { notifications, unreadCount, isLoading, markAsRead, markAllAsRead } = useNotifications();
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
@@ -54,7 +55,9 @@ export default function NotificationsPage() {
         )}
       </div>
 
-      {notifications.length === 0 && <p className={styles.empty}>{t("notifications.empty")}</p>}
+      {isLoading && <Loading />}
+
+      {!isLoading && notifications.length === 0 && <p className={styles.empty}>{t("notifications.empty")}</p>}
 
       <div className={styles.list}>
         {notifications.map((notification) => {

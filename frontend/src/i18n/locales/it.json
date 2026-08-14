@@ -5,7 +5,8 @@
     "logout": "Esci",
     "themeToggle": "Cambia tema",
     "courses": "Corsi",
-    "board": "Bacheca"
+    "board": "Bacheca",
+    "notifications": "Notifiche"
   },
   "home": {
     "tagline": "Piattaforma di formazione online sull'Intelligenza Artificiale.",
@@ -99,6 +100,11 @@
     "showComments": "Mostra commenti",
     "hideComments": "Nascondi commenti",
     "commentPlaceholder": "Scrivi un commento…"
+  },
+  "notifications": {
+    "title": "Notifiche",
+    "markAllRead": "Segna tutte come lette",
+    "empty": "Nessuna notifica per ora."
   },
   "verify": {
     "valid": "Certificato valido",

@@ -5,7 +5,8 @@
     "logout": "Salir",
     "themeToggle": "Cambiar tema",
     "courses": "Cursos",
-    "board": "Tablón"
+    "board": "Tablón",
+    "notifications": "Notificaciones"
   },
   "home": {
     "tagline": "Plataforma de formación online sobre Inteligencia Artificial.",
@@ -99,6 +100,11 @@
     "showComments": "Mostrar comentarios",
     "hideComments": "Ocultar comentarios",
     "commentPlaceholder": "Escribe un comentario…"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "markAllRead": "Marcar todas como leídas",
+    "empty": "No hay notificaciones por ahora."
   },
   "verify": {
     "valid": "Certificado válido",

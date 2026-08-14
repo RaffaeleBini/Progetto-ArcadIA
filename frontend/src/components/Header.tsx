@@ -1,14 +1,16 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { LogOut, Moon, Sun } from "lucide-react";
+import { Bell, LogOut, Moon, Sun } from "lucide-react";
 import logo from "../assets/rb-logo.png";
 import { useAuth } from "../context/AuthContext";
 import { usePreferences } from "../context/PreferencesContext";
+import { useNotifications } from "../context/NotificationsContext";
 import styles from "./Header.module.css";
 
 export default function Header() {
   const { user, logout } = useAuth();
   const { theme, language, setTheme, setLanguage } = usePreferences();
+  const { unreadCount } = useNotifications();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -64,6 +66,12 @@ export default function Header() {
 
         {user ? (
           <>
+            <Link to="/notifications" className={styles.bellLink} aria-label={t("header.notifications")}>
+              <Bell size={18} strokeWidth={1.5} />
+              {unreadCount > 0 && (
+                <span className={styles.bellBadge}>{unreadCount > 9 ? "9+" : unreadCount}</span>
+              )}
+            </Link>
             <Link to="/profile" className={styles.profileLink}>
               {user.avatarUrl ? (
                 <img className={styles.avatar} src={user.avatarUrl} alt="" />

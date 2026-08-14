@@ -85,6 +85,39 @@
   font-size: 0.95rem;
 }
 
+.bellLink {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.bellLink:hover {
+  color: var(--color-accent);
+}
+
+.bellBadge {
+  position: absolute;
+  top: -2px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  border-radius: 8px;
+  background-color: var(--color-accent);
+  color: var(--color-bg);
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
 .languageSwitch {
   display: flex;
   border: 1px solid var(--color-border);

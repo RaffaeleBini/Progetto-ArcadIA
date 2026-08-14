@@ -5,6 +5,7 @@ import { CourseModel } from "../models/Course.js";
 import { LessonModel } from "../models/Lesson.js";
 import { UserModel } from "../models/User.js";
 import { ProgressModel } from "../models/Progress.js";
+import { NotificationModel } from "../models/Notification.js";
 import { sendError } from "../utils/apiError.js";
 import { hasAccessToCourse } from "../utils/access.js";
 import { isCloudinaryConfigured, uploadCourseCover } from "../config/cloudinary.js";
@@ -121,6 +122,18 @@ export async function createCourse(req: Request, res: Response) {
     coverImageUrl,
     createdBy: req.userId,
   });
+
+  const otherUsers = await UserModel.find({ _id: { $ne: req.userId } }, "_id");
+  if (otherUsers.length > 0) {
+    await NotificationModel.insertMany(
+      otherUsers.map((user) => ({
+        recipient: user._id,
+        type: "course_added",
+        message: `Nuovo corso disponibile: "${course.title}"`,
+        relatedId: course._id,
+      }))
+    );
+  }
 
   res.status(201).json({ course: toCourseDto(course, true) });
 }

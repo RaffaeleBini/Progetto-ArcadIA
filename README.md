@@ -55,3 +55,18 @@ I corsi premium restano oggi ad attivazione manuale: l'assegnazione di un abbona
 ## Documentazione tecnica
 
 Per approfondire architettura, stack tecnico, modello dati, sicurezza e deployment, consulta la [relazione tecnica di progetto](docs/capitolato-tecnico.md).
+
+---
+
+## Author
+
+- [@RaffaeleBini](https://www.github.com/RaffaeleBini)
+
+## 🔗 Links
+
+[![portfolio](https://img.shields.io/badge/my_homepage-000?style=for-the-badge&logo=ko-fi&logoColor=yellow)](https://www.raffaelebini.com/)
+[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://https://www.linkedin.com/in/raffaelebini/)
+
+## Feedback
+
+If you have any feedback, please reach out to me

@@ -1,3 +1,4 @@
+import axios from "axios";
 import { apiClient } from "./client";
 import type { User } from "../types/user";
 
@@ -31,7 +32,13 @@ export async function fetchMe(): Promise<User | null> {
   try {
     const { data } = await apiClient.get<{ user: User }>("/api/auth/me");
     return data.user;
-  } catch {
-    return null;
+  } catch (err) {
+    if (axios.isAxiosError(err) && err.response?.status === 401) {
+      // Nessuna sessione valida: non è un errore, è lo stato "non autenticato".
+      return null;
+    }
+    // Backend irraggiungibile, 500, timeout, ecc.: il chiamante deve saperlo,
+    // non va confuso con l'assenza di sessione.
+    throw err;
   }
 }

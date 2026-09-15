@@ -2,7 +2,8 @@
   "common": {
     "retry": "Reintentar",
     "loadError": "No se pudieron cargar los datos.",
-    "notFound": "Contenido no encontrado."
+    "notFound": "Contenido no encontrado.",
+    "authError": "No se pudo verificar la sesión. Comprueba tu conexión e inténtalo de nuevo."
   },
   "header": {
     "login": "Iniciar sesión",

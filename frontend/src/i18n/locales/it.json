@@ -2,7 +2,8 @@
   "common": {
     "retry": "Riprova",
     "loadError": "Impossibile caricare i dati.",
-    "notFound": "Contenuto non trovato."
+    "notFound": "Contenuto non trovato.",
+    "authError": "Impossibile verificare la sessione. Controlla la connessione e riprova."
   },
   "header": {
     "login": "Accedi",

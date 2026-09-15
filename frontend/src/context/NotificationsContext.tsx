@@ -36,12 +36,22 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
 
     setIsLoading(true);
     refresh();
-    const interval = setInterval(refresh, POLL_INTERVAL_MS);
+    // A tab nascosta il polling si sospende (nessuna richiesta sprecata);
+    // il refresh su focus già presente, più questo su visibilitychange,
+    // aggiornano subito i dati non appena la tab torna in primo piano.
+    const interval = setInterval(() => {
+      if (!document.hidden) refresh();
+    }, POLL_INTERVAL_MS);
+    const handleVisibilityChange = () => {
+      if (!document.hidden) refresh();
+    };
     window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
       clearInterval(interval);
       window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [user, refresh]);
 

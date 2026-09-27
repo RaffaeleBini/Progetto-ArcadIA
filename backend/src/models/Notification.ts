@@ -4,7 +4,7 @@ const notificationSchema = new Schema({
   recipient: { type: Schema.Types.ObjectId, ref: "User", required: true },
   type: {
     type: String,
-    enum: ["new_comment", "welcome", "course_added", "course_completed"],
+    enum: ["new_comment", "welcome", "course_added", "course_completed", "security_alert"],
     required: true,
   },
   message: { type: String, required: true },

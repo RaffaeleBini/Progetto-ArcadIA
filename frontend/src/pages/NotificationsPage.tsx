@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Award, BookOpen, MessageCircle, Sparkles } from "lucide-react";
+import { Award, BookOpen, MessageCircle, ShieldAlert, Sparkles } from "lucide-react";
 import { useNotifications } from "../context/NotificationsContext";
 import Loading from "../components/Loading";
 import type { Notification, NotificationType } from "../types/notification";
@@ -11,6 +11,7 @@ const ICONS: Record<NotificationType, typeof Sparkles> = {
   new_comment: MessageCircle,
   course_added: BookOpen,
   course_completed: Award,
+  security_alert: ShieldAlert,
 };
 
 function getLink(notification: Notification): string | null {

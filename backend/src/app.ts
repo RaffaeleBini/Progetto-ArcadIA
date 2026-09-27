@@ -16,6 +16,12 @@ import notificationsRoutes from "./routes/notifications.routes.js";
 export function createApp() {
   const app = express();
 
+  // Necessario dietro il proxy/load balancer di Render: senza questo,
+  // req.ip restituisce l'IP interno del proxy invece di quello del client
+  // reale, rendendo inutili sia il rate limiting per IP sia il log dei
+  // tentativi di accesso falliti.
+  app.set("trust proxy", 1);
+
   // La Content-Security-Policy di default di helmet è pensata per pagine
   // HTML: questo backend serve solo JSON, quindi la disabilitiamo invece di
   // lasciarla attiva senza motivo. Gli altri header (HSTS, nosniff, rimozione

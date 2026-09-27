@@ -1,4 +1,4 @@
-export type NotificationType = "welcome" | "new_comment" | "course_added" | "course_completed";
+export type NotificationType = "welcome" | "new_comment" | "course_added" | "course_completed" | "security_alert";
 
 export interface Notification {
   id: string;

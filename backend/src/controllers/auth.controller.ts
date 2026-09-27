@@ -16,6 +16,7 @@ import {
 import { toPublicUser } from "../utils/publicUser.js";
 import { findAndConsumeBackupCode } from "../utils/backupCodes.js";
 import { verifyTotpCode } from "../utils/totp.js";
+import { recordFailedLoginAttempt } from "../utils/loginAttempts.js";
 
 export const registerSchema = z.object({
   name: z.string().trim().min(1, "Il nome è obbligatorio"),
@@ -60,12 +61,14 @@ export async function login(req: Request, res: Response) {
 
   const user = await UserModel.findOne({ email });
   if (!user) {
+    await recordFailedLoginAttempt(email, req.ip ?? "unknown");
     sendError(res, 401, "Credenziali non valide");
     return;
   }
 
   const passwordMatches = await bcrypt.compare(password, user.passwordHash);
   if (!passwordMatches) {
+    await recordFailedLoginAttempt(email, req.ip ?? "unknown");
     sendError(res, 401, "Credenziali non valide");
     return;
   }

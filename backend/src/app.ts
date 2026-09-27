@@ -1,7 +1,9 @@
 import express from "express";
+import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { sendError } from "./utils/apiError.js";
+import { generalRateLimiter } from "./middleware/rateLimit.js";
 import authRoutes from "./routes/auth.routes.js";
 import usersRoutes from "./routes/users.routes.js";
 import coursesRoutes from "./routes/courses.routes.js";
@@ -14,6 +16,12 @@ import notificationsRoutes from "./routes/notifications.routes.js";
 export function createApp() {
   const app = express();
 
+  // La Content-Security-Policy di default di helmet è pensata per pagine
+  // HTML: questo backend serve solo JSON, quindi la disabilitiamo invece di
+  // lasciarla attiva senza motivo. Gli altri header (HSTS, nosniff, rimozione
+  // di X-Powered-By) restano utili anche su un'API pura.
+  app.use(helmet({ contentSecurityPolicy: false }));
+
   app.use(
     cors({
       origin: process.env.FRONTEND_URL,
@@ -22,6 +30,7 @@ export function createApp() {
   );
   app.use(cookieParser());
   app.use(express.json());
+  app.use(generalRateLimiter);
 
   app.get("/api/health", (_req, res) => {
     res.json({ status: "ok" });

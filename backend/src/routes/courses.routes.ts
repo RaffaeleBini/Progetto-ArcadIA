@@ -11,14 +11,31 @@ import { downloadCertificate, getProgress } from "../controllers/progress.contro
 import { requireAdmin, requireAuth } from "../middleware/auth.js";
 import { validateBody } from "../middleware/validate.js";
 import { uploadCourseCoverFile } from "../middleware/upload.js";
+import { uploadRateLimiter } from "../middleware/rateLimit.js";
 import lessonsRoutes from "./lessons.routes.js";
 
 const router = Router();
 
 router.get("/", requireAuth, listCourses);
 router.get("/:id", requireAuth, getCourse);
-router.post("/", requireAuth, requireAdmin, uploadCourseCoverFile, validateBody(courseSchema), createCourse);
-router.put("/:id", requireAuth, requireAdmin, uploadCourseCoverFile, validateBody(courseSchema), updateCourse);
+router.post(
+  "/",
+  requireAuth,
+  requireAdmin,
+  uploadRateLimiter,
+  uploadCourseCoverFile,
+  validateBody(courseSchema),
+  createCourse
+);
+router.put(
+  "/:id",
+  requireAuth,
+  requireAdmin,
+  uploadRateLimiter,
+  uploadCourseCoverFile,
+  validateBody(courseSchema),
+  updateCourse
+);
 router.delete("/:id", requireAuth, requireAdmin, deleteCourse);
 
 router.get("/:courseId/progress", requireAuth, getProgress);

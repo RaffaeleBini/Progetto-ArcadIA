@@ -11,6 +11,9 @@ const userSchema = new Schema({
   theme: { type: String, enum: ["light", "dark"], default: "dark" },
   subscriptionPlan: { type: String, enum: ["free", "premium"], default: "free" },
   subscriptionExpiresAt: { type: Date, default: null },
+  // Incrementato ad ogni cambio password: invalida istantaneamente tutti i
+  // token JWT firmati prima di quel momento (vedi utils/jwt.ts, middleware/auth.ts).
+  tokenVersion: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
 });
 

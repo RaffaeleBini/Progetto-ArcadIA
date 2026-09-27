@@ -2,7 +2,7 @@ import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { usePreferences } from "../context/PreferencesContext";
-import { updateProfile, uploadAvatar } from "../api/users";
+import { changePassword, updateProfile, uploadAvatar } from "../api/users";
 import { getApiErrorMessage } from "../api/client";
 import styles from "./ProfilePage.module.css";
 
@@ -20,6 +20,12 @@ export default function ProfilePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [avatarError, setAvatarError] = useState<string | null>(null);
+
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   if (!user) {
     return null;
@@ -55,6 +61,24 @@ export default function ProfilePage() {
     } finally {
       setIsUploadingAvatar(false);
       event.target.value = "";
+    }
+  }
+
+  async function handlePasswordSubmit(event: FormEvent) {
+    event.preventDefault();
+    setPasswordError(null);
+    setPasswordSuccess(false);
+    setIsChangingPassword(true);
+    try {
+      const updated = await changePassword(currentPassword, newPassword);
+      setUser(updated);
+      setCurrentPassword("");
+      setNewPassword("");
+      setPasswordSuccess(true);
+    } catch (err) {
+      setPasswordError(getApiErrorMessage(err, t("profile.passwordChangeError")));
+    } finally {
+      setIsChangingPassword(false);
     }
   }
 
@@ -125,6 +149,40 @@ export default function ProfilePage() {
 
         <button type="submit" className="btn" disabled={isSubmitting}>
           {isSubmitting ? t("profile.saving") : t("profile.save")}
+        </button>
+      </form>
+
+      <form className={`panel hudCorners ${styles.panel}`} onSubmit={handlePasswordSubmit}>
+        <h1 className={styles.title}>{t("profile.passwordTitle")}</h1>
+
+        {passwordError && <p className="formError">{passwordError}</p>}
+        {passwordSuccess && <p className={styles.formSuccess}>{t("profile.passwordChanged")}</p>}
+
+        <div className="field">
+          <label htmlFor="currentPassword">{t("profile.currentPassword")}</label>
+          <input
+            id="currentPassword"
+            type="password"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="field">
+          <label htmlFor="newPassword">{t("profile.newPassword")}</label>
+          <input
+            id="newPassword"
+            type="password"
+            minLength={8}
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            required
+          />
+        </div>
+
+        <button type="submit" className="btn" disabled={isChangingPassword}>
+          {isChangingPassword ? t("profile.changingPassword") : t("profile.changePassword")}
         </button>
       </form>
     </div>

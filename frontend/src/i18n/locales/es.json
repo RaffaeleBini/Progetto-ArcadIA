@@ -54,7 +54,14 @@
     "save": "Guardar cambios",
     "saving": "Guardando…",
     "updateError": "No se pudo actualizar el perfil",
-    "avatarError": "No se pudo subir el avatar"
+    "avatarError": "No se pudo subir el avatar",
+    "passwordTitle": "Cambiar contraseña",
+    "currentPassword": "Contraseña actual",
+    "newPassword": "Nueva contraseña",
+    "changePassword": "Cambiar contraseña",
+    "changingPassword": "Cambiando…",
+    "passwordChanged": "Contraseña actualizada. Las demás sesiones se cerrarán.",
+    "passwordChangeError": "No se pudo cambiar la contraseña"
   },
   "courses": {
     "title": "Cursos",

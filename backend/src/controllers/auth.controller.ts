@@ -29,7 +29,7 @@ export async function register(req: Request, res: Response) {
     return;
   }
 
-  const passwordHash = await bcrypt.hash(password, 10);
+  const passwordHash = await bcrypt.hash(password, 12);
   const user = await UserModel.create({ name, email, passwordHash, preferredLanguage, theme });
 
   await NotificationModel.create({
@@ -56,7 +56,7 @@ export async function login(req: Request, res: Response) {
     return;
   }
 
-  const token = signToken(String(user._id));
+  const token = signToken(String(user._id), user.tokenVersion);
   res.cookie(COOKIE_NAME, token, getAuthCookieOptions());
   res.json({ user: toPublicUser(user) });
 }

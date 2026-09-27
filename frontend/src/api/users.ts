@@ -13,6 +13,14 @@ export async function updateProfile(update: ProfileUpdate): Promise<User> {
   return data.user;
 }
 
+export async function changePassword(currentPassword: string, newPassword: string): Promise<User> {
+  const { data } = await apiClient.post<{ user: User }>("/api/users/me/password", {
+    currentPassword,
+    newPassword,
+  });
+  return data.user;
+}
+
 export async function uploadAvatar(file: File): Promise<User> {
   const formData = new FormData();
   formData.append("avatar", file);

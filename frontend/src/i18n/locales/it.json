@@ -54,7 +54,14 @@
     "save": "Salva modifiche",
     "saving": "Salvataggio…",
     "updateError": "Aggiornamento profilo non riuscito",
-    "avatarError": "Upload avatar non riuscito"
+    "avatarError": "Upload avatar non riuscito",
+    "passwordTitle": "Cambia password",
+    "currentPassword": "Password attuale",
+    "newPassword": "Nuova password",
+    "changePassword": "Cambia password",
+    "changingPassword": "Modifica in corso…",
+    "passwordChanged": "Password cambiata. Le altre sessioni verranno disconnesse.",
+    "passwordChangeError": "Cambio password non riuscito"
   },
   "courses": {
     "title": "Corsi",

@@ -12,12 +12,12 @@ function getSecret(): string {
   return secret;
 }
 
-export function signToken(userId: string): string {
-  return jwt.sign({ sub: userId }, getSecret(), { expiresIn: "7d" });
+export function signToken(userId: string, tokenVersion: number): string {
+  return jwt.sign({ sub: userId, tokenVersion }, getSecret(), { expiresIn: "7d" });
 }
 
-export function verifyToken(token: string): { sub: string } {
-  return jwt.verify(token, getSecret()) as { sub: string };
+export function verifyToken(token: string): { sub: string; tokenVersion: number } {
+  return jwt.verify(token, getSecret()) as { sub: string; tokenVersion: number };
 }
 
 export function getAuthCookieOptions(): CookieOptions {

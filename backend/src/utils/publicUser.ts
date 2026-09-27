@@ -9,6 +9,7 @@ interface UserDoc {
   theme: string;
   subscriptionPlan: string;
   subscriptionExpiresAt?: Date | null;
+  twoFactorEnabled?: boolean;
 }
 
 export function toPublicUser(user: UserDoc) {
@@ -23,6 +24,7 @@ export function toPublicUser(user: UserDoc) {
     theme: user.theme,
     subscriptionPlan: user.subscriptionPlan,
     subscriptionExpiresAt: user.subscriptionExpiresAt ?? null,
+    twoFactorEnabled: user.twoFactorEnabled ?? false,
   };
 }
 

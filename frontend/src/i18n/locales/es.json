@@ -31,7 +31,12 @@
     "loginLink": "Inicia sesión",
     "registerLink": "Regístrate",
     "registerError": "No se pudo completar el registro",
-    "loginError": "Credenciales no válidas"
+    "loginError": "Credenciales no válidas",
+    "twoFactorTitle": "Verificación en dos pasos",
+    "twoFactorHint": "Introduce el código de tu app de autenticación, o un código de recuperación.",
+    "twoFactorCode": "Código",
+    "twoFactorSubmit": "Verificar",
+    "twoFactorError": "Código no válido"
   },
   "dashboard": {
     "welcome": "Bienvenido, {{name}}",
@@ -61,7 +66,27 @@
     "changePassword": "Cambiar contraseña",
     "changingPassword": "Cambiando…",
     "passwordChanged": "Contraseña actualizada. Las demás sesiones se cerrarán.",
-    "passwordChangeError": "No se pudo cambiar la contraseña"
+    "passwordChangeError": "No se pudo cambiar la contraseña",
+    "twoFactorTitle": "Verificación en dos pasos",
+    "twoFactorDisabledHint": "Añade una capa adicional de seguridad a tu cuenta de administrador con una app de autenticación (p. ej. Google Authenticator, Authy).",
+    "twoFactorEnable": "Activar 2FA",
+    "twoFactorSettingUp": "Activando…",
+    "twoFactorScanHint": "Escanea el código QR con tu app de autenticación y luego introduce el código generado para confirmar.",
+    "twoFactorManualEntry": "También puedes introducir manualmente este código",
+    "twoFactorConfirmCode": "Código de confirmación",
+    "twoFactorConfirm": "Confirmar activación",
+    "twoFactorConfirming": "Confirmando…",
+    "twoFactorSetupError": "No se pudo iniciar la activación de la 2FA",
+    "twoFactorConfirmError": "Código no válido",
+    "twoFactorEnabledStatus": "2FA activa",
+    "twoFactorBackupCodesTitle": "Códigos de recuperación",
+    "twoFactorBackupCodesHint": "Guarda estos códigos en un lugar seguro: cada uno se puede usar una sola vez si pierdes el acceso a tu app de autenticación. No se volverán a mostrar.",
+    "twoFactorBackupCodesDone": "Los he guardado",
+    "twoFactorDisableHint": "Para desactivar la 2FA, confirma tu contraseña actual.",
+    "twoFactorDisable": "Desactivar 2FA",
+    "twoFactorDisabling": "Desactivando…",
+    "twoFactorDisableError": "No se pudo desactivar la 2FA",
+    "twoFactorDisabled": "2FA desactivada"
   },
   "courses": {
     "title": "Cursos",

@@ -31,7 +31,12 @@
     "loginLink": "Accedi",
     "registerLink": "Registrati",
     "registerError": "Registrazione non riuscita",
-    "loginError": "Credenziali non valide"
+    "loginError": "Credenziali non valide",
+    "twoFactorTitle": "Verifica in due passaggi",
+    "twoFactorHint": "Inserisci il codice dalla tua app authenticator, oppure un codice di recupero.",
+    "twoFactorCode": "Codice",
+    "twoFactorSubmit": "Verifica",
+    "twoFactorError": "Codice non valido"
   },
   "dashboard": {
     "welcome": "Benvenuto, {{name}}",
@@ -61,7 +66,27 @@
     "changePassword": "Cambia password",
     "changingPassword": "Modifica in corso…",
     "passwordChanged": "Password cambiata. Le altre sessioni verranno disconnesse.",
-    "passwordChangeError": "Cambio password non riuscito"
+    "passwordChangeError": "Cambio password non riuscito",
+    "twoFactorTitle": "Verifica in due passaggi",
+    "twoFactorDisabledHint": "Aggiungi un ulteriore livello di sicurezza al tuo account amministratore con un'app authenticator (es. Google Authenticator, Authy).",
+    "twoFactorEnable": "Attiva 2FA",
+    "twoFactorSettingUp": "Attivazione…",
+    "twoFactorScanHint": "Scansiona il QR code con la tua app authenticator, poi inserisci il codice generato per confermare.",
+    "twoFactorManualEntry": "In alternativa, inserisci manualmente questo codice",
+    "twoFactorConfirmCode": "Codice di conferma",
+    "twoFactorConfirm": "Conferma attivazione",
+    "twoFactorConfirming": "Conferma…",
+    "twoFactorSetupError": "Impossibile avviare l'attivazione della 2FA",
+    "twoFactorConfirmError": "Codice non valido",
+    "twoFactorEnabledStatus": "2FA attiva",
+    "twoFactorBackupCodesTitle": "Codici di recupero",
+    "twoFactorBackupCodesHint": "Salva questi codici in un posto sicuro: ognuno può essere usato una sola volta se perdi l'accesso alla tua app authenticator. Non verranno mostrati di nuovo.",
+    "twoFactorBackupCodesDone": "Li ho salvati",
+    "twoFactorDisableHint": "Per disattivare la 2FA, conferma la tua password attuale.",
+    "twoFactorDisable": "Disattiva 2FA",
+    "twoFactorDisabling": "Disattivazione…",
+    "twoFactorDisableError": "Impossibile disattivare la 2FA",
+    "twoFactorDisabled": "2FA disattivata"
   },
   "courses": {
     "title": "Corsi",

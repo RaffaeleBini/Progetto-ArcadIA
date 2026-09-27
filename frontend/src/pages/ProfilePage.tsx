@@ -3,7 +3,9 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { usePreferences } from "../context/PreferencesContext";
 import { changePassword, updateProfile, uploadAvatar } from "../api/users";
+import { confirmTwoFactorSetupRequest, disableTwoFactorRequest, setupTwoFactorRequest } from "../api/auth";
 import { getApiErrorMessage } from "../api/client";
+import type { User } from "../types/user";
 import styles from "./ProfilePage.module.css";
 
 export default function ProfilePage() {
@@ -185,6 +187,170 @@ export default function ProfilePage() {
           {isChangingPassword ? t("profile.changingPassword") : t("profile.changePassword")}
         </button>
       </form>
+
+      {user.role === "admin" && <TwoFactorSettings user={user} setUser={setUser} />}
+    </div>
+  );
+}
+
+function TwoFactorSettings({ user, setUser }: { user: User; setUser: (user: User) => void }) {
+  const { t } = useTranslation();
+
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string | null>(null);
+  const [manualSecret, setManualSecret] = useState<string | null>(null);
+  const [setupError, setSetupError] = useState<string | null>(null);
+  const [isStartingSetup, setIsStartingSetup] = useState(false);
+
+  const [confirmCode, setConfirmCode] = useState("");
+  const [confirmError, setConfirmError] = useState<string | null>(null);
+  const [isConfirming, setIsConfirming] = useState(false);
+  const [backupCodes, setBackupCodes] = useState<string[] | null>(null);
+
+  const [disablePassword, setDisablePassword] = useState("");
+  const [disableError, setDisableError] = useState<string | null>(null);
+  const [disableSuccess, setDisableSuccess] = useState(false);
+  const [isDisabling, setIsDisabling] = useState(false);
+
+  async function handleStartSetup() {
+    setSetupError(null);
+    setIsStartingSetup(true);
+    try {
+      const { qrCodeDataUrl: qr, secret } = await setupTwoFactorRequest();
+      setQrCodeDataUrl(qr);
+      setManualSecret(secret);
+    } catch (err) {
+      setSetupError(getApiErrorMessage(err, t("profile.twoFactorSetupError")));
+    } finally {
+      setIsStartingSetup(false);
+    }
+  }
+
+  async function handleConfirmSetup(event: FormEvent) {
+    event.preventDefault();
+    setConfirmError(null);
+    setIsConfirming(true);
+    try {
+      const { backupCodes: codes } = await confirmTwoFactorSetupRequest(confirmCode);
+      setBackupCodes(codes);
+      setUser({ ...user, twoFactorEnabled: true });
+    } catch (err) {
+      setConfirmError(getApiErrorMessage(err, t("profile.twoFactorConfirmError")));
+    } finally {
+      setIsConfirming(false);
+    }
+  }
+
+  function handleBackupCodesAcknowledged() {
+    setBackupCodes(null);
+    setQrCodeDataUrl(null);
+    setManualSecret(null);
+    setConfirmCode("");
+  }
+
+  async function handleDisable(event: FormEvent) {
+    event.preventDefault();
+    setDisableError(null);
+    setDisableSuccess(false);
+    setIsDisabling(true);
+    try {
+      await disableTwoFactorRequest(disablePassword);
+      setUser({ ...user, twoFactorEnabled: false });
+      setDisablePassword("");
+      setDisableSuccess(true);
+    } catch (err) {
+      setDisableError(getApiErrorMessage(err, t("profile.twoFactorDisableError")));
+    } finally {
+      setIsDisabling(false);
+    }
+  }
+
+  if (backupCodes) {
+    return (
+      <div className={`panel hudCorners ${styles.panel}`}>
+        <h1 className={styles.title}>{t("profile.twoFactorBackupCodesTitle")}</h1>
+        <p className={styles.hint}>{t("profile.twoFactorBackupCodesHint")}</p>
+        <ul className={styles.backupCodes}>
+          {backupCodes.map((code) => (
+            <li key={code}>{code}</li>
+          ))}
+        </ul>
+        <button type="button" className="btn" onClick={handleBackupCodesAcknowledged}>
+          {t("profile.twoFactorBackupCodesDone")}
+        </button>
+      </div>
+    );
+  }
+
+  if (user.twoFactorEnabled) {
+    return (
+      <form className={`panel hudCorners ${styles.panel}`} onSubmit={handleDisable}>
+        <h1 className={styles.title}>{t("profile.twoFactorTitle")}</h1>
+        <p className={styles.formSuccess}>{t("profile.twoFactorEnabledStatus")}</p>
+
+        {disableError && <p className="formError">{disableError}</p>}
+        {disableSuccess && <p className={styles.formSuccess}>{t("profile.twoFactorDisabled")}</p>}
+
+        <p className={styles.hint}>{t("profile.twoFactorDisableHint")}</p>
+
+        <div className="field">
+          <label htmlFor="disablePassword">{t("profile.currentPassword")}</label>
+          <input
+            id="disablePassword"
+            type="password"
+            value={disablePassword}
+            onChange={(e) => setDisablePassword(e.target.value)}
+            required
+          />
+        </div>
+
+        <button type="submit" className="btn" disabled={isDisabling}>
+          {isDisabling ? t("profile.twoFactorDisabling") : t("profile.twoFactorDisable")}
+        </button>
+      </form>
+    );
+  }
+
+  if (qrCodeDataUrl && manualSecret) {
+    return (
+      <form className={`panel hudCorners ${styles.panel}`} onSubmit={handleConfirmSetup}>
+        <h1 className={styles.title}>{t("profile.twoFactorTitle")}</h1>
+
+        {confirmError && <p className="formError">{confirmError}</p>}
+
+        <p className={styles.hint}>{t("profile.twoFactorScanHint")}</p>
+        <img className={styles.qrCode} src={qrCodeDataUrl} alt="QR code 2FA" />
+        <span className={styles.manualSecret}>
+          {t("profile.twoFactorManualEntry")}: {manualSecret}
+        </span>
+
+        <div className="field">
+          <label htmlFor="confirmCode">{t("profile.twoFactorConfirmCode")}</label>
+          <input
+            id="confirmCode"
+            type="text"
+            autoComplete="one-time-code"
+            value={confirmCode}
+            onChange={(e) => setConfirmCode(e.target.value)}
+            required
+            autoFocus
+          />
+        </div>
+
+        <button type="submit" className="btn" disabled={isConfirming}>
+          {isConfirming ? t("profile.twoFactorConfirming") : t("profile.twoFactorConfirm")}
+        </button>
+      </form>
+    );
+  }
+
+  return (
+    <div className={`panel hudCorners ${styles.panel}`}>
+      <h1 className={styles.title}>{t("profile.twoFactorTitle")}</h1>
+      {setupError && <p className="formError">{setupError}</p>}
+      <p className={styles.hint}>{t("profile.twoFactorDisabledHint")}</p>
+      <button type="button" className="btn" onClick={handleStartSetup} disabled={isStartingSetup}>
+        {isStartingSetup ? t("profile.twoFactorSettingUp") : t("profile.twoFactorEnable")}
+      </button>
     </div>
   );
 }

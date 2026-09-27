@@ -19,7 +19,12 @@ export function getApiErrorMessage(err: unknown, fallback: string): string {
 
 // Endpoint dove un 401 è un esito normale del flusso (credenziali errate,
 // controllo di sessione), non un logout forzato da propagare globalmente.
-const AUTH_ENDPOINTS_EXCLUDED_FROM_LOGOUT = ["/auth/login", "/auth/register", "/auth/me"];
+const AUTH_ENDPOINTS_EXCLUDED_FROM_LOGOUT = [
+  "/auth/login",
+  "/auth/register",
+  "/auth/me",
+  "/auth/2fa/verify-login",
+];
 
 type UnauthorizedListener = () => void;
 const unauthorizedListeners = new Set<UnauthorizedListener>();

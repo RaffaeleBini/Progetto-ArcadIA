@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import type { User } from "../types/user";
-import { fetchMe, loginRequest, logoutRequest, registerRequest } from "../api/auth";
+import { fetchMe, loginRequest, logoutRequest, registerRequest, verifyTwoFactorLoginRequest } from "../api/auth";
 import { onUnauthorized } from "../api/client";
 
 interface AuthContextValue {
@@ -9,7 +9,8 @@ interface AuthContextValue {
   isLoading: boolean;
   authError: boolean;
   retryAuth: () => void;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<{ requiresTwoFactor: boolean }>;
+  verifyTwoFactor: (code: string) => Promise<void>;
   register: (
     name: string,
     email: string,
@@ -53,7 +54,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [navigate]);
 
   const login = useCallback(async (email: string, password: string) => {
-    const loggedInUser = await loginRequest(email, password);
+    const result = await loginRequest(email, password);
+    if (result.user) {
+      setUser(result.user);
+    }
+    return { requiresTwoFactor: result.requiresTwoFactor };
+  }, []);
+
+  const verifyTwoFactor = useCallback(async (code: string) => {
+    const loggedInUser = await verifyTwoFactorLoginRequest(code);
     setUser(loggedInUser);
   }, []);
 
@@ -71,7 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, authError, retryAuth: checkAuth, login, register, logout, setUser }}
+      value={{ user, isLoading, authError, retryAuth: checkAuth, login, verifyTwoFactor, register, logout, setUser }}
     >
       {children}
     </AuthContext.Provider>

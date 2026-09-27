@@ -4,8 +4,18 @@ import { z } from "zod";
 import { UserModel } from "../models/User.js";
 import { NotificationModel } from "../models/Notification.js";
 import { sendError } from "../utils/apiError.js";
-import { COOKIE_NAME, getAuthCookieOptions, signToken } from "../utils/jwt.js";
+import {
+  COOKIE_NAME,
+  getAuthCookieOptions,
+  getTwoFactorPendingCookieOptions,
+  signToken,
+  signTwoFactorPendingToken,
+  TWO_FACTOR_PENDING_COOKIE_NAME,
+  verifyTwoFactorPendingToken,
+} from "../utils/jwt.js";
 import { toPublicUser } from "../utils/publicUser.js";
+import { findAndConsumeBackupCode } from "../utils/backupCodes.js";
+import { verifyTotpCode } from "../utils/totp.js";
 
 export const registerSchema = z.object({
   name: z.string().trim().min(1, "Il nome è obbligatorio"),
@@ -18,6 +28,10 @@ export const registerSchema = z.object({
 export const loginSchema = z.object({
   email: z.string().trim().toLowerCase().email("Email non valida"),
   password: z.string().min(1, "Password obbligatoria"),
+});
+
+export const verifyTwoFactorLoginSchema = z.object({
+  code: z.string().trim().min(6, "Codice non valido"),
 });
 
 export async function register(req: Request, res: Response) {
@@ -56,6 +70,58 @@ export async function login(req: Request, res: Response) {
     return;
   }
 
+  if (user.role === "admin" && user.twoFactorEnabled) {
+    const pendingToken = signTwoFactorPendingToken(String(user._id));
+    res.cookie(TWO_FACTOR_PENDING_COOKIE_NAME, pendingToken, getTwoFactorPendingCookieOptions());
+    res.json({ requiresTwoFactor: true });
+    return;
+  }
+
+  const token = signToken(String(user._id), user.tokenVersion);
+  res.cookie(COOKIE_NAME, token, getAuthCookieOptions());
+  res.json({ requiresTwoFactor: false, user: toPublicUser(user) });
+}
+
+export async function verifyTwoFactorLogin(req: Request, res: Response) {
+  const { code } = req.body as z.infer<typeof verifyTwoFactorLoginSchema>;
+
+  const pendingToken = req.cookies?.[TWO_FACTOR_PENDING_COOKIE_NAME];
+  if (!pendingToken) {
+    sendError(res, 401, "Verifica 2FA non richiesta o scaduta");
+    return;
+  }
+
+  let userId: string;
+  try {
+    userId = verifyTwoFactorPendingToken(pendingToken).sub;
+  } catch {
+    sendError(res, 401, "Verifica 2FA non richiesta o scaduta");
+    return;
+  }
+
+  const user = await UserModel.findById(userId);
+  if (!user || !user.twoFactorEnabled || !user.twoFactorSecret) {
+    sendError(res, 401, "Verifica 2FA non richiesta o scaduta");
+    return;
+  }
+
+  let verified = verifyTotpCode(code, user.twoFactorSecret);
+  if (!verified) {
+    const backupIndex = await findAndConsumeBackupCode(code, user.twoFactorBackupCodeHashes);
+    if (backupIndex !== null) {
+      user.twoFactorBackupCodeHashes.splice(backupIndex, 1);
+      verified = true;
+    }
+  }
+
+  if (!verified) {
+    sendError(res, 401, "Codice non valido");
+    return;
+  }
+
+  await user.save();
+
+  res.clearCookie(TWO_FACTOR_PENDING_COOKIE_NAME, getTwoFactorPendingCookieOptions());
   const token = signToken(String(user._id), user.tokenVersion);
   res.cookie(COOKIE_NAME, token, getAuthCookieOptions());
   res.json({ user: toPublicUser(user) });

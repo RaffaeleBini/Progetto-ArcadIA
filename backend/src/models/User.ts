@@ -14,6 +14,13 @@ const userSchema = new Schema({
   // Incrementato ad ogni cambio password: invalida istantaneamente tutti i
   // token JWT firmati prima di quel momento (vedi utils/jwt.ts, middleware/auth.ts).
   tokenVersion: { type: Number, default: 0 },
+  twoFactorEnabled: { type: Boolean, default: false },
+  twoFactorSecret: { type: String, default: null },
+  // Segreto generato durante il setup, promosso a twoFactorSecret solo dopo
+  // la conferma con un codice valido (evita di attivare la 2FA per errore
+  // prima che l'admin abbia effettivamente collegato l'app authenticator).
+  twoFactorTempSecret: { type: String, default: null },
+  twoFactorBackupCodeHashes: { type: [String], default: [] },
   createdAt: { type: Date, default: Date.now },
 });
 

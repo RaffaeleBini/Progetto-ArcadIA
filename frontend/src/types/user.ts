@@ -9,4 +9,5 @@ export interface User {
   theme: "light" | "dark";
   subscriptionPlan: "free" | "premium";
   subscriptionExpiresAt: string | null;
+  twoFactorEnabled: boolean;
 }

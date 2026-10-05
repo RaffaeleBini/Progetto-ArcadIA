@@ -54,7 +54,7 @@ I corsi premium restano oggi ad attivazione manuale: l'assegnazione di un abbona
 
 ## Documentazione tecnica
 
-Per approfondire architettura, stack tecnico, modello dati, sicurezza e deployment, consulta la [relazione tecnica di progetto](docs/capitolato-tecnico.md).
+Per approfondire architettura, stack tecnico, modello dati, sicurezza e deployment, consulta la [relazione tecnica di progetto](docs/capitolato-tecnico.md). Prima di collegare un fornitore di pagamento reale, consulta anche i [requisiti di sicurezza](docs/requisiti-sicurezza.md) emersi dall'audit del codice.
 
 ---
 

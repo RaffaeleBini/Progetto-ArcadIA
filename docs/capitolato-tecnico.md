@@ -331,6 +331,8 @@ La sicurezza è stata affrontata secondo un principio di **difesa a più livelli
 9. **Upload immagini validati**: solo file PNG/JPEG/WEBP fino a 5 MB sono accettati, verificati sia per estensione che per tipo MIME dichiarato, prima di essere inoltrati a Cloudinary.
 10. **Nessun segreto nel codice sorgente**: tutte le credenziali (stringa di connessione al database, chiave segreta JWT, credenziali Cloudinary) sono lette esclusivamente da variabili d'ambiente, mai scritte nel repository. I file `.env` locali sono esclusi dal controllo di versione fin dal primo commit del progetto.
 
+Un audit mirato del codice esistente, con le lacune ancora da colmare prima di collegare un fornitore di pagamento reale (header di sicurezza HTTP, rate limiting esteso, revoca dei token, 2FA per l'amministratore) e i punti di forza da non far regredire, è documentato separatamente nei [requisiti di sicurezza](requisiti-sicurezza.md).
+
 ---
 
 ## 10. Funzionalità realizzate

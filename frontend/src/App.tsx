@@ -15,6 +15,9 @@ import CourseDetailPage from "./pages/CourseDetailPage";
 import CourseFormPage from "./pages/CourseFormPage";
 import LessonPage from "./pages/LessonPage";
 import LessonFormPage from "./pages/LessonFormPage";
+import PathsPage from "./pages/PathsPage";
+import PathDetailPage from "./pages/PathDetailPage";
+import PathFormPage from "./pages/PathFormPage";
 import PricingPage from "./pages/PricingPage";
 import VerifyCertificatePage from "./pages/VerifyCertificatePage";
 import BoardPage from "./pages/BoardPage";
@@ -39,6 +42,8 @@ export default function App() {
                   <Route path="/courses" element={<CoursesPage />} />
                   <Route path="/courses/:id" element={<CourseDetailPage />} />
                   <Route path="/courses/:id/lessons/:lessonId" element={<LessonPage />} />
+                  <Route path="/paths" element={<PathsPage />} />
+                  <Route path="/paths/:id" element={<PathDetailPage />} />
                   <Route path="/board" element={<BoardPage />} />
                   <Route path="/notifications" element={<NotificationsPage />} />
                   <Route element={<AdminRoute />}>
@@ -46,6 +51,8 @@ export default function App() {
                     <Route path="/courses/:id/edit" element={<CourseFormPage />} />
                     <Route path="/courses/:id/lessons/new" element={<LessonFormPage />} />
                     <Route path="/courses/:id/lessons/:lessonId/edit" element={<LessonFormPage />} />
+                    <Route path="/paths/new" element={<PathFormPage />} />
+                    <Route path="/paths/:id/edit" element={<PathFormPage />} />
                   </Route>
                 </Route>
               </Route>

@@ -1,12 +1,14 @@
 import { Schema, model, type InferSchemaType } from "mongoose";
+import { localizedStringSchema } from "./shared/localized.js";
 
 const lessonSchema = new Schema({
   course: { type: Schema.Types.ObjectId, ref: "Course", required: true },
-  title: { type: String, required: true, trim: true },
   order: { type: Number, required: true },
-  videoUrl: { type: String },
-  description: { type: String },
-  notebookGithubUrl: { type: String },
+  title: localizedStringSchema,
+  theoryContent: localizedStringSchema,
+  videoUrl: localizedStringSchema,
+  lessonNotebookUrl: localizedStringSchema,
+  exerciseNotebookUrl: localizedStringSchema,
   createdAt: { type: Date, default: Date.now },
 });
 

@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { createLesson, fetchLesson, updateLesson } from "../api/lessons";
+import { createLesson, fetchLessonForEdit, updateLesson } from "../api/lessons";
 import { getApiErrorMessage } from "../api/client";
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage";
+import LocalizedField from "../components/LocalizedField";
+import type { LocalizedText } from "../types/lesson";
 import styles from "./LessonFormPage.module.css";
+
+const EMPTY_TEXT: LocalizedText = { it: "", es: "" };
 
 export default function LessonFormPage() {
   const { id: courseId, lessonId } = useParams<{ id: string; lessonId: string }>();
@@ -13,11 +17,12 @@ export default function LessonFormPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState<LocalizedText>(EMPTY_TEXT);
   const [order, setOrder] = useState(1);
-  const [videoUrl, setVideoUrl] = useState("");
-  const [description, setDescription] = useState("");
-  const [notebookGithubUrl, setNotebookGithubUrl] = useState("");
+  const [theoryContent, setTheoryContent] = useState<LocalizedText>(EMPTY_TEXT);
+  const [videoUrl, setVideoUrl] = useState<LocalizedText>(EMPTY_TEXT);
+  const [lessonNotebookUrl, setLessonNotebookUrl] = useState<LocalizedText>(EMPTY_TEXT);
+  const [exerciseNotebookUrl, setExerciseNotebookUrl] = useState<LocalizedText>(EMPTY_TEXT);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(isEditMode);
@@ -28,12 +33,13 @@ export default function LessonFormPage() {
     setIsLoading(true);
     setLoadError(null);
     try {
-      const lesson = await fetchLesson(courseId, lessonId);
+      const lesson = await fetchLessonForEdit(courseId, lessonId);
       setTitle(lesson.title);
       setOrder(lesson.order);
-      setVideoUrl(lesson.videoUrl ?? "");
-      setDescription(lesson.description ?? "");
-      setNotebookGithubUrl(lesson.notebookGithubUrl ?? "");
+      setTheoryContent(lesson.theoryContent);
+      setVideoUrl(lesson.videoUrl);
+      setLessonNotebookUrl(lesson.lessonNotebookUrl);
+      setExerciseNotebookUrl(lesson.exerciseNotebookUrl);
     } catch (err) {
       setLoadError(getApiErrorMessage(err, t("common.loadError")));
     } finally {
@@ -51,7 +57,7 @@ export default function LessonFormPage() {
     setError(null);
     setIsSubmitting(true);
     try {
-      const input = { title, order, videoUrl, description, notebookGithubUrl };
+      const input = { title, order, theoryContent, videoUrl, lessonNotebookUrl, exerciseNotebookUrl };
       const lesson =
         isEditMode && lessonId ? await updateLesson(courseId, lessonId, input) : await createLesson(courseId, input);
       navigate(`/courses/${courseId}/lessons/${lesson.id}`);
@@ -77,10 +83,7 @@ export default function LessonFormPage() {
 
         {error && <p className="formError">{error}</p>}
 
-        <div className="field">
-          <label htmlFor="title">{t("courses.lessonTitle")}</label>
-          <input id="title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
-        </div>
+        <LocalizedField id="title" label={t("courses.lessonTitle")} value={title} onChange={setTitle} required />
 
         <div className="field">
           <label htmlFor="order">{t("courses.order")}</label>
@@ -94,32 +97,38 @@ export default function LessonFormPage() {
           />
         </div>
 
-        <div className="field">
-          <label htmlFor="videoUrl">{t("courses.videoUrl")}</label>
-          <input
-            id="videoUrl"
-            type="url"
-            placeholder="https://www.youtube.com/watch?v=..."
-            value={videoUrl}
-            onChange={(e) => setVideoUrl(e.target.value)}
-          />
-        </div>
+        <LocalizedField
+          id="theoryContent"
+          label={t("courses.theoryContent")}
+          value={theoryContent}
+          onChange={setTheoryContent}
+          multiline
+          large
+        />
 
-        <div className="field">
-          <label htmlFor="description">{t("courses.description")}</label>
-          <textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} />
-        </div>
+        <LocalizedField
+          id="videoUrl"
+          label={t("courses.videoUrl")}
+          value={videoUrl}
+          onChange={setVideoUrl}
+          type="url"
+        />
 
-        <div className="field">
-          <label htmlFor="notebookGithubUrl">{t("courses.notebookUrl")}</label>
-          <input
-            id="notebookGithubUrl"
-            type="url"
-            placeholder="https://github.com/utente/repo/blob/main/lezione.ipynb"
-            value={notebookGithubUrl}
-            onChange={(e) => setNotebookGithubUrl(e.target.value)}
-          />
-        </div>
+        <LocalizedField
+          id="lessonNotebookUrl"
+          label={t("courses.lessonNotebookUrl")}
+          value={lessonNotebookUrl}
+          onChange={setLessonNotebookUrl}
+          type="url"
+        />
+
+        <LocalizedField
+          id="exerciseNotebookUrl"
+          label={t("courses.exerciseNotebookUrl")}
+          value={exerciseNotebookUrl}
+          onChange={setExerciseNotebookUrl}
+          type="url"
+        />
 
         <button type="submit" className="btn" disabled={isSubmitting}>
           {isSubmitting ? t("courses.saving") : t("courses.save")}

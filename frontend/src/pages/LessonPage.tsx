@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, Check, ExternalLink, Pencil, Trash2 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import { useAuth } from "../context/AuthContext";
 import { deleteLesson, fetchLesson } from "../api/lessons";
 import { completeLesson, fetchProgress, uncompleteLesson } from "../api/progress";
@@ -115,21 +116,36 @@ export default function LessonPage() {
         </div>
       )}
 
-      {lesson.description && <p className={styles.description}>{lesson.description}</p>}
+      {lesson.theoryContent && (
+        <section className={styles.block}>
+          <h2 className={styles.blockTitle}>{t("courses.theoryBlock")}</h2>
+          <div className={styles.theoryContent}>
+            <ReactMarkdown>{lesson.theoryContent}</ReactMarkdown>
+          </div>
+        </section>
+      )}
 
-      <div className={styles.actions}>
-        {lesson.notebookGithubUrl && (
-          <a
-            className="btn"
-            href={getColabUrl(lesson.notebookGithubUrl)}
-            target="_blank"
-            rel="noreferrer"
-          >
+      {lesson.lessonNotebookUrl && (
+        <section className={styles.block}>
+          <h2 className={styles.blockTitle}>{t("courses.lessonNotebookBlock")}</h2>
+          <a className="btn" href={getColabUrl(lesson.lessonNotebookUrl)} target="_blank" rel="noreferrer">
             <ExternalLink size={16} strokeWidth={1.5} />
             {t("courses.openInColab")}
           </a>
-        )}
+        </section>
+      )}
 
+      {lesson.exerciseNotebookUrl && (
+        <section className={styles.block}>
+          <h2 className={styles.blockTitle}>{t("courses.exerciseNotebookBlock")}</h2>
+          <a className="btn" href={getColabUrl(lesson.exerciseNotebookUrl)} target="_blank" rel="noreferrer">
+            <ExternalLink size={16} strokeWidth={1.5} />
+            {t("courses.openInColab")}
+          </a>
+        </section>
+      )}
+
+      <div className={styles.actions}>
         <button
           type="button"
           className={isCompleted ? `btn ${styles.completedBtn}` : "btn"}

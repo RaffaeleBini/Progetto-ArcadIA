@@ -69,10 +69,26 @@
   border: none;
 }
 
-.description {
-  color: var(--color-text-secondary);
+.block {
   margin-bottom: var(--space-6);
-  white-space: pre-wrap;
+}
+
+.blockTitle {
+  font-size: 1.05rem;
+  margin-bottom: var(--space-3);
+}
+
+.theoryContent {
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.theoryContent :global(pre) {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+  overflow-x: auto;
 }
 
 .actions {

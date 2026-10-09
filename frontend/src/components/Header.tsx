@@ -31,6 +31,9 @@ export default function Header() {
           <Link to="/courses" className={styles.navLink}>
             {t("header.courses")}
           </Link>
+          <Link to="/paths" className={styles.navLink}>
+            {t("header.paths")}
+          </Link>
           <Link to="/board" className={styles.navLink}>
             {t("header.board")}
           </Link>

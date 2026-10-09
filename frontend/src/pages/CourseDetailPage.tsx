@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, Award, Download, FileCode, Lock, Pencil, Plus, Trash2, Video } from "lucide-react";
+import { ArrowLeft, Award, BookOpen, Download, FileCode, Lock, Pencil, Plus, Trash2, Video } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { deleteCourse, fetchCourse } from "../api/courses";
 import { deleteLesson, fetchLessons } from "../api/lessons";
@@ -110,6 +110,23 @@ export default function CourseDetailPage() {
 
       <p className={styles.description}>{course.description}</p>
 
+      {course.prerequisites.length > 0 && (
+        <div className={styles.prerequisitesBox}>
+          <span className={styles.prerequisitesTitle}>
+            <BookOpen size={14} strokeWidth={1.5} />
+            {t("courses.recommendedPrerequisites")}
+          </span>
+          <ul className={styles.prerequisitesList}>
+            {course.prerequisites.map((p) => (
+              <li key={p.courseId}>
+                {p.title}
+                {p.note && <span className={styles.prerequisiteNote}> — {p.note}</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {isLocked ? (
         <div className={`panel hudCorners ${styles.previewPanel}`}>
           <p className={styles.previewMessage}>{t("courses.subscriptionRequired")}</p>
@@ -155,7 +172,9 @@ export default function CourseDetailPage() {
                     <span className={styles.lessonIcons}>
                       {isLessonCompleted && <Award size={15} strokeWidth={1.5} className={styles.doneIcon} />}
                       {lesson.videoUrl && <Video size={15} strokeWidth={1.5} />}
-                      {lesson.notebookGithubUrl && <FileCode size={15} strokeWidth={1.5} />}
+                      {(lesson.lessonNotebookUrl || lesson.exerciseNotebookUrl) && (
+                        <FileCode size={15} strokeWidth={1.5} />
+                      )}
                     </span>
                   </Link>
                   {isAdmin && (

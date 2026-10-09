@@ -9,6 +9,7 @@ import { NotificationModel } from "../models/Notification.js";
 import { sendError } from "../utils/apiError.js";
 import { hasAccessToCourse } from "../utils/access.js";
 import { ensureProgress } from "../utils/progress.js";
+import { pickLocalized, type Locale } from "../utils/locale.js";
 
 function toProgressDto(
   progress: InstanceType<typeof ProgressModel> | null,
@@ -85,10 +86,11 @@ export async function completeLesson(req: Request, res: Response) {
     progress.completedAt = new Date();
     progress.certificateId = randomUUID();
 
+    const courseTitle = pickLocalized(course.title, (req.user?.preferredLanguage as Locale) ?? "it") ?? course.code;
     await NotificationModel.create({
       recipient: req.userId,
       type: "course_completed",
-      message: `Hai completato il corso "${course.title}"! Il certificato è pronto per il download.`,
+      message: `Hai completato il corso "${courseTitle}"! Il certificato è pronto per il download.`,
       relatedId: course._id,
     });
   }
@@ -140,8 +142,11 @@ export async function downloadCertificate(req: Request, res: Response) {
     return;
   }
 
+  const locale = (req.user?.preferredLanguage as Locale) ?? "it";
+  const courseTitle = pickLocalized(course.title, locale) ?? course.code;
+
   res.setHeader("Content-Type", "application/pdf");
-  res.setHeader("Content-Disposition", `attachment; filename="certificato-${course.title}.pdf"`);
+  res.setHeader("Content-Disposition", `attachment; filename="certificato-${courseTitle}.pdf"`);
 
   const doc = new PDFDocument({ size: "A4", layout: "landscape", margin: 50 });
   doc.pipe(res);
@@ -164,7 +169,7 @@ export async function downloadCertificate(req: Request, res: Response) {
     .text("per il completamento del corso", { align: "center" })
     .moveDown(0.3);
 
-  doc.fontSize(20).fillColor("#111111").text(course.title, { align: "center" }).moveDown(1.5);
+  doc.fontSize(20).fillColor("#111111").text(courseTitle, { align: "center" }).moveDown(1.5);
 
   const completedAt = progress.completedAt ? new Date(progress.completedAt) : new Date();
   doc
@@ -203,7 +208,7 @@ export async function verifyCertificate(req: Request, res: Response) {
 
   res.json({
     userName: user.name,
-    courseTitle: course.title,
+    courseTitle: pickLocalized(course.title, "it") ?? course.code,
     completedAt: progress.completedAt,
     certificateId: progress.certificateId,
   });

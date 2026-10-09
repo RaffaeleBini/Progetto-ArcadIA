@@ -1,12 +1,13 @@
 import { apiClient } from "./client";
-import type { Lesson } from "../types/lesson";
+import type { Lesson, LessonAdminDetail, LocalizedText } from "../types/lesson";
 
 export interface LessonInput {
-  title: string;
   order: number;
-  videoUrl: string;
-  description: string;
-  notebookGithubUrl: string;
+  title: LocalizedText;
+  theoryContent: LocalizedText;
+  videoUrl: LocalizedText;
+  lessonNotebookUrl: LocalizedText;
+  exerciseNotebookUrl: LocalizedText;
 }
 
 export async function fetchLessons(courseId: string): Promise<Lesson[]> {
@@ -16,6 +17,14 @@ export async function fetchLessons(courseId: string): Promise<Lesson[]> {
 
 export async function fetchLesson(courseId: string, lessonId: string): Promise<Lesson> {
   const { data } = await apiClient.get<{ lesson: Lesson }>(`/api/courses/${courseId}/lessons/${lessonId}`);
+  return data.lesson;
+}
+
+export async function fetchLessonForEdit(courseId: string, lessonId: string): Promise<LessonAdminDetail> {
+  const { data } = await apiClient.get<{ lesson: LessonAdminDetail }>(
+    `/api/courses/${courseId}/lessons/${lessonId}`,
+    { params: { raw: "true" } }
+  );
   return data.lesson;
 }
 

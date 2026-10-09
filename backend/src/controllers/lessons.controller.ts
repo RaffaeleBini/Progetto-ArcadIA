@@ -6,25 +6,51 @@ import { UserModel } from "../models/User.js";
 import { sendError } from "../utils/apiError.js";
 import { hasAccessToCourse } from "../utils/access.js";
 import { ensureProgress } from "../utils/progress.js";
+import { pickLocalized, type Locale } from "../utils/locale.js";
+import { localizedOptional } from "../validation/shared.js";
 
-export const lessonSchema = z.object({
-  title: z.string().trim().min(1, "Il titolo è obbligatorio"),
-  order: z.coerce.number().int().min(0, "L'ordine deve essere un numero positivo"),
-  videoUrl: z.string().trim().url("URL video non valido").optional().or(z.literal("")),
-  description: z.string().trim().optional().or(z.literal("")),
-  notebookGithubUrl: z.string().trim().url("URL notebook non valido").optional().or(z.literal("")),
+const localizedUrl = z.object({
+  it: z.string().trim().url("URL non valido").optional().or(z.literal("")),
+  es: z.string().trim().url("URL non valido").optional().or(z.literal("")),
 });
 
-function toLessonDto(lesson: InstanceType<typeof LessonModel>) {
-  return {
+export const lessonSchema = z.object({
+  order: z.coerce.number().int().min(0, "L'ordine deve essere un numero positivo"),
+  title: localizedOptional,
+  theoryContent: localizedOptional,
+  videoUrl: localizedUrl,
+  lessonNotebookUrl: localizedUrl,
+  exerciseNotebookUrl: localizedUrl,
+});
+
+type LessonDoc = InstanceType<typeof LessonModel>;
+
+function toLessonDto(lesson: LessonDoc, locale: Locale, options: { raw?: boolean } = {}) {
+  const base = {
     id: String(lesson._id),
     course: String(lesson.course),
-    title: lesson.title,
     order: lesson.order,
-    videoUrl: lesson.videoUrl || null,
-    description: lesson.description || null,
-    notebookGithubUrl: lesson.notebookGithubUrl || null,
     createdAt: lesson.createdAt,
+  };
+
+  if (options.raw) {
+    return {
+      ...base,
+      title: { it: lesson.title?.it ?? "", es: lesson.title?.es ?? "" },
+      theoryContent: { it: lesson.theoryContent?.it ?? "", es: lesson.theoryContent?.es ?? "" },
+      videoUrl: { it: lesson.videoUrl?.it ?? "", es: lesson.videoUrl?.es ?? "" },
+      lessonNotebookUrl: { it: lesson.lessonNotebookUrl?.it ?? "", es: lesson.lessonNotebookUrl?.es ?? "" },
+      exerciseNotebookUrl: { it: lesson.exerciseNotebookUrl?.it ?? "", es: lesson.exerciseNotebookUrl?.es ?? "" },
+    };
+  }
+
+  return {
+    ...base,
+    title: pickLocalized(lesson.title, locale) ?? "",
+    theoryContent: pickLocalized(lesson.theoryContent, locale),
+    videoUrl: pickLocalized(lesson.videoUrl, locale),
+    lessonNotebookUrl: pickLocalized(lesson.lessonNotebookUrl, locale),
+    exerciseNotebookUrl: pickLocalized(lesson.exerciseNotebookUrl, locale),
   };
 }
 
@@ -54,8 +80,9 @@ export async function listLessons(req: Request, res: Response) {
   const course = await loadCourseAndCheckAccess(req, res);
   if (!course) return;
 
+  const locale = req.user!.preferredLanguage as Locale;
   const lessons = await LessonModel.find({ course: course._id }).sort({ order: 1 });
-  res.json({ lessons: lessons.map(toLessonDto) });
+  res.json({ lessons: lessons.map((lesson) => toLessonDto(lesson, locale)) });
 }
 
 export async function getLesson(req: Request, res: Response) {
@@ -70,7 +97,9 @@ export async function getLesson(req: Request, res: Response) {
 
   await ensureProgress(req.userId!, course._id);
 
-  res.json({ lesson: toLessonDto(lesson) });
+  const locale = req.user!.preferredLanguage as Locale;
+  const raw = req.query.raw === "true" && req.user!.role === "admin";
+  res.json({ lesson: toLessonDto(lesson, locale, { raw }) });
 }
 
 export async function createLesson(req: Request, res: Response) {
@@ -82,7 +111,8 @@ export async function createLesson(req: Request, res: Response) {
 
   const data = req.body as z.infer<typeof lessonSchema>;
   const lesson = await LessonModel.create({ ...data, course: course._id });
-  res.status(201).json({ lesson: toLessonDto(lesson) });
+  const locale = req.user!.preferredLanguage as Locale;
+  res.status(201).json({ lesson: toLessonDto(lesson, locale) });
 }
 
 export async function updateLesson(req: Request, res: Response) {
@@ -96,7 +126,8 @@ export async function updateLesson(req: Request, res: Response) {
     sendError(res, 404, "Lezione non trovata");
     return;
   }
-  res.json({ lesson: toLessonDto(lesson) });
+  const locale = req.user!.preferredLanguage as Locale;
+  res.json({ lesson: toLessonDto(lesson, locale) });
 }
 
 export async function deleteLesson(req: Request, res: Response) {

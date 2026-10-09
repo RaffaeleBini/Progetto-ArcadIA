@@ -1,0 +1,64 @@
+.page {
+  padding: var(--space-6) var(--space-8);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+}
+
+.title {
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-4);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  text-align: left;
+  text-decoration: none;
+  color: inherit;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  transition: box-shadow 0.15s ease;
+}
+
+.card:hover,
+.card:focus-visible {
+  box-shadow: var(--shadow-glow);
+}
+
+.cardTitle {
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.cardAudience {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.cardMeta {
+  display: flex;
+  gap: var(--space-3);
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+}
+
+.empty {
+  color: var(--color-text-secondary);
+}

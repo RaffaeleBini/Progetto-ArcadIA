@@ -7,6 +7,7 @@ import { generalRateLimiter } from "./middleware/rateLimit.js";
 import authRoutes from "./routes/auth.routes.js";
 import usersRoutes from "./routes/users.routes.js";
 import coursesRoutes from "./routes/courses.routes.js";
+import pathsRoutes from "./routes/paths.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import verifyRoutes from "./routes/verify.routes.js";
 import postsRoutes from "./routes/posts.routes.js";
@@ -45,6 +46,7 @@ export function createApp() {
   app.use("/api/auth", authRoutes);
   app.use("/api/users", usersRoutes);
   app.use("/api/courses", coursesRoutes);
+  app.use("/api/paths", pathsRoutes);
   app.use("/api/admin/users", adminRoutes);
   app.use("/api/verify", verifyRoutes);
   app.use("/api/posts", postsRoutes);

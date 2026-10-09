@@ -6,6 +6,7 @@ import {
   getCourse,
   listCourses,
   updateCourse,
+  uploadCourseCoverImage,
 } from "../controllers/courses.controller.js";
 import { downloadCertificate, getProgress } from "../controllers/progress.controller.js";
 import { requireAdmin, requireAuth } from "../middleware/auth.js";
@@ -18,23 +19,15 @@ const router = Router();
 
 router.get("/", requireAuth, listCourses);
 router.get("/:id", requireAuth, getCourse);
+router.post("/", requireAuth, requireAdmin, validateBody(courseSchema), createCourse);
+router.put("/:id", requireAuth, requireAdmin, validateBody(courseSchema), updateCourse);
 router.post(
-  "/",
+  "/:id/cover",
   requireAuth,
   requireAdmin,
   uploadRateLimiter,
   uploadCourseCoverFile,
-  validateBody(courseSchema),
-  createCourse
-);
-router.put(
-  "/:id",
-  requireAuth,
-  requireAdmin,
-  uploadRateLimiter,
-  uploadCourseCoverFile,
-  validateBody(courseSchema),
-  updateCourse
+  uploadCourseCoverImage
 );
 router.delete("/:id", requireAuth, requireAdmin, deleteCourse);
 

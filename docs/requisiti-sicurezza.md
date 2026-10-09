@@ -51,20 +51,11 @@ Da configurare con attenzione la policy CSP se in futuro si incorporano script d
 
 ---
 
-### 1.3 🔴 Audit delle dipendenze non ancora eseguito
+### 1.3 ✅ Audit delle dipendenze eseguito
 
-**Stato attuale:** non verificabile da questo ambiente (nessun accesso di rete al database di vulnerabilità). Da eseguire manualmente.
+**Stato attuale (9 ottobre 2026):** eseguito `npm audit` su backend e frontend. Trovate: `proxy-addr` (critical, IP spoofing), `ip-address` (moderate, SSRF) sul backend; `axios` (high, prototype pollution/ReDoS/header injection) sul frontend. Risolte tutte con `npm audit fix` (bump patch, nessun major: `proxy-addr` 2.0.7→2.0.8, `ip-address` 10.5.0→10.7.3, `axios` 1.19.0→1.20.0). `npm audit` ora riporta 0 vulnerabilità su entrambi i progetti; build (`tsc`, `tsc -b && vite build`) verificata dopo il fix.
 
-**Rischio:** dipendenze con vulnerabilità note (specialmente su pacchetti che gestiscono autenticazione, upload o parsing di input esterno) sono un vettore di attacco comune e a basso sforzo per un attaccante.
-
-**Cosa fare:**
-```bash
-cd backend && npm audit
-cd ../frontend && npm audit
-```
-Correggere quanto segnalato come `high`/`critical`; valutare caso per caso i `moderate`. Ripetere periodicamente (es. mensilmente, o con un'azione automatica GitHub Dependabot, gratuita per repository pubblici e privati).
-
-**Sforzo:** variabile, dipende da cosa emerge. Da fare comunque prima di collegare un fornitore di pagamento.
+**Da fare ancora:** ripetere periodicamente (es. mensilmente, o con GitHub Dependabot attivo, gratuito per repository pubblici e privati) — un audit singolo non resta valido nel tempo.
 
 ---
 
@@ -151,7 +142,7 @@ Verificate nel codice, da mantenere come sono:
 
 - [ ] `helmet` montato in `app.ts` (1.1)
 - [ ] Rate limiting esteso oltre l'autenticazione (1.2)
-- [ ] `npm audit` eseguito ed eventuali `high`/`critical` risolti, su backend e frontend (1.3)
+- [x] `npm audit` eseguito ed eventuali `high`/`critical` risolti, su backend e frontend (1.3)
 - [ ] Meccanismo di revoca token (`tokenVersion` o equivalente) (2.1)
 - [ ] Endpoint di cambio password (2.2)
 - [ ] Costo bcrypt portato a 12 (2.3)

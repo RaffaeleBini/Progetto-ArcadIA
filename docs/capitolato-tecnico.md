@@ -91,9 +91,11 @@ Ogni scelta tecnologica ha seguito lo stesso criterio: soluzioni **mature, ampia
 | **Express 5** | Framework web/API | Lo standard de facto per API REST in Node.js: minimale, ben documentato, enorme disponibilità di middleware maturi (usati per CORS, cookie, rate limiting). |
 | **MongoDB + Mongoose** | Database e ODM | Modello a documenti adatto a entità con struttura relativamente semplice e gerarchica (corso → lezioni, utente → progressi). Mongoose aggiunge validazione di schema, tipizzazione TypeScript automatica e query più leggibili rispetto al driver nativo. |
 | **JWT in cookie httpOnly** | Autenticazione | Sessione stateless (nessuna tabella sessioni da mantenere lato server), ma cookie *httpOnly* per essere illeggibile da JavaScript lato client e quindi non esposto ad attacchi XSS che rubano il token. |
-| **bcryptjs** | Hashing password | Standard di settore per la protezione delle password, con costo computazionale calibrabile contro attacchi a forza bruta. |
+| **bcryptjs** | Hashing password | Standard di settore per la protezione delle password, con costo computazionale calibrabile contro attacchi a forza bruta (12 round). |
+| **helmet** | Header di sicurezza | HSTS, `nosniff` e rimozione di `X-Powered-By` sulle risposte dell'API. |
+| **otplib** | Secondo fattore | Codici TOTP per l'account amministratore. |
 | **zod** | Validazione input | Schema di validazione dichiarativi, con inferenza automatica dei tipi TypeScript corrispondenti: un'unica fonte di verità sia per la validazione runtime che per i tipi statici. |
-| **express-rate-limit** | Protezione endpoint sensibili | Limita i tentativi su login/registrazione per mitigare attacchi a forza bruta o credential stuffing. |
+| **express-rate-limit** | Protezione endpoint sensibili | Limita i tentativi su autenticazione, upload e verifica certificati, oltre a un limite generale sull'API, per mitigare attacchi a forza bruta e abusi. |
 | **multer + Cloudinary** | Upload immagini | Upload in memoria (nessun file temporaneo su disco) e successivo trasferimento diretto a Cloudinary, che si occupa di storage, ridimensionamento e ottimizzazione delle immagini (avatar, copertine corsi). |
 | **pdfkit** | Generazione certificati | Generazione di PDF *on-the-fly* lato server, senza dipendere da servizi esterni a pagamento. |
 
@@ -136,7 +138,7 @@ flowchart TB
     end
 
     subgraph Atlas["MongoDB Atlas"]
-        DB[("Database arcadia<br/>7 collezioni")]
+        DB[("Database arcadia<br/>9 collezioni")]
     end
 
     Cloudinary["Cloudinary<br/>storage/CDN immagini"]
@@ -172,7 +174,7 @@ Progetto-ArcadIA/
 │   │   ├── config/          # connessione MongoDB, configurazione Cloudinary
 │   │   ├── controllers/     # logica di business per ogni risorsa
 │   │   ├── middleware/      # autenticazione, validazione, rate limit, upload
-│   │   ├── models/          # schemi Mongoose (7 collezioni)
+│   │   ├── models/          # schemi Mongoose (9 collezioni)
 │   │   ├── routes/          # definizione degli endpoint REST
 │   │   ├── utils/           # funzioni di supporto condivise (JWT, controllo accessi, errori)
 │   │   ├── app.ts           # configurazione Express (middleware globali, mount delle routes)
@@ -185,7 +187,7 @@ Progetto-ArcadIA/
 │   │   ├── components/      # componenti UI riutilizzabili (Header, guardie di rotta, ecc.)
 │   │   ├── context/         # stato globale React (autenticazione, preferenze, notifiche)
 │   │   ├── i18n/             # configurazione e file di traduzione (it, es)
-│   │   ├── pages/            # una pagina per rotta (14 pagine)
+│   │   ├── pages/            # una pagina per rotta (17 pagine)
 │   │   ├── styles/            # design token e stili globali
 │   │   ├── types/              # tipi TypeScript condivisi con le forme delle risposte API
 │   │   └── App.tsx             # definizione dell'albero di routing
@@ -200,12 +202,14 @@ Questa organizzazione per **responsabilità tecnica** (piuttosto che per feature
 
 ## 7. Modello dati
 
-Il database è composto da **7 collezioni**, ciascuna corrispondente a un modello Mongoose con schema esplicito e tipizzato. Il diagramma seguente ne rappresenta le relazioni:
+Il database è composto da **9 collezioni**, ciascuna corrispondente a un modello Mongoose con schema esplicito e tipizzato. Il diagramma seguente ne rappresenta le relazioni:
 
 ```mermaid
 erDiagram
     User ||--o{ Course : "crea (createdBy)"
     Course ||--o{ Lesson : contiene
+    Path }o--o{ Course : "sequenza di corsi (steps)"
+    User ||--o{ Path : "crea (createdBy)"
     User ||--o{ Progress : traccia
     Course ||--o{ Progress : "è tracciato in"
     Progress }o--o{ Lesson : "lezioni completate"
@@ -227,19 +231,37 @@ erDiagram
         date subscriptionExpiresAt
     }
     Course {
-        string title
-        string description
+        string code UK
+        object title "it, es"
+        object description "it, es"
         string coverImageUrl
         string accessLevel "free | premium"
+        string status "draft | published"
+        number catalogOrder
         ObjectId createdBy FK
     }
     Lesson {
         ObjectId course FK
-        string title
         number order
-        string videoUrl
-        string description
-        string notebookGithubUrl
+        object title "it, es"
+        object theoryContent "it, es"
+        object videoUrl "it, es"
+        object lessonNotebookUrl "it, es"
+        object exerciseNotebookUrl "it, es"
+    }
+    Path {
+        string code UK
+        object title "it, es"
+        object audience "it, es"
+        string accessLevel "free | premium"
+        string status "draft | published"
+        object[] steps "corso, ordine, facoltativo, filtro lezioni, nota"
+        ObjectId createdBy FK
+    }
+    LoginAttempt {
+        string email
+        string ip
+        date createdAt
     }
     Progress {
         ObjectId user FK
@@ -286,14 +308,19 @@ Tutte le rotte sono montate sotto il prefisso `/api`. Ogni endpoint restituisce 
 | | `/api/auth/login` | POST | Pubblico (rate-limited) | Verifica le credenziali, imposta il cookie di sessione |
 | | `/api/auth/logout` | POST | Autenticato | Cancella il cookie di sessione |
 | | `/api/auth/me` | GET | Autenticato | Restituisce il profilo dell'utente corrente |
+| | `/api/auth/2fa/*` | POST | Admin (rate-limited) | Configurazione, conferma e verifica al login del secondo fattore TOTP |
 | **Utenti** | `/api/users/:id` | GET | Autenticato | Profilo pubblico di un utente (nome, avatar, bio) |
 | | `/api/users/me` | PUT | Autenticato | Aggiorna il proprio profilo (nome, bio, lingua, tema) |
 | | `/api/users/me/avatar` | POST | Autenticato | Carica un nuovo avatar (upload su Cloudinary) |
+| | `/api/users/me/password` | POST | Autenticato (rate-limited) | Cambia la password e invalida le altre sessioni |
 | **Corsi** | `/api/courses` | GET | Autenticato | Elenco corsi (con ricerca testuale opzionale) |
 | | `/api/courses/:id` | GET | Autenticato | Dettaglio corso (anteprima se premium senza accesso) |
 | | `/api/courses` | POST | Solo admin | Crea un corso (con copertina opzionale) |
 | | `/api/courses/:id` | PUT | Solo admin | Modifica un corso |
 | | `/api/courses/:id` | DELETE | Solo admin | Elimina un corso |
+| **Percorsi** | `/api/paths`, `/api/paths/:id` | GET | Autenticato | Elenco e dettaglio dei percorsi |
+| | `/api/paths/:id/progress` | GET | Autenticato | Avanzamento complessivo sul percorso |
+| | `/api/paths`, `/api/paths/:id` | POST/PUT/DELETE | Solo admin | Gestione dei percorsi |
 | **Lezioni** | `/api/courses/:courseId/lessons` | GET | Autenticato con accesso | Elenco lezioni del corso |
 | | `/api/courses/:courseId/lessons/:id` | GET | Autenticato con accesso | Dettaglio lezione |
 | | `/api/courses/:courseId/lessons` | POST/PUT/DELETE | Solo admin | Gestione lezioni |
@@ -320,39 +347,50 @@ Le rotte delle lezioni sono implementate come **sotto-router annidato** sotto `/
 
 La sicurezza è stata affrontata secondo un principio di **difesa a più livelli**, ciascuno indipendente dagli altri:
 
-1. **Password**: mai salvate in chiaro. Hashate con bcrypt (10 round) prima della scrittura su database; l'hash non lascia mai il server (le funzioni di conversione verso le risposte pubbliche, sezione [5](#5-architettura-generale), lo escludono sempre esplicitamente).
-2. **Sessione via cookie httpOnly**: il token JWT che identifica l'utente è impostato come cookie con flag `httpOnly` (illeggibile da JavaScript lato client, quindi immune a furto tramite script malevoli/XSS) e `secure` in produzione (trasmesso solo su HTTPS). In produzione l'attributo `SameSite=None` è necessario perché frontend (Vercel) e backend (Render) risiedono su domini diversi; in sviluppo locale si usa `SameSite=Lax`, meno permissivo ma sufficiente perché client e server condividono lo stesso host.
+1. **Password**: mai salvate in chiaro. Hashate con bcrypt (12 round) prima della scrittura su database; l'hash non lascia mai il server (le funzioni di conversione verso le risposte pubbliche, sezione [5](#5-architettura-generale), lo escludono sempre esplicitamente).
+2. **Sessione via cookie httpOnly**: il token JWT che identifica l'utente è impostato come cookie con flag `httpOnly` (illeggibile da JavaScript lato client, quindi immune a furto tramite script malevoli/XSS) e `secure` in produzione (trasmesso solo su HTTPS). Il cookie è `SameSite=Lax` in tutti gli ambienti: in produzione il frontend inoltra le chiamate `/api/*` al backend tramite un rewrite di Vercel (`vercel.json`), così browser e API condividono lo stesso sito e il cookie è di prima parte. Questo evita di dipendere dai cookie di terze parti, bloccati da Safari, Firefox e dalla navigazione in incognito di Chrome.
 3. **Scadenza della sessione**: ogni token ha validità di 7 giorni, dopo i quali l'utente deve autenticarsi di nuovo.
 4. **Validazione rigorosa dell'input**: ogni endpoint che accetta dati in ingresso li valida con uno schema `zod` esplicito *prima* di eseguire qualunque logica; richieste malformate vengono rifiutate con un messaggio d'errore chiaro senza mai raggiungere il livello di business logic o il database.
 5. **Controllo dei permessi a due livelli**: `requireAuth` verifica che la richiesta provenga da un utente autenticato; `requireAdmin` (applicato in aggiunta, mai in sostituzione) verifica che quell'utente abbia ruolo amministratore. Gli endpoint di scrittura su corsi e lezioni richiedono sempre entrambi i controlli in sequenza.
 6. **Controllo di accesso ai contenuti a pagamento centralizzato**: come descritto in [5](#5-architettura-generale), un'unica funzione (`hasAccessToCourse`) decide se un utente può vedere le lezioni di un corso premium — **anche gli amministratori sono soggetti alla stessa regola**, scelta intenzionale per rispecchiare fedelmente il comportamento che avrà un utente pagante, senza percorsi privilegiati nascosti che potrebbero comportarsi diversamente in produzione rispetto a quanto verificato in test.
-7. **Rate limiting su autenticazione**: gli endpoint di login e registrazione sono limitati a 20 richieste per 15 minuti per indirizzo IP, per rendere impraticabili tentativi automatizzati di indovinare le password.
+7. **Rate limiting**: limitatori dedicati per autenticazione (login, registrazione, 2FA, cambio password), per upload di immagini e per la verifica pubblica dei certificati, più un limite generale su tutta l'API. Dietro Vercel, Cloudflare e Render l'indirizzo del client si ricava contando i salti di proxy fidati (`TRUST_PROXY_HOPS=4` in produzione), verificato leggendo l'IP registrato nei tentativi di accesso falliti.
 8. **CORS ristretto**: il backend accetta richieste solo dal dominio esplicitamente configurato come frontend autorizzato (variabile d'ambiente `FRONTEND_URL`), non da un'origine qualsiasi.
 9. **Upload immagini validati**: solo file PNG/JPEG/WEBP fino a 5 MB sono accettati, verificati sia per estensione che per tipo MIME dichiarato, prima di essere inoltrati a Cloudinary.
 10. **Nessun segreto nel codice sorgente**: tutte le credenziali (stringa di connessione al database, chiave segreta JWT, credenziali Cloudinary) sono lette esclusivamente da variabili d'ambiente, mai scritte nel repository. I file `.env` locali sono esclusi dal controllo di versione fin dal primo commit del progetto.
 
-Un audit mirato del codice esistente, con le lacune ancora da colmare prima di collegare un fornitore di pagamento reale (header di sicurezza HTTP, rate limiting esteso, revoca dei token, 2FA per l'amministratore) e i punti di forza da non far regredire, è documentato separatamente nei [requisiti di sicurezza](requisiti-sicurezza.md).
+11. **Revoca delle sessioni**: ogni utente ha un `tokenVersion` incluso nel JWT e verificato a ogni richiesta; cambiare la password lo incrementa e invalida le altre sessioni.
+12. **2FA per l'amministratore**: l'account `admin` richiede un secondo fattore TOTP (con codici di recupero) al login.
+13. **Registro dei login falliti**: i tentativi falliti sono salvati in `LoginAttempt` (email e IP) e, oltre una soglia, l'utente riceve un avviso in app.
+14. **Header di sicurezza**: `helmet` sul backend (la CSP è disattivata perché risponde solo JSON) e, sul frontend, `Referrer-Policy`, `Permissions-Policy` e una Content-Security-Policy per le pagine HTML. La CSP è in modalità `Report-Only` finché non è verificata su tutte le pagine con contenuti incorporati (video).
+15. **Dipendenze**: `npm audit` senza vulnerabilità note e aggiornamenti settimanali proposti da Dependabot (`.github/dependabot.yml`).
+
+L'audit di sicurezza del codice, con lo stato di ogni punto e i criteri da non far regredire, è nei [requisiti di sicurezza](requisiti-sicurezza.md).
 
 ---
 
 ## 10. Funzionalità realizzate
 
 ### 10.1 Autenticazione e profilo
+La home presenta la piattaforma con una finestra sul ponte di comando, animata su canvas e disattivata quando il sistema chiede di ridurre le animazioni. Un banner raccoglie il consenso ai cookie: Google Analytics viene caricato solo con il consenso analitico e rimosso se viene revocato.
+
 Registrazione con validazione (email valida, password minimo 8 caratteri), login, logout, sessione persistente. Al primo accesso viene generata automaticamente una notifica di benvenuto. L'utente può modificare in ogni momento nome, biografia, lingua preferita, tema e avatar (con upload immagine); le preferenze di lingua/tema scelte anche **prima della registrazione** (come visitatore) vengono preservate al momento della creazione dell'account, invece di essere sovrascritte dai valori di default.
 
 ### 10.2 Corsi e lezioni
-Un amministratore può creare, modificare ed eliminare corsi (titolo, descrizione, copertina, livello di accesso free/premium) e le relative lezioni, ciascuna composta da un titolo, un ordine di visualizzazione, un video embeddato (YouTube/Vimeo), una descrizione testuale e/o un link a un notebook Jupyter ospitato su GitHub, per cui l'interfaccia genera automaticamente un pulsante "Apri in Colab" che porta direttamente all'esecuzione del notebook su Google Colab. Gli utenti possono cercare i corsi per titolo/descrizione con una barra di ricerca in tempo reale.
+Un amministratore può creare, modificare ed eliminare corsi (codice, titolo e descrizione in italiano e spagnolo, copertina, livello di accesso free/premium, stato bozza/pubblicato) e le relative lezioni. Ogni lezione ha un ordine, un titolo, la teoria in testo, un video embeddato (YouTube/Vimeo) e due notebook Jupyter ospitati su GitHub (lezione ed esercizi), ciascuno con versione italiana e spagnola: per i notebook l'interfaccia genera un pulsante "Apri in Colab". Se manca un contenuto nella lingua scelta, viene mostrata l'altra. Gli utenti possono cercare i corsi per titolo/descrizione con una barra di ricerca in tempo reale.
 
 ### 10.3 Avanzamento e certificati
 Ogni utente può segnare (e annullare) il completamento di singole lezioni; la percentuale di avanzamento del corso viene calcolata automaticamente. Al raggiungimento del 100% viene generato un certificato PDF (nome utente, titolo corso, data, codice di verifica univoco) scaricabile dall'utente, e viene inviata una notifica di corso completato. Il certificato è verificabile pubblicamente tramite un link dedicato (`/verify/:id`), consultabile anche da chi non ha un account — utile ad esempio per un datore di lavoro che voglia confermare l'autenticità di un attestato ricevuto da un candidato.
 
-### 10.4 Contenuti premium (predisposizione)
+### 10.4 Percorsi formativi
+Un percorso è una sequenza ordinata di corsi con un obiettivo e un pubblico (titolo, descrizione e destinatari in italiano e spagnolo, ore e settimane stimate, livello di accesso, stato bozza/pubblicato). Ogni passo indica il corso, l'ordine, se è facoltativo, l'eventuale elenco di lezioni da seguire e una nota. Gli utenti consultano l'elenco dei percorsi e il dettaglio, con l'avanzamento complessivo calcolato dai progressi sui singoli corsi (`/api/paths/:id/progress`). La creazione, la modifica e l'eliminazione sono riservate agli amministratori. Il modello dei dati e il piano di popolamento sono descritti nello [schema dei percorsi](schema-percorsi-formativi.md).
+
+### 10.5 Contenuti premium (predisposizione)
 I corsi possono essere marcati come `premium`: un utente senza abbonamento attivo ne vede solo titolo, descrizione e copertina, con un invito a scoprire i piani, ma non le lezioni. Un amministratore può assegnare manualmente un abbonamento (con scadenza opzionale) a un utente tramite un'operazione dedicata; alla scadenza, l'accesso torna automaticamente in sola anteprima. **Nessun pagamento reale è integrato nell'MVP**: l'architettura è predisposta per innestare in futuro un provider di pagamento (Stripe o simili) senza modificare la logica di autorizzazione già esistente e verificata.
 
-### 10.5 Bacheca e notifiche
+### 10.6 Bacheca e notifiche
 Un'area di discussione comune dove ogni utente autenticato può pubblicare post e commentare quelli altrui; ogni post e commento è visibile immediatamente a tutti gli utenti. Chi riceve un commento su un proprio post riceve una notifica; le notifiche (contatore non lette, elenco, segna come letta/tutte come lette) sono aggiornate con un meccanismo di polling automatico ogni 30 secondi e al ritorno di focus sulla finestra del browser, senza necessità di infrastruttura di messaggistica in tempo reale (WebSocket), scelta coerente con la scala di un MVP.
 
-### 10.6 Internazionalizzazione e tema
+### 10.7 Internazionalizzazione e tema
 Interfaccia interamente disponibile in italiano e spagnolo, con cambio lingua immediato (nessun ricaricamento di pagina) e persistente: salvato sul profilo per gli utenti registrati, in memoria locale del browser per i visitatori. Stessa logica per il tema chiaro/scuro (scuro di default, coerente con l'estetica "plancia di comando" del prodotto).
 
 ---
@@ -419,8 +457,10 @@ L'applicazione è distribuita su tre servizi cloud indipendenti, ciascuno respon
 
 - **Instradamento SPA su Vercel**: è stata aggiunta una regola di *rewrite* (`vercel.json`) che reindirizza qualunque percorso non corrispondente a un file statico verso `index.html`, necessaria perché il routing delle pagine (es. `/courses/123`, `/register`) è gestito interamente lato client da React Router: senza questa regola, l'apertura diretta di un URL diverso dalla home restituiva un errore 404 dal server di hosting.
 - **Build in due passaggi sul backend**: Render esegue `npm install && npm run build` (che compila TypeScript in JavaScript nella cartella `dist/`) seguito da `npm start` (che avvia il codice già compilato) — a differenza dell'ambiente di sviluppo, che esegue TypeScript direttamente senza compilazione preventiva, per privilegiare l'iterazione rapida.
-- **CORS configurato per dominio incrociato**: essendo frontend e backend su due domini distinti, il backend è configurato per accettare esplicitamente richieste (incluse quelle con invio di cookie) solo dal dominio Vercel di produzione.
-- **Variabili d'ambiente** impostate direttamente nei pannelli di controllo di Render e Vercel (mai nel codice sorgente): stringa di connessione MongoDB, chiave segreta JWT generata appositamente per la produzione (diversa da quella usata in sviluppo), credenziali Cloudinary, URL reciproci di frontend e backend.
+- **Inoltro delle chiamate API**: una regola di *rewrite* in `vercel.json` inoltra `/api/*` al backend su Render, e `VITE_API_URL` resta non impostata in produzione. Il browser parla con un solo sito, quindi il cookie di sessione è di prima parte. Il backend continua ad accettare richieste dal solo dominio indicato in `FRONTEND_URL` (CORS).
+- **Header e CSP sul frontend**: `vercel.json` imposta anche `Referrer-Policy`, `Permissions-Policy` e una Content-Security-Policy in modalità `Report-Only`.
+- **Proxy fidati**: il backend usa `TRUST_PROXY_HOPS=4` (Vercel, Cloudflare, Render) per ricavare l'IP reale del client.
+- **Variabili d'ambiente** impostate direttamente nei pannelli di controllo di Render e Vercel (mai nel codice sorgente): stringa di connessione MongoDB, chiave segreta JWT generata appositamente per la produzione (diversa da quella usata in sviluppo), credenziali Cloudinary, l'URL del frontend, il numero di salti di proxy fidati e, sul frontend, l'ID facoltativo di Google Analytics.
 
 **Nota operativa sul piano gratuito di Render**: dopo circa 15 minuti di inattività il servizio backend entra in stato di sospensione; la prima richiesta successiva a un periodo di inattività richiede 30-60 secondi per "risvegliare" il servizio, dopodiché torna a rispondere normalmente. È una caratteristica nota del piano gratuito, non un malfunzionamento, ed è risolvibile passando a un piano a pagamento qualora il traffico reale lo giustificasse.
 
@@ -445,7 +485,9 @@ Il progetto è **completo rispetto al perimetro dell'MVP concordato** ed è attu
 
 Punti aperti, non bloccanti per l'utilizzo attuale, da considerare per l'evoluzione successiva:
 
-- **Repository pubblico per i materiali didattici**: i notebook Jupyter (`.ipynb`) dei corsi vanno caricati su un repository GitHub pubblico dedicato, i cui link vengono poi incollati nel pannello di amministrazione di ArcadIA; questo repository non è ancora stato creato, in attesa dei primi contenuti reali da pubblicare.
+- **Popolamento dei contenuti**: l'infrastruttura dei percorsi è realizzata, ma la piattaforma non contiene ancora corsi reali. Restano da creare il repository pubblico dei notebook (Colab non apre repository privati), lo script di importazione dei corsi e dei percorsi e la pubblicazione a ondate. Il piano è nello [schema dei percorsi](schema-percorsi-formativi.md).
+- **Content-Security-Policy**: è in modalità `Report-Only`. Va resa bloccante dopo averla verificata su una lezione con video reale.
+- **Download del certificato dopo il rewrite delle API**: non ancora verificato in produzione, perché non ci sono corsi da completare.
 - **Monetizzazione reale**: come indicato in fase di specifica, l'MVP predispone l'architettura per contenuti premium ma non integra alcun sistema di pagamento reale; l'assegnazione degli abbonamenti resta oggi un'operazione manuale dell'amministratore. L'introduzione di un provider di pagamento reale (es. Stripe) è stata volutamente rimandata a una fase successiva, per validare prima il modello con l'assegnazione manuale.
 - **Limite del piano gratuito Render**: da tenere presente nell'uso quotidiano (vedi sezione [13](#13-deployment-e-infrastruttura-di-produzione)); non richiede interventi se il traffico resta contenuto.
 

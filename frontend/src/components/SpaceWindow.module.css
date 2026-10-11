@@ -1,20 +1,10 @@
-/* Finestra del ponte di comando: telaio rettangolare smussato, vetro diviso
-   da montanti in grandi riquadri, pianeta a orizzonte curvo. */
+/* Finestra sullo spazio a tutta larghezza (hero): vetro tra due traverse
+   metalliche, divisa da montanti in grandi riquadri, pianeta a orizzonte curvo. */
 .window {
-  --bevel: clamp(16px, 4vmin, 40px);
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: min(96%, 1180px);
-  height: min(92%, 640px);
-  transform: translate(-50%, -50%);
-  padding: clamp(8px, 1.6vmin, 16px);
-  background: linear-gradient(160deg, oklch(0.34 0.015 250), oklch(0.14 0.012 250) 50%, oklch(0.26 0.015 250));
-  clip-path: polygon(
-    var(--bevel) 0, calc(100% - var(--bevel)) 0, 100% var(--bevel),
-    100% calc(100% - var(--bevel)), calc(100% - var(--bevel)) 100%,
-    var(--bevel) 100%, 0 calc(100% - var(--bevel)), 0 var(--bevel)
-  );
+  inset: 0;
+  border-block: clamp(4px, 0.8vmin, 8px) solid transparent;
+  border-image: linear-gradient(90deg, oklch(0.14 0.012 250), oklch(0.36 0.015 250) 50%, oklch(0.14 0.012 250)) 1;
   pointer-events: none;
 }
 
@@ -24,11 +14,6 @@
   height: 100%;
   overflow: hidden;
   background: radial-gradient(ellipse at 50% 60%, oklch(0.1 0.03 265), oklch(0.04 0.015 260));
-  clip-path: polygon(
-    var(--bevel) 0, calc(100% - var(--bevel)) 0, 100% var(--bevel),
-    100% calc(100% - var(--bevel)), calc(100% - var(--bevel)) 100%,
-    var(--bevel) 100%, 0 calc(100% - var(--bevel)), 0 var(--bevel)
-  );
 }
 
 .nebula {
@@ -44,10 +29,10 @@
 /* Grande pianeta: solo l'arco superiore è visibile dal basso */
 .planet {
   position: absolute;
-  width: 190%;
+  width: 150%;
   aspect-ratio: 1;
-  left: -45%;
-  top: 68%;
+  left: -25%;
+  top: 80%;
   border-radius: 50%;
   background:
     radial-gradient(ellipse 60% 18% at 50% 3%, oklch(0.95 0.02 230 / 0.55), transparent 70%),
@@ -71,36 +56,50 @@
   background: linear-gradient(120deg, oklch(1 0 0 / 0.08) 0%, transparent 30%);
 }
 
-/* Montanti: dividono il vetro in grandi riquadri */
-.strut {
+/* Livello HUD: linee sottili ciano sopra il vetro, solo decorativo */
+.hud {
+  --hud-line: oklch(0.8 0.1 215 / 0.45);
   position: absolute;
-  background: linear-gradient(90deg, oklch(0.1 0.01 250), oklch(0.28 0.012 250), oklch(0.1 0.01 250));
-  box-shadow: 0 0 6px oklch(0 0 0 / 0.7);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: var(--hud-line);
+  stroke-width: 1;
 }
 
-.strutV1,
-.strutV2 {
-  top: 0;
-  bottom: 0;
-  width: clamp(4px, 0.7vmin, 8px);
+.line { stroke: var(--hud-line); }
+.lineFaint { stroke: oklch(0.8 0.1 215 / 0.2); }
+.lineStrong { stroke: oklch(0.85 0.12 215 / 0.7); stroke-width: 1.5; }
+.dashed { stroke-dasharray: 3 9; }
+.dot { fill: oklch(0.9 0.12 215); stroke: none; }
+.panel { stroke: oklch(0.8 0.1 215 / 0.35); fill: oklch(0.1 0.03 250 / 0.35); }
+.bar { fill: oklch(0.8 0.1 215 / 0.5); stroke: none; transform-box: fill-box; transform-origin: bottom; animation: barPulse 6s ease-in-out infinite; }
+.readout text { fill: oklch(0.8 0.1 215 / 0.6); stroke: none; font: 11px var(--font-label); letter-spacing: 0.08em; }
+
+.spinSlow,
+.spinReverse,
+.sweep,
+.orbit,
+.orbitReverse {
+  transform-box: view-box;
+  transform-origin: 600px 250px;
 }
 
-.strutV1 { left: 33%; }
-.strutV2 { left: 67%; }
+.orbit,
+.orbitReverse { transform-origin: 0 0; transform-box: view-box; }
 
-.strutH {
-  left: 0;
-  right: 0;
-  top: 42%;
-  height: clamp(3px, 0.5vmin, 6px);
-  background: linear-gradient(180deg, oklch(0.1 0.01 250), oklch(0.26 0.012 250), oklch(0.1 0.01 250));
-}
+.spinSlow { animation: spin 120s linear infinite; }
+.spinReverse { animation: spin 180s linear infinite reverse; }
+.sweep { animation: spin 14s linear infinite; }
+.orbit { animation: spin 40s linear infinite; }
+.orbitReverse { animation: spin 65s linear infinite reverse; }
 
 /* Fila di spie sul bordo inferiore del telaio */
 .console {
   position: absolute;
-  left: 30%;
-  right: 30%;
+  left: 35%;
+  right: 35%;
   bottom: 2px;
   height: clamp(3px, 0.6vmin, 6px);
   background: repeating-linear-gradient(90deg, var(--color-accent) 0 8px, transparent 8px 18px);
@@ -117,9 +116,26 @@
   to { transform: translateY(-2%); }
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes barPulse {
+  0%, 100% { transform: scaleY(0.25); }
+  35% { transform: scaleY(0.9); }
+  65% { transform: scaleY(0.5); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .nebula,
-  .planet {
+  .planet,
+  .spinSlow,
+  .spinReverse,
+  .sweep,
+  .orbit,
+  .orbitReverse,
+  .bar {
     animation: none;
   }
+  .bar { transform: scaleY(0.6); }
 }

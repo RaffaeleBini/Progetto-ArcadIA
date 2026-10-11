@@ -17,7 +17,55 @@
   },
   "home": {
     "tagline": "Plataforma de formación online sobre Inteligencia Artificial.",
-    "cta": "Empezar"
+    "cta": "Empezar",
+    "whatIs": {
+      "title": "Qué es ArcadIA",
+      "text": "ArcadIA es una plataforma de formación online sobre Inteligencia Artificial. Los cursos se organizan en lecciones y se agrupan en rutas, que se siguen en el orden indicado.",
+      "point1": "Contenidos en italiano y español",
+      "point2": "Teoría y ejercicios prácticos en cada lección",
+      "point3": "Certificado de finalización verificable"
+    },
+    "how": {
+      "title": "Cómo funciona",
+      "step1Title": "Elige una ruta",
+      "step1Text": "Cada ruta indica a quién va dirigido, cuánto dura y en qué orden seguir los cursos.",
+      "step2Title": "Estudia lección a lección",
+      "step2Text": "Todo el material didáctico para avanzar a tu ritmo con teoría y práctica",
+      "step3Title": "Sigue tu progreso",
+      "step3Text": "Marca las lecciones completadas y consulta el avance del curso y de la ruta.",
+      "step4Title": "Obtén el certificado",
+      "step4Text": "Al terminar el curso descargas un PDF con un código de verificación."
+    },
+    "lesson": {
+      "title": "Dentro de una lección",
+      "theoryTitle": "Teoría",
+      "theoryText": "El texto de la lección, para leer a tu ritmo.",
+      "notebookTitle": "Notebook",
+      "notebookText": "El código de la lección, para ejecutar en Google Colab sin instalar nada.",
+      "exercisesTitle": "Ejercicios",
+      "exercisesText": "Un segundo notebook para poner en práctica lo aprendido.",
+      "videoTitle": "Vídeo",
+      "videoText": "El vídeo de la lección, para seguir el tema paso a paso."
+    },
+    "certificate": {
+      "title": "Un certificado verificable",
+      "text": "Al completar un curso recibes un certificado en PDF con tu nombre y un código único. Cualquiera puede comprobar su autenticidad desde una página pública, incluso sin cuenta.",
+      "alt": "Ejemplo de certificado de finalización"
+    },
+    "audience": {
+      "title": "Para quién es",
+      "beginnerTitle": "Si partes de cero",
+      "beginnerText": "Rutas introductorias para entender los conceptos básicos antes de escribir código.",
+      "codersTitle": "Si sabes programar",
+      "codersText": "Cursos prácticos de datos, machine learning y deep learning, con notebooks para ejecutar.",
+      "advancedTitle": "Si quieres profundizar",
+      "advancedText": "Temas avanzados para quien ya tiene la base y busca una ruta estructurada."
+    },
+    "final": {
+      "title": "¿Listo para empezar?",
+      "text": "Crea una cuenta y elige tu primera ruta."
+    },
+    "intro": "Si tú también soñabas con explorar el espacio a bordo de una nave o con pilotar un robot y luchar por un mundo mejor, ¡estás en el lugar adecuado!"
   },
   "auth": {
     "registerTitle": "Regístrate",

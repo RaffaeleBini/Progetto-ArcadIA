@@ -115,9 +115,74 @@ export default function SpaceWindow() {
         <div className={styles.planet} />
         <canvas ref={canvasRef} className={styles.stars} />
         <div className={styles.reflection} />
-        <div className={`${styles.strut} ${styles.strutV1}`} />
-        <div className={`${styles.strut} ${styles.strutV2}`} />
-        <div className={`${styles.strut} ${styles.strutH}`} />
+        <svg
+          className={styles.hud}
+          viewBox="0 0 1200 500"
+          preserveAspectRatio="xMidYMid slice"
+          focusable="false"
+        >
+          {/* mirino centrale */}
+          <line className={styles.line} x1="600" y1="0" x2="600" y2="500" />
+          <line className={styles.line} x1="0" y1="250" x2="1200" y2="250" />
+
+          {/* cerchi concentrici, i due esterni tratteggiati e in lenta rotazione */}
+          <circle className={styles.line} cx="600" cy="250" r="55" />
+          <circle className={styles.line} cx="600" cy="250" r="100" />
+          <circle className={`${styles.line} ${styles.dashed} ${styles.spinSlow}`} cx="600" cy="250" r="145" />
+          <circle className={`${styles.line} ${styles.dashed} ${styles.spinReverse}`} cx="600" cy="250" r="190" />
+
+          {/* scansione radar */}
+          <g className={styles.sweep}>
+            <line className={styles.lineStrong} x1="600" y1="250" x2="600" y2="60" />
+          </g>
+
+          {/* orbite ellittiche con un punto in movimento */}
+          <g transform="translate(600 250) rotate(-22) scale(1 0.42)">
+            <circle className={styles.line} r="360" vectorEffect="non-scaling-stroke" />
+            <g className={styles.orbit}>
+              <circle className={styles.dot} cx="360" cy="0" r="5" />
+            </g>
+          </g>
+          <g transform="translate(600 250) rotate(14) scale(1 0.3)">
+            <circle className={styles.line} r="300" vectorEffect="non-scaling-stroke" />
+            <g className={styles.orbitReverse}>
+              <circle className={styles.dot} cx="300" cy="0" r="5" />
+            </g>
+          </g>
+
+          {/* pannello dati in basso a sinistra: barre che variano */}
+          <g transform="translate(60 330)">
+            <rect className={styles.panel} x="-10" y="-10" width="190" height="110" />
+            {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+              <rect
+                key={i}
+                className={styles.bar}
+                style={{ animationDelay: `${-i * 0.9}s` }}
+                x={i * 22}
+                y="0"
+                width="12"
+                height="80"
+              />
+            ))}
+          </g>
+
+          {/* riquadro in alto a destra */}
+          <g transform="translate(990 70)">
+            <rect className={styles.panel} x="0" y="0" width="150" height="110" />
+            <line className={styles.lineFaint} x1="50" y1="0" x2="50" y2="110" />
+            <line className={styles.lineFaint} x1="100" y1="0" x2="100" y2="110" />
+            <line className={styles.lineFaint} x1="0" y1="37" x2="150" y2="37" />
+            <line className={styles.lineFaint} x1="0" y1="73" x2="150" y2="73" />
+            <circle className={styles.line} cx="75" cy="55" r="34" />
+          </g>
+
+          {/* righe di dati in alto a sinistra */}
+          <g className={styles.readout} transform="translate(60 84)">
+            <text y="0">SYS 0042 · 7F3A</text>
+            <text y="16">LAT 41.9028 · LON 12.4964</text>
+            <text y="32">ORB 0386 · 2.41 AU</text>
+          </g>
+        </svg>
       </div>
       <div className={styles.console} />
     </div>

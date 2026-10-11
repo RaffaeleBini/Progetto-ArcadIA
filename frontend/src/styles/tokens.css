@@ -8,6 +8,8 @@
   --color-text-primary: oklch(0.97 0.005 250);
   --color-text-secondary: oklch(0.55 0.01 250);
   --color-border: oklch(0.85 0.19 98 / 0.25);
+  --grid-line: oklch(0.82 0.13 85 / 0.07);
+  --grid-size: 40px;
 
   /* Tipografia (fallback Google Fonts finché exan-3 / nidus_sansregular non sono disponibili) */
   --font-heading: "Orbitron", sans-serif;
@@ -38,5 +40,6 @@
   --color-text-primary: oklch(0.20 0.02 250);
   --color-text-secondary: oklch(0.42 0.01 250);
   --color-border: oklch(0.65 0.19 98 / 0.35);
+  --grid-line: oklch(0.65 0.15 85 / 0.12);
   --shadow-glow: 0 0 10px oklch(0.65 0.19 98 / 0.4);
 }

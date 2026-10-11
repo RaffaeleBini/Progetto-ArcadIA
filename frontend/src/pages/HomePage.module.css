@@ -1,11 +1,16 @@
 .home {
+  min-height: 100%;
+}
+
+/* Hero a tutta larghezza: la finestra sullo spazio riempie il riquadro */
+.hero {
   position: relative;
   overflow: hidden;
-  min-height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-8);
+  min-height: clamp(440px, 68vh, 640px);
+  padding: var(--space-8) var(--space-4);
 }
 
 .frame {
@@ -35,4 +40,137 @@
 .subtitle {
   color: oklch(0.85 0.01 250);
   max-width: 480px;
+}
+
+.content {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-8) * 2);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sectionTitle {
+  font-size: 1.4rem;
+  color: var(--color-accent);
+}
+
+.lead {
+  max-width: 70ch;
+  color: var(--color-text-primary);
+}
+
+.points {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  color: var(--color-text-primary);
+}
+
+.whatIs {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+/* Frase di apertura: centrata e larga, per non andare a capo a metà pagina */
+.intro {
+  max-width: 760px;
+  margin: 0 auto;
+  padding-top: var(--space-6);
+  border-top: 2px solid var(--color-accent);
+  text-align: center;
+  font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+  line-height: 1.5;
+  color: var(--color-text-primary);
+}
+
+.points li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.points svg,
+.step svg,
+.card svg {
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.steps,
+.cards {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: var(--space-4);
+}
+
+.step,
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.step p,
+.card p {
+  color: var(--color-text-secondary);
+}
+
+.stepNumber {
+  font-family: var(--font-label);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--color-accent);
+}
+
+.cardTitle {
+  font-size: 1rem;
+}
+
+.certificate {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.certificateImage {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.final {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-8);
+  text-align: center;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+@media (max-width: 720px) {
+  .certificate,
+  .whatIs {
+    grid-template-columns: 1fr;
+  }
 }

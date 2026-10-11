@@ -9,7 +9,7 @@ interface Star {
 
 const STAR_COUNT = 220;
 
-// Oblò di astronave sulla home: campo di stelle in parallasse disegnato su
+// Finestra del ponte di comando sulla home: campo di stelle in parallasse disegnato su
 // canvas (nessuna dipendenza), con nebulosa e pianeta in CSS. L'animazione si
 // ferma con prefers-reduced-motion, a scheda nascosta e fuori viewport.
 export default function SpaceWindow() {
@@ -27,22 +27,25 @@ export default function SpaceWindow() {
       z: Math.random(),
     }));
 
-    let size = 0;
+    let w = 0;
+    let h = 0;
     let raf = 0;
     let visible = true;
     let last = 0;
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      size = canvas.clientWidth;
-      canvas.width = size * dpr;
-      canvas.height = size * dpr;
+      w = canvas.clientWidth;
+      h = canvas.clientHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
     const draw = (advance: number) => {
-      ctx.clearRect(0, 0, size, size);
-      const half = size / 2;
+      ctx.clearRect(0, 0, w, h);
+      const cx = w / 2;
+      const cy = h / 2;
       for (const s of stars) {
         s.z -= advance;
         if (s.z <= 0.02) {
@@ -51,9 +54,9 @@ export default function SpaceWindow() {
           s.z = 1;
         }
         // proiezione prospettica: le stelle vicine escono dal centro più in fretta
-        const px = half + (s.x / s.z) * half * 0.35;
-        const py = half + (s.y / s.z) * half * 0.35;
-        if (px < 0 || px > size || py < 0 || py > size) {
+        const px = cx + (s.x / s.z) * cx * 0.35;
+        const py = cy + (s.y / s.z) * cy * 0.35;
+        if (px < 0 || px > w || py < 0 || py > h) {
           s.z = 1;
           continue;
         }
@@ -106,13 +109,17 @@ export default function SpaceWindow() {
   }, []);
 
   return (
-    <div className={styles.porthole} aria-hidden="true">
+    <div className={styles.window} aria-hidden="true">
       <div className={styles.glass}>
         <div className={styles.nebula} />
         <div className={styles.planet} />
         <canvas ref={canvasRef} className={styles.stars} />
         <div className={styles.reflection} />
+        <div className={`${styles.strut} ${styles.strutV1}`} />
+        <div className={`${styles.strut} ${styles.strutV2}`} />
+        <div className={`${styles.strut} ${styles.strutH}`} />
       </div>
+      <div className={styles.console} />
     </div>
   );
 }

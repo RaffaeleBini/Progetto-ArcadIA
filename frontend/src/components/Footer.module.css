@@ -1,0 +1,14 @@
+.footer {
+  padding: var(--space-4) var(--space-8);
+  text-align: center;
+}
+
+.link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  text-decoration: underline;
+  cursor: pointer;
+}

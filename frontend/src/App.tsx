@@ -2,6 +2,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { PreferencesProvider } from "./context/PreferencesContext";
 import { NotificationsProvider } from "./context/NotificationsContext";
+import { ConsentProvider } from "./context/ConsentContext";
+import AnalyticsRouteTracker from "./components/AnalyticsRouteTracker";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
@@ -26,40 +28,43 @@ import NotificationsPage from "./pages/NotificationsPage";
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <PreferencesProvider>
-          <NotificationsProvider>
-            <Routes>
-              <Route element={<Layout />}>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/pricing" element={<PricingPage />} />
-                <Route path="/verify/:certificateId" element={<VerifyCertificatePage />} />
-                <Route element={<ProtectedRoute />}>
-                  <Route path="/dashboard" element={<DashboardPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="/courses" element={<CoursesPage />} />
-                  <Route path="/courses/:id" element={<CourseDetailPage />} />
-                  <Route path="/courses/:id/lessons/:lessonId" element={<LessonPage />} />
-                  <Route path="/paths" element={<PathsPage />} />
-                  <Route path="/paths/:id" element={<PathDetailPage />} />
-                  <Route path="/board" element={<BoardPage />} />
-                  <Route path="/notifications" element={<NotificationsPage />} />
-                  <Route element={<AdminRoute />}>
-                    <Route path="/courses/new" element={<CourseFormPage />} />
-                    <Route path="/courses/:id/edit" element={<CourseFormPage />} />
-                    <Route path="/courses/:id/lessons/new" element={<LessonFormPage />} />
-                    <Route path="/courses/:id/lessons/:lessonId/edit" element={<LessonFormPage />} />
-                    <Route path="/paths/new" element={<PathFormPage />} />
-                    <Route path="/paths/:id/edit" element={<PathFormPage />} />
+      <ConsentProvider>
+        <AuthProvider>
+          <PreferencesProvider>
+            <NotificationsProvider>
+              <AnalyticsRouteTracker />
+              <Routes>
+                <Route element={<Layout />}>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/pricing" element={<PricingPage />} />
+                  <Route path="/verify/:certificateId" element={<VerifyCertificatePage />} />
+                  <Route element={<ProtectedRoute />}>
+                    <Route path="/dashboard" element={<DashboardPage />} />
+                    <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/courses" element={<CoursesPage />} />
+                    <Route path="/courses/:id" element={<CourseDetailPage />} />
+                    <Route path="/courses/:id/lessons/:lessonId" element={<LessonPage />} />
+                    <Route path="/paths" element={<PathsPage />} />
+                    <Route path="/paths/:id" element={<PathDetailPage />} />
+                    <Route path="/board" element={<BoardPage />} />
+                    <Route path="/notifications" element={<NotificationsPage />} />
+                    <Route element={<AdminRoute />}>
+                      <Route path="/courses/new" element={<CourseFormPage />} />
+                      <Route path="/courses/:id/edit" element={<CourseFormPage />} />
+                      <Route path="/courses/:id/lessons/new" element={<LessonFormPage />} />
+                      <Route path="/courses/:id/lessons/:lessonId/edit" element={<LessonFormPage />} />
+                      <Route path="/paths/new" element={<PathFormPage />} />
+                      <Route path="/paths/:id/edit" element={<PathFormPage />} />
+                    </Route>
                   </Route>
                 </Route>
-              </Route>
-            </Routes>
-          </NotificationsProvider>
-        </PreferencesProvider>
-      </AuthProvider>
+              </Routes>
+            </NotificationsProvider>
+          </PreferencesProvider>
+        </AuthProvider>
+      </ConsentProvider>
     </BrowserRouter>
   );
 }

@@ -3,12 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { getApiErrorMessage } from "../api/client";
+import { useSeo } from "../hooks/useSeo";
 import styles from "./AuthForm.module.css";
 
 export default function LoginPage() {
   const { login, verifyTwoFactor } = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  useSeo({ title: t("seo.login.title"), description: t("seo.login.description"), indexable: false });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);

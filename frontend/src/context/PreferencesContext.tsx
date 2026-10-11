@@ -48,6 +48,7 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     i18n.changeLanguage(language);
+    document.documentElement.lang = language;
   }, [language]);
 
   useEffect(() => {

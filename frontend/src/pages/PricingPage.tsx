@@ -1,9 +1,11 @@
 import { useTranslation } from "react-i18next";
 import { Check, Lock } from "lucide-react";
+import { useSeo } from "../hooks/useSeo";
 import styles from "./PricingPage.module.css";
 
 export default function PricingPage() {
   const { t } = useTranslation();
+  useSeo({ title: t("seo.pricing.title"), description: t("seo.pricing.description") });
 
   return (
     <div className={styles.page}>

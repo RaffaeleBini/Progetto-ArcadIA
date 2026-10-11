@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { usePreferences } from "../context/PreferencesContext";
 import { getApiErrorMessage } from "../api/client";
+import { useSeo } from "../hooks/useSeo";
 import styles from "./AuthForm.module.css";
 
 export default function RegisterPage() {
@@ -11,6 +12,7 @@ export default function RegisterPage() {
   const { language, theme } = usePreferences();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  useSeo({ title: t("seo.register.title"), description: t("seo.register.description"), indexable: false });
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

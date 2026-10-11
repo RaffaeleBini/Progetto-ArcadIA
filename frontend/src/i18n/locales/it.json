@@ -195,5 +195,42 @@
     "premiumFeature1": "Tutto il piano Free",
     "premiumFeature2": "Accesso ai corsi avanzati riservati",
     "note": "Per l'MVP non è attivo nessun pagamento reale: l'accesso Premium viene assegnato manualmente dall'amministratore."
+  },
+  "seo": {
+    "home": {
+      "title": "ArcadIA — Formazione online sull'Intelligenza Artificiale",
+      "description": "ArcadIA è la piattaforma di formazione online sull'Intelligenza Artificiale: corsi strutturati in lezioni, notebook pratici e certificato di completamento verificabile."
+    },
+    "pricing": {
+      "title": "Piani e prezzi — ArcadIA",
+      "description": "Scopri i piani ArcadIA: accesso gratuito a tutti i corsi base e piano Premium per i corsi avanzati di Intelligenza Artificiale."
+    },
+    "login": {
+      "title": "Accedi — ArcadIA",
+      "description": "Accedi al tuo account ArcadIA per continuare i corsi di Intelligenza Artificiale e tenere traccia dei tuoi progressi."
+    },
+    "register": {
+      "title": "Registrati — ArcadIA",
+      "description": "Crea gratuitamente un account ArcadIA e inizia a seguire i corsi di Intelligenza Artificiale."
+    },
+    "verify": {
+      "title": "Verifica certificato — ArcadIA",
+      "description": "Verifica l'autenticità di un certificato di completamento rilasciato da ArcadIA."
+    }
+  },
+  "cookies": {
+    "message": "Usiamo cookie tecnici necessari al funzionamento del sito e, solo con il tuo consenso, cookie analitici per capire come viene usato ArcadIA.",
+    "accept": "Accetta",
+    "reject": "Rifiuta",
+    "configure": "Configura",
+    "settingsTitle": "Preferenze cookie",
+    "necessaryTitle": "Cookie necessari",
+    "necessaryDescription": "Indispensabili per accedere e usare ArcadIA (es. sessione di login). Non possono essere disattivati.",
+    "alwaysActive": "Sempre attivi",
+    "analyticsTitle": "Cookie analitici",
+    "analyticsDescription": "Ci aiutano a capire come viene usata la piattaforma (Google Analytics). Attivi solo se li autorizzi.",
+    "cancel": "Annulla",
+    "save": "Salva preferenze",
+    "manageLink": "Gestisci i cookie"
   }
 }

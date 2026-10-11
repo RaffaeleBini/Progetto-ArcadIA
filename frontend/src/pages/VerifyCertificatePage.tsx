@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Award, ShieldX } from "lucide-react";
 import { verifyCertificate, type CertificateVerification } from "../api/verify";
 import { usePreferences } from "../context/PreferencesContext";
+import { useSeo } from "../hooks/useSeo";
 import styles from "./VerifyCertificatePage.module.css";
 
 const DATE_LOCALES: Record<string, string> = { it: "it-IT", es: "es-ES" };
@@ -12,6 +13,7 @@ export default function VerifyCertificatePage() {
   const { certificateId } = useParams<{ certificateId: string }>();
   const { t } = useTranslation();
   const { language } = usePreferences();
+  useSeo({ title: t("seo.verify.title"), description: t("seo.verify.description"), indexable: false });
 
   const [result, setResult] = useState<CertificateVerification | null>(null);
   const [notFound, setNotFound] = useState(false);

@@ -195,5 +195,42 @@
     "premiumFeature1": "Todo lo del plan Free",
     "premiumFeature2": "Acceso a los cursos avanzados reservados",
     "note": "En el MVP no hay ningún pago real activo: el acceso Premium lo asigna manualmente el administrador."
+  },
+  "seo": {
+    "home": {
+      "title": "ArcadIA — Formación online en Inteligencia Artificial",
+      "description": "ArcadIA es la plataforma de formación online en Inteligencia Artificial: cursos estructurados en lecciones, notebooks prácticos y certificado de finalización verificable."
+    },
+    "pricing": {
+      "title": "Planes y precios — ArcadIA",
+      "description": "Descubre los planes de ArcadIA: acceso gratuito a todos los cursos básicos y plan Premium para los cursos avanzados de Inteligencia Artificial."
+    },
+    "login": {
+      "title": "Iniciar sesión — ArcadIA",
+      "description": "Accede a tu cuenta de ArcadIA para continuar los cursos de Inteligencia Artificial y seguir tu progreso."
+    },
+    "register": {
+      "title": "Regístrate — ArcadIA",
+      "description": "Crea gratis una cuenta de ArcadIA y empieza a seguir los cursos de Inteligencia Artificial."
+    },
+    "verify": {
+      "title": "Verificar certificado — ArcadIA",
+      "description": "Verifica la autenticidad de un certificado de finalización emitido por ArcadIA."
+    }
+  },
+  "cookies": {
+    "message": "Usamos cookies técnicas necesarias para el funcionamiento del sitio y, solo con tu consentimiento, cookies analíticas para entender cómo se usa ArcadIA.",
+    "accept": "Aceptar",
+    "reject": "Rechazar",
+    "configure": "Configurar",
+    "settingsTitle": "Preferencias de cookies",
+    "necessaryTitle": "Cookies necesarias",
+    "necessaryDescription": "Imprescindibles para acceder y usar ArcadIA (p. ej. la sesión de inicio de sesión). No se pueden desactivar.",
+    "alwaysActive": "Siempre activas",
+    "analyticsTitle": "Cookies analíticas",
+    "analyticsDescription": "Nos ayudan a entender cómo se usa la plataforma (Google Analytics). Solo se activan si las autorizas.",
+    "cancel": "Cancelar",
+    "save": "Guardar preferencias",
+    "manageLink": "Gestionar cookies"
   }
 }

@@ -2,10 +2,12 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Rocket } from "lucide-react";
 import logo from "../assets/rb-logo.png";
+import { useSeo } from "../hooks/useSeo";
 import styles from "./HomePage.module.css";
 
 export default function HomePage() {
   const { t } = useTranslation();
+  useSeo({ title: t("seo.home.title"), description: t("seo.home.description") });
 
   return (
     <main className={styles.home}>

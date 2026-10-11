@@ -61,7 +61,9 @@ Da configurare con attenzione la policy CSP se in futuro si incorporano script d
 
 ## 2. Da fare a breve
 
-### 2.1 🟡 Nessuna revoca reale dei token di sessione
+> **Aggiornamento (9 ottobre 2026):** tutti i punti 2.1–2.5 sono stati implementati e verificati nel codice (`tokenVersion` su `User`/JWT/`requireAuth`, `POST /api/users/me/password`, `bcrypt.hash(_, 12)`, 2FA TOTP+backup codes obbligatoria per `role: "admin"` al login, log `LoginAttempt` con avviso in-app alla soglia). Le descrizioni sotto restano come traccia dell'analisi originale.
+
+### 2.1 ✅ Nessuna revoca reale dei token di sessione
 
 **Stato attuale:** `utils/jwt.ts` firma un JWT valido 7 giorni. Il logout (`controllers/auth.controller.ts`, funzione `logout`) si limita a cancellare il cookie lato client (`res.clearCookie`): il token in sé resta valido fino a scadenza naturale. Se un token venisse copiato (es. da un dispositivo condiviso, o da un cookie intercettato), resterebbe utilizzabile fino a 7 giorni anche dopo un logout esplicito.
 
@@ -143,8 +145,9 @@ Verificate nel codice, da mantenere come sono:
 - [ ] `helmet` montato in `app.ts` (1.1)
 - [ ] Rate limiting esteso oltre l'autenticazione (1.2)
 - [x] `npm audit` eseguito ed eventuali `high`/`critical` risolti, su backend e frontend (1.3)
-- [ ] Meccanismo di revoca token (`tokenVersion` o equivalente) (2.1)
-- [ ] Endpoint di cambio password (2.2)
-- [ ] Costo bcrypt portato a 12 (2.3)
-- [ ] 2FA sull'account amministratore (2.4)
+- [x] Meccanismo di revoca token (`tokenVersion` o equivalente) (2.1)
+- [x] Endpoint di cambio password (2.2)
+- [x] Costo bcrypt portato a 12 (2.3)
+- [x] 2FA sull'account amministratore (2.4)
+- [x] Log/allarme sui tentativi di accesso falliti (2.5)
 - [ ] Policy di aggiornamento periodico delle dipendenze definita (es. Dependabot attivo)

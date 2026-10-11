@@ -1,0 +1,77 @@
+.porthole {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(92vmin, 880px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  padding: clamp(10px, 2.2vmin, 22px);
+  background: linear-gradient(145deg, oklch(0.38 0.015 250), oklch(0.16 0.015 250) 55%, oklch(0.3 0.015 250));
+  box-shadow: 0 0 0 1px var(--color-border), 0 0 60px oklch(0 0 0 / 0.6), inset 0 0 12px oklch(0 0 0 / 0.8);
+  pointer-events: none;
+}
+
+.glass {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 50%, oklch(0.12 0.03 270), oklch(0.05 0.02 260));
+  box-shadow: inset 0 0 40px oklch(0 0 0 / 0.9);
+}
+
+.nebula {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(40% 35% at 30% 35%, oklch(0.45 0.18 310 / 0.45), transparent 70%),
+    radial-gradient(45% 40% at 72% 65%, oklch(0.5 0.14 220 / 0.4), transparent 70%),
+    radial-gradient(30% 25% at 60% 25%, oklch(0.6 0.15 40 / 0.25), transparent 70%);
+  filter: blur(12px);
+  animation: nebulaDrift 90s ease-in-out infinite alternate;
+}
+
+.planet {
+  position: absolute;
+  width: 34%;
+  aspect-ratio: 1;
+  right: 8%;
+  bottom: 12%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 28%, oklch(0.8 0.1 60), oklch(0.5 0.12 40) 45%, oklch(0.18 0.05 30) 80%);
+  box-shadow: inset -22px -16px 36px oklch(0 0 0 / 0.75), 0 0 40px oklch(0.7 0.12 60 / 0.25);
+  animation: planetFloat 60s ease-in-out infinite alternate;
+}
+
+.stars {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.reflection {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(130deg, oklch(1 0 0 / 0.1) 0%, transparent 35%);
+}
+
+@keyframes nebulaDrift {
+  from { transform: translate(-3%, -2%) scale(1); }
+  to { transform: translate(3%, 2%) scale(1.08); }
+}
+
+@keyframes planetFloat {
+  from { transform: translate(0, 0); }
+  to { transform: translate(-4%, -3%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nebula,
+  .planet {
+    animation: none;
+  }
+}

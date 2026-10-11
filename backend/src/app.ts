@@ -22,9 +22,10 @@ export function createApp() {
   // reale, rendendo inutili sia il rate limiting per IP sia il log dei
   // tentativi di accesso falliti.
   //
-  // In produzione le richieste passano da Vercel (rewrite /api/*) e poi dal
-  // proxy di Render: 2 salti. Con 1 salto req.ip sarebbe l'IP di Vercel,
-  // uguale per tutti gli utenti. Configurabile via TRUST_PROXY_HOPS.
+  // In produzione le richieste passano da Vercel (rewrite /api/*), poi da
+  // Cloudflare e dal proxy di Render: in produzione TRUST_PROXY_HOPS=4
+  // (verificato con LoginAttempt). Con meno salti req.ip sarebbe l'IP di un
+  // proxy, uguale per tutti gli utenti. In locale il default è 1.
   app.set("trust proxy", Number(process.env.TRUST_PROXY_HOPS ?? 1));
 
   // La Content-Security-Policy di default di helmet è pensata per pagine

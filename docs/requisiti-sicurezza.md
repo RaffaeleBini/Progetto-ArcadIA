@@ -18,9 +18,11 @@ Per ogni punto: stato attuale (con riferimento al file), rischio concreto, cosa 
 
 ## 1. Requisiti bloccanti
 
-### 1.1 🔴 Header di sicurezza HTTP mancanti
+### 1.1 ✅ Header di sicurezza HTTP
 
-**Stato attuale:** `backend/src/app.ts` non monta nessun middleware di sicurezza sugli header di risposta. Il pacchetto `helmet` non è tra le dipendenze (`backend/package.json`).
+**Stato attuale (11 ottobre 2026):** `helmet` è montato in `backend/src/app.ts` con `contentSecurityPolicy: false` (il backend serve solo JSON, una CSP lì non ha senso). Restano attivi HSTS, `X-Content-Type-Options` e la rimozione di `X-Powered-By`. Il frontend (`frontend/vercel.json`) ha per ora solo `X-Frame-Options` e `nosniff`: `Referrer-Policy`, `Permissions-Policy` e una CSP per le pagine HTML sono ancora da aggiungere (vedi piano di chiusura, A3).
+
+**Analisi originale:** `backend/src/app.ts` non montava nessun middleware di sicurezza sugli header di risposta e `helmet` non era tra le dipendenze.
 
 **Rischio:** senza questi header il browser dello studente non riceve indicazioni per bloccare comportamenti pericolosi: mancano protezioni contro il *clickjacking* (un sito malevolo potrebbe incorporare ArcadIA in un iframe invisibile e indurre un clic), manca `X-Content-Type-Options` (un browser potrebbe interpretare erroneamente un file caricato come script eseguibile), manca una Content-Security-Policy di base.
 
@@ -39,9 +41,11 @@ Da configurare con attenzione la policy CSP se in futuro si incorporano script d
 
 ---
 
-### 1.2 🔴 Rate limiting solo su login/registrazione
+### 1.2 ✅ Rate limiting esteso oltre l'autenticazione
 
-**Stato attuale:** `authRateLimiter` (`middleware/rateLimit.ts`) è applicato solo in `routes/auth.routes.ts`. Tutte le altre rotte (creazione post in bacheca, commenti, upload avatar/copertina, verifica certificato) non hanno alcun limite di frequenza.
+**Stato attuale (11 ottobre 2026):** in `middleware/rateLimit.ts` esistono `authRateLimiter` (login, registrazione, 2FA, cambio password), `generalRateLimiter` (montato su tutta l'app in `app.ts`), `uploadRateLimiter` (upload avatar e copertine, in `users.routes.ts` e `courses.routes.ts`) e `verifyRateLimiter` (`verify.routes.ts`).
+
+**Analisi originale:** `authRateLimiter` (`middleware/rateLimit.ts`) è applicato solo in `routes/auth.routes.ts`. Tutte le altre rotte (creazione post in bacheca, commenti, upload avatar/copertina, verifica certificato) non hanno alcun limite di frequenza.
 
 **Rischio:** un utente autenticato (o uno script che automatizza la registrazione) può oggi generare un volume illimitato di post/commenti/upload in poco tempo — spam, esaurimento di spazio Cloudinary, carico anomalo sul database. Con contenuti a pagamento in gioco, anche l'endpoint di verifica certificato pubblico (`/api/verify/:certificateId`) merita un limite, per scoraggiare tentativi automatizzati di indovinare codici validi.
 
@@ -65,7 +69,7 @@ Da configurare con attenzione la policy CSP se in futuro si incorporano script d
 
 ### 2.1 ✅ Nessuna revoca reale dei token di sessione
 
-**Stato attuale:** `utils/jwt.ts` firma un JWT valido 7 giorni. Il logout (`controllers/auth.controller.ts`, funzione `logout`) si limita a cancellare il cookie lato client (`res.clearCookie`): il token in sé resta valido fino a scadenza naturale. Se un token venisse copiato (es. da un dispositivo condiviso, o da un cookie intercettato), resterebbe utilizzabile fino a 7 giorni anche dopo un logout esplicito.
+**Analisi originale:** `utils/jwt.ts` firma un JWT valido 7 giorni. Il logout (`controllers/auth.controller.ts`, funzione `logout`) si limita a cancellare il cookie lato client (`res.clearCookie`): il token in sé resta valido fino a scadenza naturale. Se un token venisse copiato (es. da un dispositivo condiviso, o da un cookie intercettato), resterebbe utilizzabile fino a 7 giorni anche dopo un logout esplicito.
 
 **Rischio:** basso in pratica oggi (il cookie è `httpOnly`, quindi non leggibile da script), ma diventa rilevante se in futuro si aggiunge un endpoint di cambio password (vedi 2.2): senza un meccanismo di revoca, cambiare la password non invaliderebbe le sessioni già aperte altrove.
 
@@ -77,7 +81,7 @@ Da configurare con attenzione la policy CSP se in futuro si incorporano script d
 
 ### 2.2 🟡 Manca un endpoint di cambio password
 
-**Stato attuale:** verificato in `controllers/users.controller.ts` e `routes/users.routes.ts`: non esiste alcuna rotta per cambiare la password di un account già registrato.
+**Analisi originale:** verificato in `controllers/users.controller.ts` e `routes/users.routes.ts`: non esiste alcuna rotta per cambiare la password di un account già registrato.
 
 **Rischio:** non è di per sé una falla, ma è un requisito minimo di igiene di sicurezza che oggi manca del tutto: un utente che sospetta un accesso non autorizzato al proprio account non ha modo di reagire.
 
@@ -89,7 +93,7 @@ Da configurare con attenzione la policy CSP se in futuro si incorporano script d
 
 ### 2.3 🟡 Costo di bcrypt a 10 invece di 12
 
-**Stato attuale:** `bcrypt.hash(password, 10)` in `controllers/auth.controller.ts`.
+**Analisi originale:** `bcrypt.hash(password, 10)` in `controllers/auth.controller.ts`.
 
 **Rischio:** basso nell'immediato (10 è ancora un valore accettato), ma è sceso sotto lo standard raccomandato attuale (12) per resistere ad hardware di attacco sempre più veloce, nell'ipotesi di un furto del database.
 
@@ -99,9 +103,11 @@ Da configurare con attenzione la policy CSP se in futuro si incorporano script d
 
 ---
 
-### 2.4 🟡 Nessuna autenticazione a due fattori per l'amministratore
+### 2.4 ✅ Autenticazione a due fattori per l'amministratore
 
-**Stato attuale:** l'account con `role: "admin"` (unico ruolo con pieno controllo su corsi, lezioni e assegnazione abbonamenti — `controllers/admin.controller.ts`) si protegge solo con email+password, come un account normale.
+**Stato attuale (11 ottobre 2026):** implementata, TOTP con backup code obbligatoria al login per `role: "admin"` (rotte `/2fa/*` in `routes/auth.routes.ts`).
+
+**Analisi originale:** l'account con `role: "admin"` (unico ruolo con pieno controllo su corsi, lezioni e assegnazione abbonamenti — `controllers/admin.controller.ts`) si protegge solo con email+password, come un account normale.
 
 **Rischio:** è l'account più critico del sistema: chi lo compromette può modificare qualunque corso o assegnarsi un abbonamento premium gratuito. Con un solo amministratore (presumibilmente l'unico account con questo ruolo), aggiungere un secondo fattore è un investimento contenuto per una protezione importante.
 
@@ -111,9 +117,11 @@ Da configurare con attenzione la policy CSP se in futuro si incorporano script d
 
 ---
 
-### 2.5 🟢 Nessun log/allarme sui tentativi di accesso sospetti
+### 2.5 ✅ Log/allarme sui tentativi di accesso sospetti
 
-**Stato attuale:** i tentativi di login falliti non vengono registrati oltre al rate limiting generico (che blocca per IP, non traccia per account).
+**Stato attuale (11 ottobre 2026):** implementato, i login falliti sono registrati nel modello `LoginAttempt` con avviso in-app alla soglia.
+
+**Analisi originale:** i tentativi di login falliti non vengono registrati oltre al rate limiting generico (che blocca per IP, non traccia per account).
 
 **Rischio:** basso con i volumi attuali; diventa rilevante quando ci sono account con abbonamenti a pagamento da proteggere.
 
@@ -142,12 +150,12 @@ Verificate nel codice, da mantenere come sono:
 
 ## 4. Checklist prima del lancio commerciale
 
-- [ ] `helmet` montato in `app.ts` (1.1)
-- [ ] Rate limiting esteso oltre l'autenticazione (1.2)
+- [x] `helmet` montato in `app.ts` (1.1)
+- [x] Rate limiting esteso oltre l'autenticazione (1.2)
 - [x] `npm audit` eseguito ed eventuali `high`/`critical` risolti, su backend e frontend (1.3)
 - [x] Meccanismo di revoca token (`tokenVersion` o equivalente) (2.1)
 - [x] Endpoint di cambio password (2.2)
 - [x] Costo bcrypt portato a 12 (2.3)
 - [x] 2FA sull'account amministratore (2.4)
 - [x] Log/allarme sui tentativi di accesso falliti (2.5)
-- [ ] Policy di aggiornamento periodico delle dipendenze definita (es. Dependabot attivo)
+- [x] Policy di aggiornamento periodico delle dipendenze definita: Dependabot settimanale per backend e frontend (`.github/dependabot.yml`), da verificare attivo su GitHub

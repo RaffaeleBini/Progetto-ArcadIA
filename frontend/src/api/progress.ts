@@ -21,5 +21,5 @@ export async function uncompleteLesson(courseId: string, lessonId: string): Prom
 }
 
 export function getCertificateUrl(courseId: string): string {
-  return `${import.meta.env.VITE_API_URL}/api/courses/${courseId}/certificate`;
+  return `${import.meta.env.VITE_API_URL ?? ""}/api/courses/${courseId}/certificate`;
 }

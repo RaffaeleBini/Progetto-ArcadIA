@@ -1,7 +1,10 @@
 import axios from "axios";
 
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  // In produzione resta vuoto: le chiamate /api/* sono same-origin e Vercel le
+  // inoltra al backend (vedi vercel.json), così il cookie di sessione è di
+  // prima parte. In locale punta al backend su un'altra porta.
+  baseURL: import.meta.env.VITE_API_URL ?? "",
   withCredentials: true,
 });
 

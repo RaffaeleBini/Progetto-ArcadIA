@@ -27,7 +27,7 @@ export function getAuthCookieOptions(): CookieOptions {
   return {
     httpOnly: true,
     secure: isProduction,
-    sameSite: isProduction ? "none" : "lax",
+    sameSite: "lax",
     maxAge: SEVEN_DAYS_MS,
   };
 }
@@ -53,7 +53,7 @@ export function getTwoFactorPendingCookieOptions(): CookieOptions {
   return {
     httpOnly: true,
     secure: isProduction,
-    sameSite: isProduction ? "none" : "lax",
+    sameSite: "lax",
     maxAge: FIVE_MINUTES_MS,
   };
 }

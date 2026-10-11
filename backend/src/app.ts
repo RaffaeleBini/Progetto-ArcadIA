@@ -21,7 +21,11 @@ export function createApp() {
   // req.ip restituisce l'IP interno del proxy invece di quello del client
   // reale, rendendo inutili sia il rate limiting per IP sia il log dei
   // tentativi di accesso falliti.
-  app.set("trust proxy", 1);
+  //
+  // In produzione le richieste passano da Vercel (rewrite /api/*) e poi dal
+  // proxy di Render: 2 salti. Con 1 salto req.ip sarebbe l'IP di Vercel,
+  // uguale per tutti gli utenti. Configurabile via TRUST_PROXY_HOPS.
+  app.set("trust proxy", Number(process.env.TRUST_PROXY_HOPS ?? 1));
 
   // La Content-Security-Policy di default di helmet è pensata per pagine
   // HTML: questo backend serve solo JSON, quindi la disabilitiamo invece di

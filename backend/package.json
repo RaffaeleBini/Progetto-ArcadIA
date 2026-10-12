@@ -8,7 +8,8 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev:seed": "tsx scripts/dev-seed.ts"
+    "dev:seed": "tsx scripts/dev-seed.ts",
+    "export:notebooks": "tsx scripts/export-notebooks.ts"
   },
   "keywords": [],
   "author": "",

@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, Check, ExternalLink, Pencil, Trash2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useAuth } from "../context/AuthContext";
 import { deleteLesson, fetchLesson } from "../api/lessons";
 import { completeLesson, fetchProgress, uncompleteLesson } from "../api/progress";
@@ -120,7 +121,18 @@ export default function LessonPage() {
         <section className={styles.block}>
           <h2 className={styles.blockTitle}>{t("courses.theoryBlock")}</h2>
           <div className={styles.theoryContent}>
-            <ReactMarkdown>{lesson.theoryContent}</ReactMarkdown>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                table: ({ node: _node, ...props }) => (
+                  <div className={styles.tableWrap}>
+                    <table {...props} />
+                  </div>
+                ),
+              }}
+            >
+              {lesson.theoryContent}
+            </ReactMarkdown>
           </div>
         </section>
       )}

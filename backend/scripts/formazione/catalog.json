@@ -1,0 +1,1001 @@
+{
+  "_note": "Catalogo rivedibile a mano per import-formazione.ts. source.pairs: slug notebook -> nome file teoria (senza _IT/estensione). source.unsuffixed: lingua dei file senza _IT (default es). lessonFilter: chapters = numero capitolo, modules = M<n> del corso 10.",
+  "courses": [
+    {
+      "code": "00A",
+      "folder": "00-Corso-Matematica-2026",
+      "title": {
+        "it": "Matematica — Fondamenti",
+        "es": null
+      },
+      "block": "Trasversale",
+      "estimatedHours": 75,
+      "source": {
+        "modules": [
+          "00",
+          "01",
+          "02",
+          "03",
+          "04"
+        ],
+        "unsuffixed": "it"
+      },
+      "catalogOrder": 1
+    },
+    {
+      "code": "00B",
+      "folder": "00-Corso-Matematica-2026",
+      "title": {
+        "it": "Matematica per il Machine Learning",
+        "es": null
+      },
+      "block": "Trasversale",
+      "estimatedHours": 80,
+      "source": {
+        "modules": [
+          "05",
+          "06",
+          "07",
+          "17"
+        ],
+        "unsuffixed": "it"
+      },
+      "catalogOrder": 2
+    },
+    {
+      "code": "00C",
+      "folder": "00-Corso-Matematica-2026",
+      "title": {
+        "it": "Matematica applicata avanzata",
+        "es": null
+      },
+      "block": "Trasversale",
+      "estimatedHours": 35,
+      "source": {
+        "modules": [
+          "08",
+          "09",
+          "15"
+        ],
+        "unsuffixed": "it"
+      },
+      "catalogOrder": 3
+    },
+    {
+      "code": "00D",
+      "folder": "00-Corso-Matematica-2026",
+      "title": {
+        "it": "Matematica pura",
+        "es": null
+      },
+      "block": "Trasversale",
+      "estimatedHours": 95,
+      "source": {
+        "modules": [
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "16",
+          "18"
+        ],
+        "unsuffixed": "it"
+      },
+      "catalogOrder": 4
+    },
+    {
+      "code": "01",
+      "folder": "01-Corso-Base-IA-2026",
+      "title": {
+        "it": "Base IA",
+        "es": "Base de IA"
+      },
+      "block": "Orientamento",
+      "estimatedHours": 12,
+      "source": {
+        "lessons": ".",
+        "pairs": {
+          "sesion_2_como_aprenden_las_maquinas": "redes_neuronales"
+        },
+        "theory": "."
+      },
+      "catalogOrder": 5
+    },
+    {
+      "code": "02",
+      "folder": "02-Corso-Introducción-Ciencia-Datos-2026",
+      "title": {
+        "it": "Introduzione alla Scienza dei Dati",
+        "es": "Introducción a la Ciencia de Datos"
+      },
+      "block": "Data literacy",
+      "estimatedHours": 25,
+      "source": {
+        "theory": "manual",
+        "lessons": "notebooks_clase",
+        "exercises": "notebooks_practica",
+        "pairs": {
+          "bienvenida_a_la_ciencia_de_datos": "01_que_es_la_ciencia_de_datos",
+          "tipos_y_fuentes_de_datos": "09_tipos_de_datos",
+          "sql_bases_relacionales": "11_bases_relacionales_sql"
+        }
+      },
+      "catalogOrder": 6
+    },
+    {
+      "code": "03",
+      "folder": "03_Python Fundamentals",
+      "title": {
+        "it": "Python Fundamentals",
+        "es": "Python Fundamentals"
+      },
+      "block": "Fondamenti",
+      "estimatedHours": 4,
+      "source": {
+        "theory": ".",
+        "lessons": ".",
+        "pairs": {
+          "tic_tac_toe_aprende_python": "python_programming_fundamentals_for_dummies"
+        }
+      },
+      "catalogOrder": 7
+    },
+    {
+      "code": "04",
+      "folder": "04-Python-Ciencia-Datos-2026",
+      "title": {
+        "it": "Python per la Scienza dei Dati",
+        "es": "Python para Ciencia de Datos"
+      },
+      "block": "Fondamenti",
+      "estimatedHours": 26,
+      "source": {
+        "theory": "manual",
+        "lessons": "notebooks_clase",
+        "exercises": "notebooks_practica",
+        "pairs": {
+          "strings": "02_strings_y_formato",
+          "listas_tuplas": "03_listas_y_tuplas",
+          "sets_diccionarios": "04_sets_y_diccionarios",
+          "condicionales_bucles": "05_condicionales_y_bucles",
+          "poo": "07_poo_clases_objetos",
+          "ingenieria_datos": "12_ingenieria_datos_formatos",
+          "proyecto_integrador": "15_casos_de_uso_reales"
+        }
+      },
+      "catalogOrder": 8
+    },
+    {
+      "code": "05",
+      "folder": "05-Corso-Herramienta-Ciancia-Datos-2026",
+      "title": {
+        "it": "Strumenti per la Scienza dei Dati",
+        "es": "Herramientas para la Ciencia de Datos"
+      },
+      "block": "Data literacy",
+      "estimatedHours": 18,
+      "source": {
+        "theory": "manual",
+        "lessons": "notebooks_clase",
+        "exercises": "notebooks_practica",
+        "pairs": {
+          "panorama_herramientas": "03_ecosistema_de_herramientas",
+          "lenguajes_de_la_ciencia_de_datos": "04_python_el_lenguaje_mas_popular",
+          "apis_y_datasets": "07_apis",
+          "modelos_de_ml_y_max": "09_modelos_de_machine_learning",
+          "tu_primer_notebook": "11_tu_primer_notebook_jupyter",
+          "entornos_de_trabajo": "14_entornos_anaconda_jupyterlab_vscode",
+          "introduccion_a_r_y_rstudio": "16_instalar_r_y_rstudio",
+          "visualizacion_de_datos": "17_visualizar_datos_en_r",
+          "control_de_versiones_con_git": "18_fundamentos_de_git_y_github",
+          "github_practico": "19_tu_primer_repositorio_en_github",
+          "caso_de_uso_integrador": "21_casos_de_uso_reales"
+        }
+      },
+      "catalogOrder": 9
+    },
+    {
+      "code": "06",
+      "folder": "06-Python-Visualización-Datos-2026",
+      "title": {
+        "it": "Visualizzazione dei Dati con Python",
+        "es": "Visualización de Datos con Python"
+      },
+      "block": "Data literacy",
+      "estimatedHours": 18,
+      "source": {
+        "theory": "manual",
+        "lessons": "notebooks_clase",
+        "exercises": "notebooks_practica",
+        "pairs": {
+          "introduccion-pandas": "03_domar-datos-con-pandas",
+          "matplotlib-lineas-areas": "04_matplotlib-lineas-y-areas",
+          "histogramas-barras": "05_histogramas-y-barras",
+          "waffle-wordcloud-seaborn": "07_graficos-creativos",
+          "mapas-folium": "09_mapas-con-folium",
+          "treemaps-pivot": "11_treemaps-y-pivot-charts",
+          "dash-fundamentos": "12_dashboards-con-dash-fundamentos",
+          "dash-interactividad": "13_dashboards-con-dash-interactividad",
+          "proyecto-integrador": "14_casos-de-uso-reales"
+        }
+      },
+      "catalogOrder": 10
+    },
+    {
+      "code": "07",
+      "folder": "07-Statistica-Applicata-2026",
+      "title": {
+        "it": "Statistica Applicata con Python",
+        "es": "Estadística Aplicada con Python"
+      },
+      "block": "Data literacy",
+      "estimatedHours": 25,
+      "source": {
+        "theory": "manual",
+        "lessons": "notebooks_clase",
+        "exercises": "notebooks_practica"
+      },
+      "prerequisites": [
+        {
+          "course": "06",
+          "note": "Il capitolo 3 richiede le basi di matplotlib/seaborn"
+        }
+      ],
+      "catalogOrder": 11
+    },
+    {
+      "code": "08",
+      "folder": "08_Corso-Metodologia-Ciencias-Datos-2026",
+      "title": {
+        "it": "Metodologia della Scienza dei Dati",
+        "es": "Metodología de la Ciencia de Datos"
+      },
+      "block": "Data literacy",
+      "estimatedHours": 14,
+      "source": {
+        "theory": "manual",
+        "lessons": "notebooks_clase",
+        "exercises": "notebooks_practica"
+      },
+      "catalogOrder": 12
+    },
+    {
+      "code": "09",
+      "folder": "09_Google Vision API",
+      "title": {
+        "it": "Google Vision API",
+        "es": "Google Vision API"
+      },
+      "block": "Applicato",
+      "estimatedHours": 10,
+      "source": {
+        "theory": ".",
+        "lessons": "."
+      },
+      "catalogOrder": 13
+    },
+    {
+      "code": "10",
+      "folder": "10-Corso-Avanzato-IA-2026",
+      "title": {
+        "it": "Avanzato IA (bootcamp di ingegneria)",
+        "es": "IA Avanzada (bootcamp de ingeniería)"
+      },
+      "block": "Ingegneria",
+      "estimatedHours": 105,
+      "source": {
+        "lessons": ".",
+        "exercises": null
+      },
+      "catalogOrder": 14
+    },
+    {
+      "code": "11",
+      "folder": "11-Corso-IA-Generativa-Fondamenti-2026",
+      "title": {
+        "it": "IA Generativa — Fondamenti",
+        "es": null
+      },
+      "block": "GenAI pratica",
+      "estimatedHours": 23,
+      "source": {
+        "theory": "dispense",
+        "lessons": "notebooks",
+        "exercises": null,
+        "unsuffixed": "it",
+        "match": "number"
+      },
+      "catalogOrder": 15
+    },
+    {
+      "code": "12",
+      "folder": "12-Corso-IA-Engineering-2026",
+      "title": {
+        "it": "IA Engineering",
+        "es": "IA Engineering"
+      },
+      "block": "GenAI pratica",
+      "estimatedHours": 25,
+      "source": {
+        "theory": "dispensas",
+        "lessons": "notebooks",
+        "exercises": null,
+        "match": "number"
+      },
+      "catalogOrder": 16
+    },
+    {
+      "code": "13",
+      "folder": "13_Machine Learning Python",
+      "title": {
+        "it": "Machine Learning con Python",
+        "es": "Machine Learning con Python"
+      },
+      "block": "ML",
+      "estimatedHours": 21,
+      "source": {
+        "theory": ".",
+        "lessons": "notebooks_clase",
+        "exercises": "notebooks_practica"
+      },
+      "catalogOrder": 17
+    },
+    {
+      "code": "14",
+      "folder": "14-NLP-Classico-2026",
+      "title": {
+        "it": "NLP Classico con Python",
+        "es": "NLP Clásico con Python"
+      },
+      "block": "NLP",
+      "estimatedHours": 21,
+      "source": {
+        "theory": "manual",
+        "lessons": "notebooks_clase",
+        "exercises": "notebooks_practica"
+      },
+      "prerequisites": [
+        {
+          "course": "13"
+        }
+      ],
+      "catalogOrder": 18
+    },
+    {
+      "code": "15",
+      "folder": "15_Deep Learning Python, TensorFlow, Keras",
+      "title": {
+        "it": "Deep Learning con Python, TensorFlow, Keras",
+        "es": "Deep Learning con Python, TensorFlow, Keras"
+      },
+      "block": "Deep learning",
+      "estimatedHours": 21,
+      "source": {
+        "theory": ".",
+        "lessons": "notebooks_clase",
+        "exercises": "notebooks_practica"
+      },
+      "catalogOrder": 19
+    },
+    {
+      "code": "16",
+      "folder": "16_TensorFlow Fundamentals",
+      "title": {
+        "it": "TensorFlow Fundamentals",
+        "es": "TensorFlow Fundamentals"
+      },
+      "block": "Deep learning",
+      "estimatedHours": 23,
+      "source": {
+        "theory": ".",
+        "lessons": "notebooks_clase",
+        "exercises": "notebooks_practica",
+        "pairs": {
+          "fundamentos_ml_tensorflow": "01_fundamentos_machine_learning",
+          "vision_por_computador_cnn": "03_vision_por_computador_redes_neuronales"
+        }
+      },
+      "catalogOrder": 20
+    },
+    {
+      "code": "17",
+      "folder": "17_Deep Learning TensorFlow",
+      "title": {
+        "it": "Deep Learning con TensorFlow (casi d'uso)",
+        "es": "Deep Learning con TensorFlow (casos de uso)"
+      },
+      "block": "Deep learning",
+      "estimatedHours": 19,
+      "source": {
+        "theory": ".",
+        "lessons": "notebooks_clase",
+        "exercises": "notebooks_practica",
+        "pairs": {
+          "sentimiento": "02_sentiment_analysis",
+          "rnn": "03_rnn_lstm",
+          "tflearn": "05_tflearn_keras",
+          "rl_cartpole": "06_reinforcement_learning",
+          "cnn3d_datos": "08_cnn_3d_imagen_medica",
+          "chatbot_datos": "09_chatbot",
+          "casos_uso": "11_casos_de_uso"
+        }
+      },
+      "catalogOrder": 21
+    },
+    {
+      "code": "18",
+      "folder": "18-MLOps-Monitoraggio-2026",
+      "title": {
+        "it": "MLOps e Monitoraggio con Python",
+        "es": "MLOps y Monitorización con Python"
+      },
+      "block": "MLOps",
+      "estimatedHours": 21,
+      "source": {
+        "theory": "manual",
+        "lessons": "notebooks_clase",
+        "exercises": "notebooks_practica"
+      },
+      "prerequisites": [
+        {
+          "course": "04"
+        },
+        {
+          "course": "10",
+          "note": "Moduli 2–5 (Git, Linux, database, HTTP/API)"
+        },
+        {
+          "course": "13"
+        }
+      ],
+      "catalogOrder": 22
+    },
+    {
+      "code": "19",
+      "folder": "19_Deep Learning Python PyTorch",
+      "title": {
+        "it": "Deep Learning con PyTorch",
+        "es": "Deep Learning con PyTorch"
+      },
+      "block": "Deep learning",
+      "estimatedHours": 16,
+      "source": {
+        "theory": ".",
+        "lessons": "notebooks_clase",
+        "exercises": "notebooks_practica"
+      },
+      "catalogOrder": 23
+    },
+    {
+      "code": "20",
+      "folder": "20-Corso-IA-Generativa-Python-2026",
+      "title": {
+        "it": "Costruire Applicazioni di IA Generativa con Python",
+        "es": "Construir Aplicaciones de IA Generativa con Python"
+      },
+      "block": "GenAI/DL",
+      "estimatedHours": 21,
+      "source": {
+        "theory": "manual",
+        "lessons": "notebooks_clase",
+        "exercises": "notebooks_practica",
+        "pairs": {
+          "forward_propagation_activaciones": "02_forward_propagation",
+          "regresion_clasificacion_keras": "05_regresion_keras",
+          "llms_chatbot_huggingface": "09_llms_gpt_llama",
+          "vision_lenguaje_casos_uso": "16_vision_lenguaje_proyecto_final"
+        }
+      },
+      "catalogOrder": 24
+    },
+    {
+      "code": "21",
+      "folder": "21-Corso-IA-Generativa-Avanzata-2026",
+      "title": {
+        "it": "IA Generativa — Avanzato",
+        "es": null
+      },
+      "block": "GenAI teoria",
+      "estimatedHours": 19,
+      "source": {
+        "theory": "dispense",
+        "lessons": "notebooks",
+        "exercises": null,
+        "unsuffixed": "it",
+        "match": "number"
+      },
+      "prerequisites": [
+        {
+          "course": "15",
+          "note": "Transformer, LoRA e RLHF presuppongono il deep learning"
+        }
+      ],
+      "catalogOrder": 25
+    },
+    {
+      "code": "22",
+      "folder": "22_Advanced Deep Learning",
+      "title": {
+        "it": "Advanced Deep Learning",
+        "es": "Advanced Deep Learning"
+      },
+      "block": "Avanzato",
+      "estimatedHours": 26,
+      "source": {
+        "theory": ".",
+        "lessons": "notebooks_clase",
+        "exercises": "notebooks_practica",
+        "pairs": {
+          "intro_fundamentos_redes_neuronales": "01_introduccion_deep_learning_avanzado",
+          "atencion_transformers": "09_atencion_y_transformers",
+          "gan": "10_redes_generativas_antagonicas",
+          "casos_de_uso_cierre": "14_casos_de_uso_reales"
+        }
+      },
+      "catalogOrder": 26
+    },
+    {
+      "code": "23",
+      "folder": "23_Advancer Reinforcement Learning",
+      "title": {
+        "it": "Advanced Reinforcement Learning",
+        "es": "Advanced Reinforcement Learning"
+      },
+      "block": "Specialistico",
+      "estimatedHours": 26,
+      "source": {
+        "theory": ".",
+        "lessons": "notebooks_clase",
+        "exercises": "notebooks_practica",
+        "pairs": {
+          "introduccion_rl": "02_introduccion_al_rl",
+          "bandidos": "03_bandidos_exploracion_explotacion",
+          "dqn": "08_dqn_aproximacion_funciones",
+          "gradientes_politica": "09_gradientes_politica_actor_critico",
+          "planificacion_modelos": "10_planificacion_y_modelos",
+          "temas_avanzados": "11_temas_avanzados_deep_rl",
+          "arquitecturas_agentes": "12_arquitecturas_agentes_drl"
+        }
+      },
+      "catalogOrder": 27
+    },
+    {
+      "code": "24",
+      "folder": "24_TensorFlow Quantum Machine Learning",
+      "title": {
+        "it": "TensorFlow Quantum Machine Learning",
+        "es": "TensorFlow Quantum Machine Learning"
+      },
+      "block": "Specialistico",
+      "estimatedHours": 24,
+      "source": {
+        "theory": ".",
+        "lessons": "notebooks_clase",
+        "exercises": "notebooks_practica",
+        "pairs": {
+          "fundamentos_hardware": "01_fundamentos_computacion_cuantica"
+        }
+      },
+      "catalogOrder": 28
+    }
+  ],
+  "paths": [
+    {
+      "code": "P1",
+      "title": {
+        "it": "Alfabetizzazione IA",
+        "es": "Alfabetización en IA"
+      },
+      "audience": {
+        "it": "Professionisti e PMI non tecnici, curiosi dell'IA",
+        "es": "Profesionales y pymes no técnicos, curiosos de la IA"
+      },
+      "estimatedHours": 60,
+      "estimatedWeeks": 10,
+      "steps": [
+        {
+          "course": "01"
+        },
+        {
+          "course": "02"
+        },
+        {
+          "course": "11"
+        }
+      ]
+    },
+    {
+      "code": "P2",
+      "title": {
+        "it": "Data Analyst / Fondamenti di Data Science",
+        "es": "Data Analyst / Fundamentos de Data Science"
+      },
+      "audience": {
+        "it": "Principianti assoluti che vogliono lavorare con i dati",
+        "es": "Principiantes absolutos que quieren trabajar con datos"
+      },
+      "estimatedHours": 155,
+      "estimatedWeeks": 26,
+      "steps": [
+        {
+          "course": "02"
+        },
+        {
+          "course": "03"
+        },
+        {
+          "course": "04"
+        },
+        {
+          "course": "05"
+        },
+        {
+          "course": "06"
+        },
+        {
+          "course": "07"
+        },
+        {
+          "course": "08"
+        }
+      ]
+    },
+    {
+      "code": "P3",
+      "title": {
+        "it": "Data Scientist / Machine Learning",
+        "es": "Data Scientist / Machine Learning"
+      },
+      "audience": {
+        "it": "Chi completa P2 e vuole modellare e prevedere",
+        "es": "Quien completa P2 y quiere modelar y predecir"
+      },
+      "estimatedHours": 255,
+      "estimatedWeeks": 43,
+      "steps": [
+        {
+          "course": "02"
+        },
+        {
+          "course": "03"
+        },
+        {
+          "course": "04"
+        },
+        {
+          "course": "05"
+        },
+        {
+          "course": "06"
+        },
+        {
+          "course": "07"
+        },
+        {
+          "course": "08"
+        },
+        {
+          "course": "00B"
+        },
+        {
+          "course": "13"
+        },
+        {
+          "course": "15"
+        }
+      ]
+    },
+    {
+      "code": "P4",
+      "title": {
+        "it": "AI Engineer (applicazioni con LLM)",
+        "es": "AI Engineer (aplicaciones con LLM)"
+      },
+      "audience": {
+        "it": "Sviluppatori e tecnici che costruiscono chatbot, RAG e agenti",
+        "es": "Desarrolladores y técnicos que construyen chatbots, RAG y agentes"
+      },
+      "estimatedHours": 150,
+      "estimatedWeeks": 25,
+      "steps": [
+        {
+          "course": "01"
+        },
+        {
+          "course": "03"
+        },
+        {
+          "course": "10",
+          "note": "Solo i moduli M1–M5 e M9",
+          "lessonFilter": {
+            "modules": [
+              "M1",
+              "M2",
+              "M3",
+              "M4",
+              "M5",
+              "M9"
+            ]
+          }
+        },
+        {
+          "course": "11"
+        },
+        {
+          "course": "12"
+        },
+        {
+          "course": "20"
+        }
+      ]
+    },
+    {
+      "code": "P5",
+      "title": {
+        "it": "AI Engineer Bootcamp (intensivo)",
+        "es": "AI Engineer Bootcamp (intensivo)"
+      },
+      "audience": {
+        "it": "Chi ha poco tempo e vuole un solo filo conduttore full-stack",
+        "es": "Quien tiene poco tiempo y quiere un único hilo conductor full-stack"
+      },
+      "estimatedHours": 140,
+      "estimatedWeeks": 12,
+      "steps": [
+        {
+          "course": "01"
+        },
+        {
+          "course": "10"
+        },
+        {
+          "course": "12"
+        }
+      ]
+    },
+    {
+      "code": "P6",
+      "title": {
+        "it": "Deep Learning Specialist",
+        "es": "Deep Learning Specialist"
+      },
+      "audience": {
+        "it": "Ingegneri e data scientist con basi di ML",
+        "es": "Ingenieros y data scientists con bases de ML"
+      },
+      "estimatedHours": 185,
+      "estimatedWeeks": 31,
+      "steps": [
+        {
+          "course": "00B"
+        },
+        {
+          "course": "13"
+        },
+        {
+          "course": "15"
+        },
+        {
+          "course": "16"
+        },
+        {
+          "course": "19"
+        },
+        {
+          "course": "22"
+        },
+        {
+          "course": "17",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "code": "P7",
+      "title": {
+        "it": "Computer Vision",
+        "es": "Computer Vision"
+      },
+      "audience": {
+        "it": "Sviluppatori interessati a immagini e video",
+        "es": "Desarrolladores interesados en imágenes y vídeo"
+      },
+      "estimatedHours": 75,
+      "estimatedWeeks": 13,
+      "steps": [
+        {
+          "course": "09"
+        },
+        {
+          "course": "15"
+        },
+        {
+          "course": "16",
+          "note": "Solo i capitoli 3–4",
+          "lessonFilter": {
+            "chapters": [
+              3,
+              4
+            ]
+          }
+        },
+        {
+          "course": "17",
+          "note": "Solo i casi cani/gatti e imaging 3D",
+          "lessonFilter": {
+            "chapters": [
+              7,
+              8
+            ]
+          }
+        },
+        {
+          "course": "19"
+        },
+        {
+          "course": "22",
+          "note": "Solo i capitoli 3–4",
+          "lessonFilter": {
+            "chapters": [
+              3,
+              4
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "code": "P8",
+      "title": {
+        "it": "Generative AI / LLM Specialist",
+        "es": "Generative AI / LLM Specialist"
+      },
+      "audience": {
+        "it": "Profili tecnici che vogliono capire e specializzare i modelli generativi",
+        "es": "Perfiles técnicos que quieren entender y especializar los modelos generativos"
+      },
+      "estimatedHours": 120,
+      "estimatedWeeks": 20,
+      "steps": [
+        {
+          "course": "11"
+        },
+        {
+          "course": "12"
+        },
+        {
+          "course": "15"
+        },
+        {
+          "course": "20"
+        },
+        {
+          "course": "21",
+          "note": "Capitoli 9–13 (da verificare)"
+        }
+      ]
+    },
+    {
+      "code": "P9",
+      "title": {
+        "it": "Frontiere: Reinforcement Learning e Quantum ML",
+        "es": "Fronteras: Reinforcement Learning y Quantum ML"
+      },
+      "audience": {
+        "it": "Ricerca, R&D, profili con solide basi matematiche",
+        "es": "Investigación, I+D, perfiles con sólidas bases matemáticas"
+      },
+      "estimatedHours": 185,
+      "estimatedWeeks": 31,
+      "steps": [
+        {
+          "course": "00B"
+        },
+        {
+          "course": "00C"
+        },
+        {
+          "course": "15",
+          "note": "In alternativa il corso 19 (PyTorch)"
+        },
+        {
+          "course": "23"
+        },
+        {
+          "course": "24"
+        }
+      ]
+    },
+    {
+      "code": "P10",
+      "title": {
+        "it": "Matematica per l'IA",
+        "es": "Matemáticas para la IA"
+      },
+      "audience": {
+        "it": "Chi parte da zero e vuole le basi per ML/DL",
+        "es": "Quien parte de cero y quiere las bases para ML/DL"
+      },
+      "estimatedHours": 190,
+      "estimatedWeeks": 32,
+      "steps": [
+        {
+          "course": "00A"
+        },
+        {
+          "course": "00B"
+        },
+        {
+          "course": "00C"
+        }
+      ]
+    },
+    {
+      "code": "P11",
+      "title": {
+        "it": "NLP Specialist (classico + ponte ai transformer)",
+        "es": "NLP Specialist (clásico + puente a los transformers)"
+      },
+      "audience": {
+        "it": "Data scientist e sviluppatori che vogliono lavorare con il testo",
+        "es": "Data scientists y desarrolladores que quieren trabajar con texto"
+      },
+      "estimatedHours": 180,
+      "estimatedWeeks": 30,
+      "steps": [
+        {
+          "course": "04"
+        },
+        {
+          "course": "06"
+        },
+        {
+          "course": "13"
+        },
+        {
+          "course": "14"
+        },
+        {
+          "course": "20"
+        }
+      ]
+    },
+    {
+      "code": "P12",
+      "title": {
+        "it": "MLOps Engineer",
+        "es": "MLOps Engineer"
+      },
+      "audience": {
+        "it": "Data scientist e sviluppatori che devono portare un modello in produzione e mantenerlo",
+        "es": "Data scientists y desarrolladores que deben llevar un modelo a producción y mantenerlo"
+      },
+      "estimatedHours": 150,
+      "estimatedWeeks": 25,
+      "steps": [
+        {
+          "course": "04"
+        },
+        {
+          "course": "10",
+          "note": "Solo i moduli M2–M5",
+          "lessonFilter": {
+            "modules": [
+              "M2",
+              "M3",
+              "M4",
+              "M5"
+            ]
+          }
+        },
+        {
+          "course": "13"
+        },
+        {
+          "course": "18"
+        }
+      ]
+    }
+  ]
+}

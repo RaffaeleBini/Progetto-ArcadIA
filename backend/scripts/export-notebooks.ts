@@ -14,6 +14,7 @@
 //  - aggiunge LICENSE (MIT) e un README.
 import fs from "node:fs";
 import path from "node:path";
+import { courseSlug, safeName } from "./lib/formazione.js";
 
 const args = process.argv.slice(2);
 const arg = (name: string): string | undefined => {
@@ -47,22 +48,14 @@ const EXCLUDED_FILE = /^(\.DS_Store|TEMARIO.*|progress\.md|PROGRESS\.md|guida-ac
 
 const EMAIL_FROM = "giulia.bini@gmail.com";
 const EMAIL_TO = "pippo@email.com";
+// Segnaposto didattici tipo "sk-proj-XXXX…": hanno il formato di una chiave OpenAI e fanno scattare
+// il secret scanning di GitHub. Nella copia pubblica diventano un testo che non ricorda una chiave.
+const FAKE_KEY = /sk-(?:proj-)?X{8,}/g;
+const FAKE_KEY_TO = "<LA-TUA-CHIAVE>";
 const TEXT_EXT = new Set([".ipynb", ".csv", ".json", ".txt", ".md", ".py", ".yml", ".yaml", ".toml"]);
 
-const stripAccents = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "");
 
-function courseSlug(dirName: string): string {
-  return stripAccents(dirName)
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .replace(/-2026$/, "");
-}
 
-function safeName(name: string): string {
-  if (/^[A-Za-z0-9._-]+$/.test(name)) return name;
-  return stripAccents(name).replace(/[^A-Za-z0-9._-]+/g, "_");
-}
 
 interface CourseReport {
   code: string;
@@ -73,6 +66,7 @@ interface CourseReport {
   excluded: string[];
   renamed: string[];
   emailReplaced: number;
+  keysReplaced: number;
   datosPatched: number;
   datosUnpatched: string[];
   invalidNotebooks: string[];
@@ -165,6 +159,10 @@ function walk(
       report.emailReplaced++;
       output = output.split(EMAIL_FROM).join(EMAIL_TO);
     }
+    if (typeof output === "string" && FAKE_KEY.test(output)) {
+      report.keysReplaced++;
+      output = output.replace(FAKE_KEY, FAKE_KEY_TO);
+    }
     if (outDir) {
       fs.mkdirSync(outDir, { recursive: true });
       fs.writeFileSync(path.join(outDir, safe), output);
@@ -225,6 +223,7 @@ function main() {
       excluded: [],
       renamed: [],
       emailReplaced: 0,
+      keysReplaced: 0,
       datosPatched: 0,
       datosUnpatched: [],
       invalidNotebooks: [],
@@ -247,12 +246,12 @@ function main() {
   console.log(`Repo raw: ${RAW_BASE}\n`);
   for (const r of reports) {
     console.log(`${r.code}  ${r.slug}  — ${r.notebooks} notebook, ${r.files} file, esclusi ${r.excluded.length}, rinominati ${r.renamed.length}` +
-      `${r.datosPatched ? `, datos patchati ${r.datosPatched}` : ""}${r.emailReplaced ? `, email sostituite ${r.emailReplaced}` : ""}`);
+      `${r.datosPatched ? `, datos patchati ${r.datosPatched}` : ""}${r.emailReplaced ? `, email sostituite ${r.emailReplaced}` : ""}${r.keysReplaced ? `, chiavi fittizie sostituite ${r.keysReplaced}` : ""}`);
     for (const x of r.invalidNotebooks) console.log(`     ! JSON non valido: ${x}`);
     for (const x of r.datosUnpatched) console.log(`     ? usa datos/ ma senza cargar_datos(): ${x}`);
   }
   console.log(`\nTotale: ${tot((r) => r.notebooks)} notebook, ${tot((r) => r.files)} file, ` +
-    `${tot((r) => r.datosPatched)} notebook con download di datos/, ${tot((r) => r.emailReplaced)} email sostituite, ` +
+    `${tot((r) => r.datosPatched)} notebook con download di datos/, ${tot((r) => r.emailReplaced)} email sostituite, ${tot((r) => r.keysReplaced)} file con chiavi fittizie sostituite, ` +
     `${tot((r) => r.excluded.length)} esclusioni, ${tot((r) => r.renamed.length)} rinomine.`);
   if (!out) console.log("\nNessun file scritto (dry-run). Aggiungi --out <cartella> per generare la copia.");
 }

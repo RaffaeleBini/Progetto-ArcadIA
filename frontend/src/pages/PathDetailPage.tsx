@@ -112,6 +112,9 @@ export default function PathDetailPage() {
                 </Link>
               </div>
               {step.note && <p className={styles.stepNote}>{step.note}</p>}
+              {step.lessonFilter.length > 0 && stepProgress && (
+                <p className={styles.stepNote}>{t("paths.filteredLessons", { n: stepProgress.totalLessons })}</p>
+              )}
               {stepProgress && (
                 <div className={styles.stepProgressRow}>
                   <ProgressBar percentage={stepProgress.percentage} />

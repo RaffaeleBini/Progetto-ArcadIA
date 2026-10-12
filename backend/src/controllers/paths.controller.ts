@@ -99,6 +99,7 @@ function toPathDto(
         courseTitle: populatedByIndex[index]?.course ? pickLocalized(populatedByIndex[index].course!.title, locale) : null,
         order: step.order,
         optional: step.optional,
+        lessonFilter: step.lessonFilter ?? [],
         note: step.note ?? null,
       }))
       .sort((a, b) => a.order - b.order),
@@ -211,33 +212,41 @@ export async function getPathProgress(req: Request, res: Response) {
   }
 
   const courseIds = path.steps.map((step) => step.course);
-  const [progresses, lessonCounts] = await Promise.all([
+  const [progresses, lessons] = await Promise.all([
     ProgressModel.find({ user: req.userId, course: { $in: courseIds } }),
-    LessonModel.aggregate<{ _id: unknown; count: number }>([
-      { $match: { course: { $in: courseIds } } },
-      { $group: { _id: "$course", count: { $sum: 1 } } },
-    ]),
+    LessonModel.find({ course: { $in: courseIds } }, { course: 1, order: 1 }),
   ]);
 
   const progressByCourse = new Map(progresses.map((p) => [String(p.course), p]));
-  const lessonCountByCourse = new Map(lessonCounts.map((c) => [String(c._id), c.count]));
+  const lessonsByCourse = new Map<string, { id: string; order: number }[]>();
+  for (const lesson of lessons) {
+    const key = String(lesson.course);
+    lessonsByCourse.set(key, [...(lessonsByCourse.get(key) ?? []), { id: String(lesson._id), order: lesson.order }]);
+  }
 
   const steps = [...path.steps]
     .sort((a, b) => a.order - b.order)
     .map((step) => {
       const courseId = String(step.course);
       const progress = progressByCourse.get(courseId);
-      const totalLessons = lessonCountByCourse.get(courseId) ?? 0;
-      const completedCount = progress?.completedLessons.length ?? 0;
+      // lessonFilter non vuoto: il passo conta solo quelle lezioni (per "order"), non l'intero corso.
+      const filter = new Set(step.lessonFilter ?? []);
+      const scope = (lessonsByCourse.get(courseId) ?? []).filter((l) => filter.size === 0 || filter.has(l.order));
+      const scopeIds = new Set(scope.map((l) => l.id));
+      const totalLessons = scope.length;
+      const completedCount = (progress?.completedLessons ?? []).filter((id) => scopeIds.has(String(id))).length;
       const percentage = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
+      const isCompleted = filter.size === 0 ? (progress?.isCompleted ?? false) : totalLessons > 0 && completedCount === totalLessons;
 
       return {
         course: courseId,
         order: step.order,
         optional: step.optional,
         note: step.note ?? null,
-        isCompleted: progress?.isCompleted ?? false,
+        isCompleted,
         percentage,
+        totalLessons,
+        completedLessons: completedCount,
       };
     });
 

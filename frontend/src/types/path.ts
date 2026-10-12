@@ -3,6 +3,7 @@ export interface PathStep {
   courseTitle: string | null;
   order: number;
   optional: boolean;
+  lessonFilter: number[];
   note: string | null;
 }
 
@@ -26,6 +27,8 @@ export interface PathStepProgress {
   note: string | null;
   isCompleted: boolean;
   percentage: number;
+  totalLessons: number;
+  completedLessons: number;
 }
 
 export interface PathProgress {

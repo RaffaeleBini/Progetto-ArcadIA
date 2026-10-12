@@ -146,7 +146,9 @@ export async function downloadCertificate(req: Request, res: Response) {
   const courseTitle = pickLocalized(course.title, locale) ?? course.code;
 
   res.setHeader("Content-Type", "application/pdf");
-  res.setHeader("Content-Disposition", `attachment; filename="certificato-${courseTitle}.pdf"`);
+  // Un header HTTP accetta solo ASCII: nome sicuro per i client vecchi, titolo vero in filename* (RFC 6266).
+  const utf8Name = encodeURIComponent(`certificato-${courseTitle}.pdf`);
+  res.setHeader("Content-Disposition", `attachment; filename="certificato-${course.code}.pdf"; filename*=UTF-8''${utf8Name}`);
 
   const doc = new PDFDocument({ size: "A4", layout: "landscape", margin: 50 });
   doc.pipe(res);

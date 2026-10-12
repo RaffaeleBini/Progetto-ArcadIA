@@ -49,6 +49,13 @@ interface PopulatedCourseRef {
   title?: { it?: string | null; es?: string | null } | null;
 }
 
+// step.course è un ObjectId, oppure un documento Course dopo populate("steps.course"):
+// in quel secondo caso String() darebbe il dump dell'oggetto, non l'id.
+function stepCourseId(course: unknown): string {
+  if (course && typeof course === "object" && "_id" in course) return String((course as { _id: unknown })._id);
+  return String(course);
+}
+
 function toPathDto(
   path: PathLike,
   locale: Locale,
@@ -71,7 +78,7 @@ function toPathDto(
       description: { it: path.description?.it ?? "", es: path.description?.es ?? "" },
       audience: { it: path.audience?.it ?? "", es: path.audience?.es ?? "" },
       steps: path.steps.map((step) => ({
-        course: String(step.course),
+        course: stepCourseId(step.course),
         order: step.order,
         optional: step.optional,
         lessonFilter: step.lessonFilter ?? [],
@@ -88,7 +95,7 @@ function toPathDto(
     audience: pickLocalized(path.audience, locale) ?? "",
     steps: path.steps
       .map((step, index) => ({
-        course: String(step.course),
+        course: stepCourseId(step.course),
         courseTitle: populatedByIndex[index]?.course ? pickLocalized(populatedByIndex[index].course!.title, locale) : null,
         order: step.order,
         optional: step.optional,

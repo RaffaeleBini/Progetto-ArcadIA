@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, Check, ExternalLink, Pencil, Trash2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -20,6 +20,7 @@ export default function LessonPage() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const fromPath = (useLocation().state as { fromPath?: { id: string } } | null)?.fromPath;
 
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [progress, setProgress] = useState<Progress | null>(null);
@@ -83,7 +84,11 @@ export default function LessonPage() {
 
   return (
     <div className={styles.page}>
-      <Link to={`/courses/${courseId}`} className={styles.back}>
+      <Link
+        to={`/courses/${courseId}`}
+        state={fromPath ? { fromPath } : undefined}
+        className={styles.back}
+      >
         <ArrowLeft size={14} strokeWidth={1.5} />
         {t("courses.backToCourse")}
       </Link>

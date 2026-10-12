@@ -89,7 +89,8 @@
   },
   "dashboard": {
     "welcome": "Bienvenido, {{name}}",
-    "intro": "Desde aquí puedes acceder a los cursos disponibles en ArcadIA.",
+    "intro": "Desde aquí puedes acceder a las rutas y a los cursos disponibles en ArcadIA.",
+    "goToPaths": "Ir a las rutas",
     "goToCourses": "Ir a los cursos",
     "goToBoard": "Ir al tablón"
   },
@@ -145,6 +146,7 @@
     "premiumBadge": "Premium",
     "backToList": "Volver a los cursos",
     "backToCourse": "Volver al curso",
+    "backToPath": "Volver a la ruta",
     "edit": "Editar",
     "delete": "Eliminar",
     "subscriptionRequired": "Contenido reservado a los suscriptores.",

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, Award, BookOpen, Download, FileCode, Lock, Pencil, Plus, Trash2, Video } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
@@ -20,6 +20,7 @@ export default function CourseDetailPage() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const fromPath = (useLocation().state as { fromPath?: { id: string } } | null)?.fromPath;
 
   const [course, setCourse] = useState<Course | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -75,9 +76,9 @@ export default function CourseDetailPage() {
 
   return (
     <div className={styles.page}>
-      <Link to="/courses" className={styles.back}>
+      <Link to={fromPath ? `/paths/${fromPath.id}` : "/courses"} className={styles.back}>
         <ArrowLeft size={14} strokeWidth={1.5} />
-        {t("courses.backToList")}
+        {fromPath ? t("courses.backToPath") : t("courses.backToList")}
       </Link>
 
       {course.coverImageUrl && <img className={styles.cover} src={course.coverImageUrl} alt="" />}
@@ -167,7 +168,11 @@ export default function CourseDetailPage() {
               const isLessonCompleted = progress?.completedLessons.includes(lesson.id) ?? false;
               return (
                 <li key={lesson.id} className={`panel ${styles.lessonItem}`}>
-                  <Link to={`/courses/${course.id}/lessons/${lesson.id}`} className={styles.lessonLink}>
+                  <Link
+                    to={`/courses/${course.id}/lessons/${lesson.id}`}
+                    state={fromPath ? { fromPath } : undefined}
+                    className={styles.lessonLink}
+                  >
                     <span>{lesson.title}</span>
                     <span className={styles.lessonIcons}>
                       {isLessonCompleted && <Award size={15} strokeWidth={1.5} className={styles.doneIcon} />}

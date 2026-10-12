@@ -104,7 +104,11 @@ export default function PathDetailPage() {
           return (
             <li key={step.course} className={`panel ${styles.stepItem}`}>
               <div className={styles.stepHeader}>
-                <Link to={`/courses/${step.course}`} className={styles.stepLink}>
+                <Link
+                  to={`/courses/${step.course}`}
+                  state={{ fromPath: { id: path.id } }}
+                  className={styles.stepLink}
+                >
                   <span className={styles.stepOrder}>{step.order}.</span>
                   {step.courseTitle ?? step.course}
                   {step.optional && <span className="badge">{t("paths.optional")}</span>}

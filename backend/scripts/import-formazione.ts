@@ -184,6 +184,36 @@ const prettify = (slug: string) => {
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
 
+
+// ---------- pulizia del markdown ----------
+
+// Sul sito non esistono i file .md del manuale: le righe di navigazione tra capitoli
+// ("← Precedente · Indice · Successivo →") si tolgono, i link inline (es. al glossario)
+// restano come testo semplice. I blocchi di codice non si toccano.
+const MD_LINK = /\[([^\]]*)\]\(([^)\s]+?\.md(?:#[^)\s]*)?)\)/g;
+const NAV_WORDS = /precedente|successivo|prossimo|capitolo|indice|torna|all'indice|anterior|siguiente|volver|índice|previo|next|previous|index|back/gi;
+
+function cleanMdLinks(md: string, stats: { navLines: number; inlineLinks: number }): string {
+  let inFence = false;
+  const out: string[] = [];
+  for (const line of md.split("\n")) {
+    if (/^\s*(```|~~~)/.test(line)) inFence = !inFence;
+    if (inFence || !MD_LINK.test(line)) {
+      MD_LINK.lastIndex = 0;
+      out.push(line);
+      continue;
+    }
+    MD_LINK.lastIndex = 0;
+    const rest = line.replace(MD_LINK, "").replace(NAV_WORDS, "").replace(/[\s\[\]()*·|←→⬅➡⟵⟶:—–\-_]/g, "");
+    if (!rest) {
+      stats.navLines++;
+      continue;
+    }
+    out.push(line.replace(MD_LINK, (_m, text: string) => (stats.inlineLinks++, text)));
+  }
+  return out.join("\n").replace(/^(\s*---\s*\n)+/, "").replace(/(\n\s*---\s*)+\s*$/, "\n").replace(/\n{3,}/g, "\n\n");
+}
+
 // ---------- costruzione lezioni ----------
 
 interface LessonDraft {
@@ -214,6 +244,7 @@ interface CourseReport {
   warnings: string[];
   errors: string[];
   relativeImages: number;
+  cleaned: { navLines: number; inlineLinks: number };
 }
 
 const byLang = (docs: Doc[]) => {
@@ -234,7 +265,7 @@ function notebookUrl(slug: string, rel: string): string {
 }
 
 function buildCourse(c: CatalogCourse, srcRoot: string): CourseReport {
-  const report: CourseReport = { code: c.code, lessons: [], warnings: [], errors: [], relativeImages: 0 };
+  const report: CourseReport = { code: c.code, lessons: [], warnings: [], errors: [], relativeImages: 0, cleaned: { navLines: 0, inlineLinks: 0 } };
   const courseDir = path.join(srcRoot, c.folder);
   if (!fs.existsSync(courseDir)) {
     report.errors.push(`cartella non trovata: ${c.folder}`);
@@ -322,7 +353,7 @@ function buildCourse(c: CatalogCourse, srcRoot: string): CourseReport {
       const ex = u.exercise?.get(lang);
       if (md) {
         const text = fs.readFileSync(md.abs, "utf-8");
-        l.theoryContent[lang] = text;
+        l.theoryContent[lang] = cleanMdLinks(text, report.cleaned);
         l.title[lang] = cleanTitle(heading(text));
         report.relativeImages += (text.match(/!\[[^\]]*\]\((?!https?:|data:|\/)/g) ?? []).length;
       }
@@ -387,6 +418,7 @@ async function main() {
     const noNb = r.lessons.filter((l) => !l.lessonNotebookUrl.it && !l.lessonNotebookUrl.es).length;
     if (noTheory && noTheory < n) r.warnings.push(`${noTheory} lezioni senza teoria`);
     if (noNb && noNb < n) r.warnings.push(`${noNb} lezioni senza notebook`);
+    if (r.cleaned.navLines || r.cleaned.inlineLinks) r.warnings.push(`link a file .md: ${r.cleaned.navLines} righe di navigazione tolte, ${r.cleaned.inlineLinks} link trasformati in testo`);
     if (r.relativeImages) r.warnings.push(`${r.relativeImages} immagini con percorso relativo nel markdown (da gestire in Fase 2)`);
     for (const lang of LANGS) {
       const missing = r.lessons.filter((l) => !l.title[lang]).length;

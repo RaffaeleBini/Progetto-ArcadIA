@@ -41,6 +41,7 @@ const EXCLUDED_DIRS = new Set([
   "Specs",
   ".ipynb_checkpoints",
   "__pycache__",
+  ".pytest_cache",
   ".git",
   "node_modules",
 ]);

@@ -1,5 +1,5 @@
 {
-  "_note": "Catalogo rivedibile a mano per import-formazione.ts. source.pairs: slug notebook -> nome file teoria (senza _IT/estensione). source.unsuffixed: lingua dei file senza _IT (default es). lessonFilter: chapters = numero capitolo, modules = M<n> del corso 10.",
+  "_note": "Catalogo rivedibile a mano per import-formazione.ts. source.pairs: slug notebook -> nome file teoria (senza _IT/estensione). source.unsuffixed: lingua dei file senza _IT (default es). lessonFilter: chapters = numero capitolo, modules = M<n> del corso 10. accessLevel: impostato solo alla creazione, poi non viene più toccato.",
   "courses": [
     {
       "code": "00A",
@@ -20,7 +20,8 @@
         ],
         "unsuffixed": "it"
       },
-      "catalogOrder": 1
+      "catalogOrder": 1,
+      "accessLevel": "premium"
     },
     {
       "code": "00B",
@@ -40,7 +41,8 @@
         ],
         "unsuffixed": "it"
       },
-      "catalogOrder": 2
+      "catalogOrder": 2,
+      "accessLevel": "premium"
     },
     {
       "code": "00C",
@@ -59,7 +61,8 @@
         ],
         "unsuffixed": "it"
       },
-      "catalogOrder": 3
+      "catalogOrder": 3,
+      "accessLevel": "premium"
     },
     {
       "code": "00D",
@@ -82,7 +85,8 @@
         ],
         "unsuffixed": "it"
       },
-      "catalogOrder": 4
+      "catalogOrder": 4,
+      "accessLevel": "premium"
     },
     {
       "code": "01",
@@ -100,7 +104,8 @@
         },
         "theory": "."
       },
-      "catalogOrder": 5
+      "catalogOrder": 5,
+      "accessLevel": "free"
     },
     {
       "code": "02",
@@ -121,7 +126,8 @@
           "sql_bases_relacionales": "11_bases_relacionales_sql"
         }
       },
-      "catalogOrder": 6
+      "catalogOrder": 6,
+      "accessLevel": "free"
     },
     {
       "code": "03",
@@ -139,7 +145,8 @@
           "tic_tac_toe_aprende_python": "python_programming_fundamentals_for_dummies"
         }
       },
-      "catalogOrder": 7
+      "catalogOrder": 7,
+      "accessLevel": "premium"
     },
     {
       "code": "04",
@@ -164,7 +171,8 @@
           "proyecto_integrador": "15_casos_de_uso_reales"
         }
       },
-      "catalogOrder": 8
+      "catalogOrder": 8,
+      "accessLevel": "premium"
     },
     {
       "code": "05",
@@ -193,7 +201,8 @@
           "caso_de_uso_integrador": "21_casos_de_uso_reales"
         }
       },
-      "catalogOrder": 9
+      "catalogOrder": 9,
+      "accessLevel": "premium"
     },
     {
       "code": "06",
@@ -220,7 +229,8 @@
           "proyecto-integrador": "14_casos-de-uso-reales"
         }
       },
-      "catalogOrder": 10
+      "catalogOrder": 10,
+      "accessLevel": "premium"
     },
     {
       "code": "07",
@@ -242,7 +252,8 @@
           "note": "Il capitolo 3 richiede le basi di matplotlib/seaborn"
         }
       ],
-      "catalogOrder": 11
+      "catalogOrder": 11,
+      "accessLevel": "premium"
     },
     {
       "code": "08",
@@ -258,7 +269,8 @@
         "lessons": "notebooks_clase",
         "exercises": "notebooks_practica"
       },
-      "catalogOrder": 12
+      "catalogOrder": 12,
+      "accessLevel": "premium"
     },
     {
       "code": "09",
@@ -273,7 +285,8 @@
         "theory": ".",
         "lessons": "."
       },
-      "catalogOrder": 13
+      "catalogOrder": 13,
+      "accessLevel": "premium"
     },
     {
       "code": "10",
@@ -288,7 +301,8 @@
         "lessons": ".",
         "exercises": null
       },
-      "catalogOrder": 14
+      "catalogOrder": 14,
+      "accessLevel": "premium"
     },
     {
       "code": "11",
@@ -306,7 +320,8 @@
         "unsuffixed": "it",
         "match": "number"
       },
-      "catalogOrder": 15
+      "catalogOrder": 15,
+      "accessLevel": "free"
     },
     {
       "code": "12",
@@ -323,7 +338,8 @@
         "exercises": null,
         "match": "number"
       },
-      "catalogOrder": 16
+      "catalogOrder": 16,
+      "accessLevel": "premium"
     },
     {
       "code": "13",
@@ -339,7 +355,8 @@
         "lessons": "notebooks_clase",
         "exercises": "notebooks_practica"
       },
-      "catalogOrder": 17
+      "catalogOrder": 17,
+      "accessLevel": "premium"
     },
     {
       "code": "14",
@@ -360,7 +377,8 @@
           "course": "13"
         }
       ],
-      "catalogOrder": 18
+      "catalogOrder": 18,
+      "accessLevel": "premium"
     },
     {
       "code": "15",
@@ -376,7 +394,8 @@
         "lessons": "notebooks_clase",
         "exercises": "notebooks_practica"
       },
-      "catalogOrder": 19
+      "catalogOrder": 19,
+      "accessLevel": "premium"
     },
     {
       "code": "16",
@@ -396,7 +415,8 @@
           "vision_por_computador_cnn": "03_vision_por_computador_redes_neuronales"
         }
       },
-      "catalogOrder": 20
+      "catalogOrder": 20,
+      "accessLevel": "premium"
     },
     {
       "code": "17",
@@ -421,7 +441,8 @@
           "casos_uso": "11_casos_de_uso"
         }
       },
-      "catalogOrder": 21
+      "catalogOrder": 21,
+      "accessLevel": "premium"
     },
     {
       "code": "18",
@@ -449,7 +470,8 @@
           "course": "13"
         }
       ],
-      "catalogOrder": 22
+      "catalogOrder": 22,
+      "accessLevel": "premium"
     },
     {
       "code": "19",
@@ -465,7 +487,8 @@
         "lessons": "notebooks_clase",
         "exercises": "notebooks_practica"
       },
-      "catalogOrder": 23
+      "catalogOrder": 23,
+      "accessLevel": "premium"
     },
     {
       "code": "20",
@@ -487,7 +510,8 @@
           "vision_lenguaje_casos_uso": "16_vision_lenguaje_proyecto_final"
         }
       },
-      "catalogOrder": 24
+      "catalogOrder": 24,
+      "accessLevel": "premium"
     },
     {
       "code": "21",
@@ -511,7 +535,8 @@
           "note": "Transformer, LoRA e RLHF presuppongono il deep learning"
         }
       ],
-      "catalogOrder": 25
+      "catalogOrder": 25,
+      "accessLevel": "premium"
     },
     {
       "code": "22",
@@ -533,7 +558,8 @@
           "casos_de_uso_cierre": "14_casos_de_uso_reales"
         }
       },
-      "catalogOrder": 26
+      "catalogOrder": 26,
+      "accessLevel": "premium"
     },
     {
       "code": "23",
@@ -558,7 +584,8 @@
           "arquitecturas_agentes": "12_arquitecturas_agentes_drl"
         }
       },
-      "catalogOrder": 27
+      "catalogOrder": 27,
+      "accessLevel": "premium"
     },
     {
       "code": "24",
@@ -577,7 +604,8 @@
           "fundamentos_hardware": "01_fundamentos_computacion_cuantica"
         }
       },
-      "catalogOrder": 28
+      "catalogOrder": 28,
+      "accessLevel": "premium"
     }
   ],
   "paths": [
@@ -603,7 +631,8 @@
         {
           "course": "11"
         }
-      ]
+      ],
+      "accessLevel": "free"
     },
     {
       "code": "P2",
@@ -639,7 +668,8 @@
         {
           "course": "08"
         }
-      ]
+      ],
+      "accessLevel": "premium"
     },
     {
       "code": "P3",
@@ -684,7 +714,8 @@
         {
           "course": "15"
         }
-      ]
+      ],
+      "accessLevel": "premium"
     },
     {
       "code": "P4",
@@ -728,7 +759,8 @@
         {
           "course": "20"
         }
-      ]
+      ],
+      "accessLevel": "premium"
     },
     {
       "code": "P5",
@@ -752,7 +784,8 @@
         {
           "course": "12"
         }
-      ]
+      ],
+      "accessLevel": "premium"
     },
     {
       "code": "P6",
@@ -789,7 +822,8 @@
           "course": "17",
           "optional": true
         }
-      ]
+      ],
+      "accessLevel": "premium"
     },
     {
       "code": "P7",
@@ -843,7 +877,8 @@
             ]
           }
         }
-      ]
+      ],
+      "accessLevel": "premium"
     },
     {
       "code": "P8",
@@ -874,7 +909,8 @@
           "course": "21",
           "note": "Capitoli 9–13 (da verificare)"
         }
-      ]
+      ],
+      "accessLevel": "premium"
     },
     {
       "code": "P9",
@@ -905,7 +941,8 @@
         {
           "course": "24"
         }
-      ]
+      ],
+      "accessLevel": "premium"
     },
     {
       "code": "P10",
@@ -929,7 +966,8 @@
         {
           "course": "00C"
         }
-      ]
+      ],
+      "accessLevel": "premium"
     },
     {
       "code": "P11",
@@ -959,7 +997,8 @@
         {
           "course": "20"
         }
-      ]
+      ],
+      "accessLevel": "premium"
     },
     {
       "code": "P12",
@@ -995,7 +1034,8 @@
         {
           "course": "18"
         }
-      ]
+      ],
+      "accessLevel": "premium"
     }
   ]
 }

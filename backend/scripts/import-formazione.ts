@@ -38,6 +38,7 @@ interface CatalogCourse {
   title: Loc;
   description?: Loc;
   block: string;
+  accessLevel: "free" | "premium";
   estimatedHours: number;
   catalogOrder: number;
   prerequisites?: { course: string; note?: string }[];
@@ -56,6 +57,7 @@ interface CatalogPath {
   title: Loc;
   description?: Loc;
   audience: Loc;
+  accessLevel: "free" | "premium";
   estimatedHours: number;
   estimatedWeeks: number;
   steps: {
@@ -446,7 +448,7 @@ async function main() {
       { code: c.code },
       {
         $set: { ...dotted("title", c.title), ...dotted("description", c.description), block: c.block, estimatedHours: c.estimatedHours, catalogOrder: c.catalogOrder },
-        $setOnInsert: { status: "draft", createdBy: admin._id, createdAt: new Date() },
+        $setOnInsert: { status: "draft", accessLevel: c.accessLevel, createdBy: admin._id, createdAt: new Date() },
       },
       { upsert: true, returnDocument: "after" },
     );
@@ -478,7 +480,7 @@ async function main() {
       { code: p.code },
       {
         $set: { ...dotted("title", p.title), ...dotted("description", p.description), ...dotted("audience", p.audience), estimatedHours: p.estimatedHours, estimatedWeeks: p.estimatedWeeks, steps },
-        $setOnInsert: { status: "draft", createdBy: admin._id, createdAt: new Date() },
+        $setOnInsert: { status: "draft", accessLevel: p.accessLevel, createdBy: admin._id, createdAt: new Date() },
       },
       { upsert: true },
     );

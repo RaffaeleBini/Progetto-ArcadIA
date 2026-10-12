@@ -11,7 +11,8 @@
     "dev:seed": "tsx scripts/dev-seed.ts",
     "export:notebooks": "tsx scripts/export-notebooks.ts",
     "import:formazione": "tsx scripts/import-formazione.ts",
-    "validate:formazione": "tsx scripts/validate-formazione.ts"
+    "validate:formazione": "tsx scripts/validate-formazione.ts",
+    "publish:formazione": "tsx scripts/publish-formazione.ts"
   },
   "keywords": [],
   "author": "",

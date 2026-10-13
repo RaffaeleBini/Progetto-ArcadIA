@@ -5,6 +5,8 @@
 //   npm run publish:formazione -- --wave 1 --apply --allow-remote  (scrive sul DB di MONGODB_URI)
 //
 // Opzioni: --wave 1            ondata 1 del piano: corsi 01–08 e 11, percorsi P1 e P2
+//          --wave 2             corsi 10, 12, 13, 14, 18, 20, percorsi P4, P11 e P12
+//          --wave dl           corsi 00B, 09, 13, 15, 16, 17, 19, 22, percorsi P6 e P7
 //          --courses 01,02     elenco esplicito di corsi (per `code`)
 //          --paths P1,P2       elenco esplicito di percorsi (per `code`)
 //          --draft             riporta in draft invece di pubblicare
@@ -31,6 +33,10 @@ const list = (name: string): string[] =>
 
 const WAVES: Record<string, { courses: string[]; paths: string[] }> = {
   "1": { courses: ["01", "02", "03", "04", "05", "06", "07", "08", "11"], paths: ["P1", "P2"] },
+  // Ondata 2 del piano: AI Engineer, NLP e MLOps (il 13 è già pubblicato con `dl`).
+  "2": { courses: ["10", "12", "13", "14", "18", "20"], paths: ["P4", "P11", "P12"] },
+  // Deep learning e visione artificiale: corsi già importati in draft (il 22 è già pubblicato).
+  dl: { courses: ["00B", "09", "13", "15", "16", "17", "19", "22"], paths: ["P6", "P7"] },
 };
 
 const wave = arg("wave");
@@ -41,7 +47,7 @@ if (wave && !WAVES[wave]) {
 const courseCodes = [...new Set([...(wave ? WAVES[wave].courses : []), ...list("courses")])];
 const pathCodes = [...new Set([...(wave ? WAVES[wave].paths : []), ...list("paths")])];
 if (!courseCodes.length && !pathCodes.length) {
-  console.error("Uso: --wave 1 | --courses 01,02 | --paths P1 [--draft] [--apply] [--allow-remote]");
+  console.error("Uso: --wave 1|2|dl | --courses 01,02 | --paths P1 [--draft] [--apply] [--allow-remote]");
   process.exit(1);
 }
 

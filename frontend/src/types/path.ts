@@ -1,6 +1,8 @@
 export interface PathStep {
   course: string;
   courseTitle: string | null;
+  courseAccessLevel: "free" | "premium";
+  hasAccess: boolean;
   order: number;
   optional: boolean;
   lessonFilter: number[];

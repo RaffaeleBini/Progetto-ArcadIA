@@ -4,6 +4,7 @@ import { CourseModel } from "../models/Course.js";
 import { LessonModel } from "../models/Lesson.js";
 import { PathModel } from "../models/Path.js";
 import { ProgressModel } from "../models/Progress.js";
+import { hasAccessToCourse } from "../utils/access.js";
 import { sendError } from "../utils/apiError.js";
 import { pickLocalized, type Locale } from "../utils/locale.js";
 import { localizedOptional } from "../validation/shared.js";
@@ -47,6 +48,7 @@ interface PathLike {
 interface PopulatedCourseRef {
   _id: unknown;
   title?: { it?: string | null; es?: string | null } | null;
+  accessLevel?: string;
 }
 
 // step.course è un ObjectId, oppure un documento Course dopo populate("steps.course"):
@@ -59,7 +61,11 @@ function stepCourseId(course: unknown): string {
 function toPathDto(
   path: PathLike,
   locale: Locale,
-  options: { raw?: boolean; populatedSteps?: { course: PopulatedCourseRef | null }[] } = {}
+  options: {
+    raw?: boolean;
+    populatedSteps?: { course: PopulatedCourseRef | null }[];
+    user?: Parameters<typeof hasAccessToCourse>[0];
+  } = {}
 ) {
   const base = {
     id: String(path._id),
@@ -94,14 +100,20 @@ function toPathDto(
     description: pickLocalized(path.description, locale) ?? "",
     audience: pickLocalized(path.audience, locale) ?? "",
     steps: path.steps
-      .map((step, index) => ({
-        course: stepCourseId(step.course),
-        courseTitle: populatedByIndex[index]?.course ? pickLocalized(populatedByIndex[index].course!.title, locale) : null,
-        order: step.order,
-        optional: step.optional,
-        lessonFilter: step.lessonFilter ?? [],
-        note: step.note ?? null,
-      }))
+      .map((step, index) => {
+        const course = populatedByIndex[index]?.course ?? null;
+        const courseAccessLevel = course?.accessLevel ?? "free";
+        return {
+          course: stepCourseId(step.course),
+          courseTitle: course ? pickLocalized(course.title, locale) : null,
+          courseAccessLevel,
+          hasAccess: options.user ? hasAccessToCourse(options.user, { accessLevel: courseAccessLevel }) : true,
+          order: step.order,
+          optional: step.optional,
+          lessonFilter: step.lessonFilter ?? [],
+          note: step.note ?? null,
+        };
+      })
       .sort((a, b) => a.order - b.order),
   };
 }
@@ -134,7 +146,7 @@ export async function getPath(req: Request, res: Response) {
   }
 
   const raw = req.query.raw === "true" && isAdmin;
-  res.json({ path: toPathDto(path, locale, { raw, populatedSteps: path.steps }) });
+  res.json({ path: toPathDto(path, locale, { raw, populatedSteps: path.steps, user: req.user! }) });
 }
 
 export async function createPath(req: Request, res: Response) {

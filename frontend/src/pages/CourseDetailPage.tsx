@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, Award, BookOpen, Download, FileCode, Lock, Pencil, Plus, Trash2, Video } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
@@ -8,6 +8,7 @@ import { deleteLesson, fetchLessons } from "../api/lessons";
 import { fetchProgress, getCertificateUrl } from "../api/progress";
 import { getApiErrorMessage } from "../api/client";
 import ProgressBar from "../components/ProgressBar";
+import PathCoursesPanel from "../components/PathCoursesPanel";
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage";
 import type { Course } from "../types/course";
@@ -20,7 +21,9 @@ export default function CourseDetailPage() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const fromPath = (useLocation().state as { fromPath?: { id: string } } | null)?.fromPath;
+  const [searchParams] = useSearchParams();
+  const stateFromPath = (useLocation().state as { fromPath?: { id: string } } | null)?.fromPath;
+  const pathId = searchParams.get("path") ?? stateFromPath?.id;
 
   const [course, setCourse] = useState<Course | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -76,9 +79,9 @@ export default function CourseDetailPage() {
 
   return (
     <div className={styles.page}>
-      <Link to={fromPath ? `/paths/${fromPath.id}` : "/courses"} className={styles.back}>
+      <Link to={pathId ? `/paths/${pathId}` : "/courses"} className={styles.back}>
         <ArrowLeft size={14} strokeWidth={1.5} />
-        {fromPath ? t("courses.backToPath") : t("courses.backToList")}
+        {pathId ? t("courses.backToPath") : t("courses.backToList")}
       </Link>
 
       {course.coverImageUrl && <img className={styles.cover} src={course.coverImageUrl} alt="" />}
@@ -128,85 +131,95 @@ export default function CourseDetailPage() {
         </div>
       )}
 
-      {isLocked ? (
-        <div className={`panel hudCorners ${styles.previewPanel}`}>
-          <p className={styles.previewMessage}>{t("courses.subscriptionRequired")}</p>
-          <Link to="/pricing" className="btn">
-            {t("courses.viewPlans")}
-          </Link>
-        </div>
-      ) : (
-        <>
-          {progress && (
-            <div className={styles.progressSection}>
-              <div className={styles.progressRow}>
-                <ProgressBar percentage={progress.percentage} />
-                <span className={styles.progressLabel}>{progress.percentage}%</span>
-              </div>
-              {progress.isCompleted && (
-                <a className="btn" href={getCertificateUrl(course.id)}>
-                  <Award size={16} strokeWidth={1.5} />
-                  {t("courses.downloadCertificate")}
-                  <Download size={14} strokeWidth={1.5} />
-                </a>
-              )}
-            </div>
-          )}
-
-          <div className={styles.headerRow}>
-            <h2 className={styles.sectionTitle}>{t("courses.lessons")}</h2>
-            {isAdmin && (
-              <Link to={`/courses/${course.id}/lessons/new`} className="btn">
-                <Plus size={16} strokeWidth={1.5} />
-                {t("courses.newLesson")}
-              </Link>
-            )}
+      {!isLocked && progress && (
+        <div className={styles.progressSection}>
+          <div className={styles.progressRow}>
+            <ProgressBar percentage={progress.percentage} />
+            <span className={styles.progressLabel}>{progress.percentage}%</span>
           </div>
-
-          <ul className={styles.lessonList}>
-            {lessons.map((lesson) => {
-              const isLessonCompleted = progress?.completedLessons.includes(lesson.id) ?? false;
-              return (
-                <li key={lesson.id} className={`panel ${styles.lessonItem}`}>
-                  <Link
-                    to={`/courses/${course.id}/lessons/${lesson.id}`}
-                    state={fromPath ? { fromPath } : undefined}
-                    className={styles.lessonLink}
-                  >
-                    <span>{lesson.title}</span>
-                    <span className={styles.lessonIcons}>
-                      {isLessonCompleted && <Award size={15} strokeWidth={1.5} className={styles.doneIcon} />}
-                      {lesson.videoUrl && <Video size={15} strokeWidth={1.5} />}
-                      {(lesson.lessonNotebookUrl || lesson.exerciseNotebookUrl) && (
-                        <FileCode size={15} strokeWidth={1.5} />
-                      )}
-                    </span>
-                  </Link>
-                  {isAdmin && (
-                    <div className={styles.lessonActions}>
-                      <Link
-                        to={`/courses/${course.id}/lessons/${lesson.id}/edit`}
-                        className={styles.iconBtn}
-                        aria-label={t("courses.edit")}
-                      >
-                        <Pencil size={14} strokeWidth={1.5} />
-                      </Link>
-                      <button
-                        type="button"
-                        className={styles.iconBtn}
-                        aria-label={t("courses.delete")}
-                        onClick={() => handleDeleteLesson(lesson.id)}
-                      >
-                        <Trash2 size={14} strokeWidth={1.5} />
-                      </button>
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </>
+          {progress.isCompleted && (
+            <a className="btn" href={getCertificateUrl(course.id)}>
+              <Award size={16} strokeWidth={1.5} />
+              {t("courses.downloadCertificate")}
+              <Download size={14} strokeWidth={1.5} />
+            </a>
+          )}
+        </div>
       )}
+
+      <div className={styles.layout}>
+        <aside className={styles.sidebar}>
+          <PathCoursesPanel pathId={pathId} currentCourseId={course.id} />
+        </aside>
+
+        <div className={styles.main}>
+          {isLocked ? (
+            <div className={`panel hudCorners ${styles.previewPanel}`}>
+              <p className={styles.previewMessage}>{t("courses.subscriptionRequired")}</p>
+              <Link to="/pricing" className="btn">
+                {t("courses.viewPlans")}
+              </Link>
+            </div>
+          ) : (
+            <>
+              <div className={styles.headerRow}>
+                <h2 className={styles.sectionTitle}>{t("courses.lessons")}</h2>
+                {isAdmin && (
+                  <Link to={`/courses/${course.id}/lessons/new`} className="btn">
+                    <Plus size={16} strokeWidth={1.5} />
+                    {t("courses.newLesson")}
+                  </Link>
+                )}
+              </div>
+
+              <ul className={styles.lessonList}>
+                {lessons.map((lesson, index) => {
+                  const isLessonCompleted = progress?.completedLessons.includes(lesson.id) ?? false;
+                  return (
+                    <li key={lesson.id} className={`panel ${styles.lessonItem}`}>
+                      <Link
+                        to={`/courses/${course.id}/lessons/${lesson.id}${pathId ? `?path=${pathId}` : ""}`}
+                        className={styles.lessonLink}
+                      >
+                        <span className={styles.lessonText}>
+                          <span className={styles.chapterLabel}>{t("courses.chapter", { number: index + 1 })}</span>
+                          <span>{lesson.title}</span>
+                        </span>
+                        <span className={styles.lessonIcons}>
+                          {isLessonCompleted && <Award size={15} strokeWidth={1.5} className={styles.doneIcon} />}
+                          {lesson.videoUrl && <Video size={15} strokeWidth={1.5} />}
+                          {(lesson.lessonNotebookUrl || lesson.exerciseNotebookUrl) && (
+                            <FileCode size={15} strokeWidth={1.5} />
+                          )}
+                        </span>
+                      </Link>
+                      {isAdmin && (
+                        <div className={styles.lessonActions}>
+                          <Link
+                            to={`/courses/${course.id}/lessons/${lesson.id}/edit`}
+                            className={styles.iconBtn}
+                            aria-label={t("courses.edit")}
+                          >
+                            <Pencil size={14} strokeWidth={1.5} />
+                          </Link>
+                          <button
+                            type="button"
+                            className={styles.iconBtn}
+                            aria-label={t("courses.delete")}
+                            onClick={() => handleDeleteLesson(lesson.id)}
+                          >
+                            <Trash2 size={14} strokeWidth={1.5} />
+                          </button>
+                        </div>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

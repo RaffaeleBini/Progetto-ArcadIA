@@ -1,0 +1,99 @@
+.panel {
+  padding: var(--space-4);
+}
+
+.heading {
+  font-size: 1rem;
+  margin: 0 0 var(--space-3);
+}
+
+.pathLink {
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+
+.pathLink:hover {
+  color: var(--color-accent);
+}
+
+.message {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: var(--space-3);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.item:hover {
+  color: var(--color-accent);
+}
+
+.current {
+  color: var(--color-text-primary);
+  border-color: var(--color-accent);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-glow);
+}
+
+.number {
+  flex-shrink: 0;
+  min-width: 1.2em;
+  color: var(--color-accent);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+  min-width: 0;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.courseTitle {
+  flex: 1;
+}
+
+.doneIcon {
+  color: var(--color-accent);
+}
+
+.optionalBadge {
+  align-self: flex-start;
+}
+
+.progressRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.progressLabel {
+  font-size: 0.75rem;
+  min-width: 32px;
+  text-align: right;
+}

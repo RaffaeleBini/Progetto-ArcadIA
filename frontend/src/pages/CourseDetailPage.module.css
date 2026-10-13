@@ -1,6 +1,6 @@
 .page {
   padding: var(--space-6) var(--space-8);
-  max-width: 860px;
+  max-width: 1200px;
 }
 
 .back {
@@ -177,4 +177,48 @@
   display: flex;
   gap: var(--space-2);
   padding-right: var(--space-2);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.sidebar {
+  position: sticky;
+  top: var(--space-4);
+}
+
+.main {
+  min-width: 0;
+}
+
+.lessonText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.chapterLabel {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: var(--space-4);
+  }
+
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sidebar {
+    position: static;
+  }
 }

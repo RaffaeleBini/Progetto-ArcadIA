@@ -128,3 +128,8 @@
   background-color: var(--color-accent-soft);
   box-shadow: var(--shadow-glow);
 }
+
+.theoryContent :global(.katex-display) {
+  overflow-x: auto;
+  overflow-y: hidden;
+}

@@ -29,3 +29,9 @@ export function getVideoEmbedUrl(url: string): string | null {
 
   return null;
 }
+
+// remark-math tratta `$$formula$$` scritta su una sola riga come formula inline:
+// la portiamo nella forma a blocco (`$$` su righe proprie) per il rendering centrato.
+export function normalizeDisplayMath(markdown: string): string {
+  return markdown.replace(/^[ \t]*\$\$(?!\$)(.+?)\$\$[ \t]*$/gm, "$$$$\n$1\n$$$$");
+}

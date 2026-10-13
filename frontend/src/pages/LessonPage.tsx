@@ -4,11 +4,14 @@ import { useTranslation } from "react-i18next";
 import { ArrowLeft, Check, ExternalLink, Pencil, Trash2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 import { useAuth } from "../context/AuthContext";
 import { deleteLesson, fetchLesson } from "../api/lessons";
 import { completeLesson, fetchProgress, uncompleteLesson } from "../api/progress";
 import { getApiErrorMessage } from "../api/client";
-import { getColabUrl, getVideoEmbedUrl } from "../utils/media";
+import { getColabUrl, getVideoEmbedUrl, normalizeDisplayMath } from "../utils/media";
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage";
 import type { Lesson } from "../types/lesson";
@@ -127,7 +130,8 @@ export default function LessonPage() {
           <h2 className={styles.blockTitle}>{t("courses.theoryBlock")}</h2>
           <div className={styles.theoryContent}>
             <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
+              remarkPlugins={[remarkGfm, remarkMath]}
+              rehypePlugins={[rehypeKatex]}
               components={{
                 table: ({ node: _node, ...props }) => (
                   <div className={styles.tableWrap}>
@@ -136,7 +140,7 @@ export default function LessonPage() {
                 ),
               }}
             >
-              {lesson.theoryContent}
+              {normalizeDisplayMath(lesson.theoryContent)}
             </ReactMarkdown>
           </div>
         </section>
